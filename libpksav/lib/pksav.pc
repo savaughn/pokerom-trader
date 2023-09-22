@@ -1,0 +1,15 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/
+includedir=${prefix}/
+
+Name: pksav
+Description: Minimal Pokémon save editing library
+URL: https://github.com/ncorgan/pksav
+Version: 0.0.1
+Requires:
+Requires.private:
+Conflicts:
+Cflags: -I${includedir}
+Libs: -L${libdir} -lpksav
+Libs.private:

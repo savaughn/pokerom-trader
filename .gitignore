@@ -1,0 +1,11 @@
+*.dSYM
+*.sav
+*.gb
+*.gbc
+*.gba
+
+// ignore binaries
+*.exe
+*.out
+*.dll
+*.so
