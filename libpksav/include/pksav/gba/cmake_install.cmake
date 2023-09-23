@@ -1,4 +1,4 @@
-# Install script for directory: /Users/spencer/Projects/pksav/include/pksav/gba
+# Install script for directory: /Users/spencer/Projects/pksav-sv/include/pksav/gba
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,11 +39,20 @@ endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Headers" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/pksav/gba" TYPE FILE FILES
-    "/Users/spencer/Projects/pksav/include/pksav/gba/items.h"
-    "/Users/spencer/Projects/pksav/include/pksav/gba/pokemon.h"
-    "/Users/spencer/Projects/pksav/include/pksav/gba/save.h"
-    "/Users/spencer/Projects/pksav/include/pksav/gba/save_structs.h"
-    "/Users/spencer/Projects/pksav/include/pksav/gba/text.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/box_wallpaper.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/common.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/daycare.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/items.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/language.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/mail.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/map.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/options.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/pokedex.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/pokemon.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/roamer.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/save.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/text.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/gba/time.h"
     )
 endif()
 

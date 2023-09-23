@@ -1,4 +1,4 @@
-# Install script for directory: /Users/spencer/Projects/pksav/include/pksav/math
+# Install script for directory: /Users/spencer/Projects/pksav-sv/include/pksav/math
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,9 +39,9 @@ endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Headers" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/pksav/math" TYPE FILE FILES
-    "/Users/spencer/Projects/pksav/include/pksav/math/base256.h"
-    "/Users/spencer/Projects/pksav/include/pksav/math/bcd.h"
-    "/Users/spencer/Projects/pksav/include/pksav/math/endian.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/math/base256.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/math/bcd.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/math/endian.h"
     )
 endif()
 

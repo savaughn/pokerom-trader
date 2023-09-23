@@ -1,7 +1,7 @@
 prefix=/usr/local
 exec_prefix=${prefix}
-libdir=${exec_prefix}/
-includedir=${prefix}/
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
 
 Name: pksav
 Description: Minimal Pokémon save editing library

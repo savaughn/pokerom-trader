@@ -21,10 +21,8 @@ MACOS_DESTINATION = $(BUILD_DIR)/$(MACOS_BUNDLE)/Contents/MacOS
 INFO_PLIST = $(BUILD_DIR)/$(MACOS_BUNDLE)/Contents/Info.plist
 
 # Define mGBA path and save file
-SAVES_DIR = $(realpath saves)
-SAVE_FILE = crystal2.gbc.sav
 ROM_PATH = $(realpath rom)
-ROM_FILE = pk-perfectcrystal.gbc
+ROM_FILE = pk-crystal.gbc
 
 
 .PHONY: all run launch clean

@@ -1,4 +1,4 @@
-# Install script for directory: /Users/spencer/Projects/pksav/lib/gen2
+# Install script for directory: /Users/spencer/Projects/pksav-sv/lib/gen2
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

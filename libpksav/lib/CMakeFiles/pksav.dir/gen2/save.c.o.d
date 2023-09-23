@@ -1,9 +1,8 @@
 lib/CMakeFiles/pksav.dir/gen2/save.c.o: \
-  /Users/spencer/Projects/pksav/lib/gen2/save.c \
-  /Users/spencer/Projects/pksav/include/pksav/gen2/save.h \
-  /Users/spencer/Projects/pksav/include/pksav/config.h \
-  /Users/spencer/Projects/pksav/include/pksav/error.h \
-  /Users/spencer/Projects/pksav/include/pksav/gen2/items.h \
+  /Users/spencer/Projects/pksav-sv/lib/gen2/save.c \
+  /Users/spencer/Projects/pksav-sv/lib/gen2/save_internal.h \
+  /Users/spencer/Projects/pksav-sv/include/pksav/gen2/save.h \
+  /Users/spencer/Projects/pksav-sv/include/pksav/config.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include/stdint.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/stdint.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_int8_t.h \
@@ -31,7 +30,14 @@ lib/CMakeFiles/pksav.dir/gen2/save.c.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_uintptr_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/_types/_intmax_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/_types/_uintmax_t.h \
-  /Users/spencer/Projects/pksav/include/pksav/gen2/pokemon.h \
+  /Users/spencer/Projects/pksav-sv/include/pksav/error.h \
+  /Users/spencer/Projects/pksav-sv/include/pksav/gen2/common.h \
+  /Users/spencer/Projects/pksav-sv/include/pksav/common/constants.h \
+  /Users/spencer/Projects/pksav-sv/include/pksav/gen2/daycare_data.h \
+  /Users/spencer/Projects/pksav-sv/include/pksav/gen2/pokemon.h \
+  /Users/spencer/Projects/pksav-sv/include/pksav/gen2/items.h \
+  /Users/spencer/Projects/pksav-sv/include/pksav/common/item.h \
+  /Users/spencer/Projects/pksav-sv/include/pksav/gen2/time.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/time.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/_types.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/Availability.h \
@@ -42,7 +48,7 @@ lib/CMakeFiles/pksav.dir/gen2/save.c.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_size_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_time_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_timespec.h \
-  /Users/spencer/Projects/pksav/include/pksav/gen2/text.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include/stdbool.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/stdlib.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/wait.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_pid_t.h \
@@ -75,11 +81,10 @@ lib/CMakeFiles/pksav.dir/gen2/save.c.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/malloc/_malloc.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_dev_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_mode_t.h \
-  /Users/spencer/Projects/pksav/include/pksav/gen2/time.h \
-  /Users/spencer/Projects/pksav/include/pksav/math/bcd.h \
-  /Users/spencer/Projects/pksav/include/pksav/math/endian.h \
+  /Users/spencer/Projects/pksav-sv/lib/util/fs.h \
+  /Users/spencer/Projects/pksav-sv/include/pksav/math/endian.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/libkern/OSByteOrder.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include/stdbool.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/assert.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/stdio.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/_stdio.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_va_list.h \

@@ -1,6 +1,6 @@
 lib/CMakeFiles/pksav.dir/common/sha1.c.o: \
-  /Users/spencer/Projects/pksav/lib/common/sha1.c \
-  /Users/spencer/Projects/pksav/lib/common/sha1.h \
+  /Users/spencer/Projects/pksav-sv/lib/common/sha1.c \
+  /Users/spencer/Projects/pksav-sv/lib/common/sha1.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include/stdint.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/stdint.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_int8_t.h \

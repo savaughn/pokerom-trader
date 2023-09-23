@@ -1,4 +1,4 @@
-# Install script for directory: /Users/spencer/Projects/pksav/include
+# Install script for directory: /Users/spencer/Projects/pksav-sv/include
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -38,12 +38,12 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Headers" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE FILE FILES "/Users/spencer/Projects/pksav/include/pksav.h")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE FILE FILES "/Users/spencer/Projects/pksav-sv/include/pksav.h")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/spencer/Projects/pksav/include/pksav/cmake_install.cmake")
+  include("/Users/spencer/Projects/pksav-sv/include/pksav/cmake_install.cmake")
 
 endif()
 

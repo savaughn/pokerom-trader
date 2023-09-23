@@ -4,7 +4,7 @@
 # compile C with /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
 C_DEFINES = -DPKSAV_DLL_EXPORTS -Dpksav_EXPORTS
 
-C_INCLUDES = -I/Users/spencer/Projects/pksav/include
+C_INCLUDES = -I/Users/spencer/Projects/pksav-sv/lib -I/Users/spencer/Projects/pksav-sv/include
 
 C_FLAGSarm64 = -O3 -DNDEBUG -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -fPIC
 
@@ -12,17 +12,11 @@ C_FLAGS = -O3 -DNDEBUG -arch arm64 -isysroot /Applications/Xcode.app/Contents/De
 
 # Custom flags: lib/CMakeFiles/pksav.dir/error.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
 
-# Custom flags: lib/CMakeFiles/pksav.dir/common/datetime.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
-
 # Custom flags: lib/CMakeFiles/pksav.dir/common/pokedex.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
 
-# Custom flags: lib/CMakeFiles/pksav.dir/common/prng.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
-
-# Custom flags: lib/CMakeFiles/pksav.dir/common/sha1.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
+# Custom flags: lib/CMakeFiles/pksav.dir/common/pokerus.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
 
 # Custom flags: lib/CMakeFiles/pksav.dir/common/stats.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
-
-# Custom flags: lib/CMakeFiles/pksav.dir/common/text_common.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
 
 # Custom flags: lib/CMakeFiles/pksav.dir/common/xds_common.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
 
@@ -44,6 +38,8 @@ C_FLAGS = -O3 -DNDEBUG -arch arm64 -isysroot /Applications/Xcode.app/Contents/De
 
 # Custom flags: lib/CMakeFiles/pksav.dir/gba/crypt.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
 
+# Custom flags: lib/CMakeFiles/pksav.dir/gba/pokedex.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
+
 # Custom flags: lib/CMakeFiles/pksav.dir/gba/save.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
 
 # Custom flags: lib/CMakeFiles/pksav.dir/gba/shuffle.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
@@ -53,4 +49,8 @@ C_FLAGS = -O3 -DNDEBUG -arch arm64 -isysroot /Applications/Xcode.app/Contents/De
 # Custom flags: lib/CMakeFiles/pksav.dir/gen4/text.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
 
 # Custom flags: lib/CMakeFiles/pksav.dir/gen5/text.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
+
+# Custom flags: lib/CMakeFiles/pksav.dir/util/fs.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
+
+# Custom flags: lib/CMakeFiles/pksav.dir/util/text_common.c.o_FLAGS = -O3 -std=gnu99 -Wall -Wextra -Werror -fvisibility=hidden
 

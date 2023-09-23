@@ -1,4 +1,4 @@
-# Install script for directory: /Users/spencer/Projects/pksav/include/pksav/common
+# Install script for directory: /Users/spencer/Projects/pksav-sv/include/pksav/common
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,21 +39,19 @@ endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Headers" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/pksav/common" TYPE FILE FILES
-    "/Users/spencer/Projects/pksav/include/pksav/common/condition.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/contest_stats.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/coordinates.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/datetime.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/gen3_ribbons.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/gen4_encounter_type.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/item.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/markings.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/nature.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/nds_pokemon.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/pokedex.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/pokerus.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/prng.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/stats.h"
-    "/Users/spencer/Projects/pksav/include/pksav/common/trainer_id.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/condition.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/constants.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/contest_stats.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/datetime.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/gen4_encounter_type.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/item.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/markings.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/nature.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/nds_pokemon.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/pokedex.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/pokerus.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/stats.h"
+    "/Users/spencer/Projects/pksav-sv/include/pksav/common/trainer_id.h"
     )
 endif()
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016,2018 Nicholas Corgan (n.corgan@gmail.com)
+ * Copyright (c) 2016 Nicholas Corgan (n.corgan@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -21,9 +21,9 @@
  *
  * This number is incremented with new feature support, usually the addition
  * of a new generation of games or adding features to an existing component.
- * Existing API is guaranteed to be compatible, but ABI may not be compatible.
+ * Existing ABI may be compatible but is not guaranteed.
  */
-#define PKSAV_VERSION_MINOR 7
+#define PKSAV_VERSION_MINOR 999
 
 /*!
  * @brief PKSav patch version.
@@ -31,10 +31,10 @@
  * This number is incremented when a significant set of bugfixes is added
  * without breaking ABI compatibility.
  */
-#define PKSAV_VERSION_PATCH 5
+#define PKSAV_VERSION_PATCH 999
 
 //! A string literal representing PKSav's full version.
-#define PKSAV_VERSION "1.7.5"
+#define PKSAV_VERSION "1.999.999"
 
 /*!
  * @brief An integer representation of PKSav's full version.
@@ -43,6 +43,6 @@
  *
  * (X * 1000000) + (Y * 1000) + Z
  */
-#define PKSAV_VERSION_NUMBER 1007005
+#define PKSAV_VERSION_NUMBER 1999999
 
 #endif /* PKSAV_VERSION_H */
