@@ -4,6 +4,9 @@
 
 Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the PKSav C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon and items between different save files or Pokémon game versions.
 
+## Discord
+https://discord.gg/JUzzegS3AP
+
 ### Installation
 
    ```bash
