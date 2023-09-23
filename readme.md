@@ -9,6 +9,20 @@ Pokerom Trader is an open-source project that simplifies the process of trading 
    ```bash
    git clone https://github.com/savaughn/pokerom-trader.git
    cd pokerom-trader
+   ```
+
+   #### Build pksav dependency
+
+   ```bash
+   cd libpksav
+   cmake .
+   make
+   cd ..
+   ```
+
+   #### Build Pokerom Trader
+
+   ```bash
    make
    ```
 
