@@ -9,3 +9,6 @@
 *.out
 *.dll
 *.so
+
+build/
+.DS_Store

@@ -32,6 +32,66 @@ jobs:
         name: pokeromtrader.out  # Specify a name for your artifacts
         path: src/  # Specify the directory containing your build artifacts
 
+  bundle_macos_release:
+    runs-on: macos-latest
+    needs: build  # Ensure that the 'build' job is completed before this one starts
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Download Build Artifact
+      # Download the build artifact from the 'build' job
+      uses: actions/download-artifact@v2
+      with:
+        name: pokeromtrader.out  # Specify the name of the build artifact
+
+    - name: Bundle macOS Release
+      run: |
+        # You can access the downloaded artifact in the current directory
+        BUILD_DIR="build/macos"
+        MACOS_DESTINATION="${BUILD_DIR}/PokeromTrader.app/Contents/MacOS"
+        APP_BUNDLE_EXECUTABLE="pokeromtrader"
+        APP_BUNDLE_ID="com.yourcompany.pokeromtrader"
+        APP_BUNDLE_NAME="PokeromTrader"
+        INFO_PLIST="${BUILD_DIR}/PokeromTrader.app/Contents/Info.plist"
+        
+        # Create the build directory if it doesn't exist
+        mkdir -p "${BUILD_DIR}"
+        
+        # Create the directory structure
+        mkdir -p "${MACOS_DESTINATION}"
+        mkdir -p "${BUILD_DIR}/PokeromTrader.app/Contents/Resources"
+        
+        # Copy the executable to the .app bundle
+        cp "pokeromtrader.out" "${MACOS_DESTINATION}/${APP_BUNDLE_EXECUTABLE}"
+        
+        # Create Info.plist file
+        echo '<?xml version="1.0" encoding="UTF-8"?>' > "${INFO_PLIST}"
+        echo '<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> "${INFO_PLIST}"
+        echo '<plist version="1.0">' >> "${INFO_PLIST}"
+        echo '<dict>' >> "${INFO_PLIST}"
+        echo '    <key>CFBundleExecutable</key>' >> "${INFO_PLIST}"
+        echo "    <string>${APP_BUNDLE_EXECUTABLE}</string>" >> "${INFO_PLIST}"
+        echo '    <key>CFBundleIdentifier</key>' >> "${INFO_PLIST}"
+        echo "    <string>${APP_BUNDLE_ID}</string>" >> "${INFO_PLIST}"
+        echo '    <key>CFBundleName</key>' >> "${INFO_PLIST}"
+        echo "    <string>${APP_BUNDLE_NAME}</string>" >> "${INFO_PLIST}"
+        echo '</dict>' >> "${INFO_PLIST}"
+        echo '</plist>' >> "${INFO_PLIST}"
+        
+        # Make the executable executable
+        chmod +x "${MACOS_DESTINATION}/${APP_BUNDLE_EXECUTABLE}"
+        
+        echo "macOS release bundle created"
+
+    - name: Upload macOS Release
+      uses: actions/upload-artifact@v2
+      with:
+        name: pokeromtrader  # Specify a name for your macOS release
+        path: build/macos 
+
     - name: Clean Up
       run: |
         make clean
+        
