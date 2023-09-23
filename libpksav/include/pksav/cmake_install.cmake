@@ -1,4 +1,4 @@
-# Install script for directory: /Users/spencer/Projects/pksav-sv/include/pksav
+# Install script for directory: /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,24 +39,24 @@ endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Headers" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/pksav" TYPE FILE FILES
-    "/Users/spencer/Projects/pksav-sv/include/pksav/error.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/config.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/version.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen1.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gba.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/error.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/config.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/version.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba.h"
     )
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/spencer/Projects/pksav-sv/include/pksav/common/cmake_install.cmake")
-  include("/Users/spencer/Projects/pksav-sv/include/pksav/math/cmake_install.cmake")
-  include("/Users/spencer/Projects/pksav-sv/include/pksav/gen1/cmake_install.cmake")
-  include("/Users/spencer/Projects/pksav-sv/include/pksav/gen2/cmake_install.cmake")
-  include("/Users/spencer/Projects/pksav-sv/include/pksav/gba/cmake_install.cmake")
-  include("/Users/spencer/Projects/pksav-sv/include/pksav/gen4/cmake_install.cmake")
-  include("/Users/spencer/Projects/pksav-sv/include/pksav/gen5/cmake_install.cmake")
+  include("/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/common/cmake_install.cmake")
+  include("/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/math/cmake_install.cmake")
+  include("/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/cmake_install.cmake")
+  include("/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/cmake_install.cmake")
+  include("/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/cmake_install.cmake")
+  include("/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen4/cmake_install.cmake")
+  include("/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen5/cmake_install.cmake")
 
 endif()
 

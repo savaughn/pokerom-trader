@@ -1,4 +1,4 @@
-# Install script for directory: /Users/spencer/Projects/pksav-sv/lib/common
+# Install script for directory: /Users/spencer/Projects/pokerom-trader/libpksav/lib/common
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

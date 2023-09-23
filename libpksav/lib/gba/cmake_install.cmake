@@ -1,4 +1,4 @@
-# Install script for directory: /Users/spencer/Projects/pksav-sv/lib/gba
+# Install script for directory: /Users/spencer/Projects/pokerom-trader/libpksav/lib/gba
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

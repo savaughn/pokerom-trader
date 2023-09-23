@@ -1,6 +1,6 @@
 lib/CMakeFiles/pksav.dir/gen1/save.c.o: \
-  /Users/spencer/Projects/pksav-sv/lib/gen1/save.c \
-  /Users/spencer/Projects/pksav-sv/lib/gen1/save_internal.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/lib/gen1/save.c \
+  /Users/spencer/Projects/pokerom-trader/libpksav/lib/gen1/save_internal.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/assert.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/cdefs.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_symbol_aliasing.h \
@@ -68,19 +68,19 @@ lib/CMakeFiles/pksav.dir/gen1/save.c.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/malloc/_malloc.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_dev_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_mode_t.h \
-  /Users/spencer/Projects/pksav-sv/lib/util/fs.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/error.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/config.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gen1/common.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/common/constants.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gen1/save.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/common/pokedex.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gen1/badges.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gen1/daycare_data.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gen1/pokemon.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gen1/items.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/common/item.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gen1/time.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/lib/util/fs.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/error.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/config.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/common.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/common/constants.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/save.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/common/pokedex.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/badges.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/daycare_data.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/pokemon.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/items.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/common/item.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/time.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/stdio.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/_stdio.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_va_list.h \

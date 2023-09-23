@@ -1,4 +1,4 @@
-# Install script for directory: /Users/spencer/Projects/pksav-sv/include/pksav/gen4
+# Install script for directory: /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen4
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -38,6 +38,6 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Headers" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/pksav/gen4" TYPE FILE FILES "/Users/spencer/Projects/pksav-sv/include/pksav/gen4/text.h")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/pksav/gen4" TYPE FILE FILES "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen4/text.h")
 endif()
 

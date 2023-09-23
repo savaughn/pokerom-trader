@@ -57,10 +57,10 @@ RM = /opt/homebrew/Cellar/cmake/3.27.4/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/spencer/Projects/pksav-sv
+CMAKE_SOURCE_DIR = /Users/spencer/Projects/pokerom-trader/libpksav
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/spencer/Projects/pksav-sv
+CMAKE_BINARY_DIR = /Users/spencer/Projects/pokerom-trader/libpksav
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -142,14 +142,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /Users/spencer/Projects/pksav-sv && $(CMAKE_COMMAND) -E cmake_progress_start /Users/spencer/Projects/pksav-sv/CMakeFiles /Users/spencer/Projects/pksav-sv/lib//CMakeFiles/progress.marks
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/spencer/Projects/pksav-sv/CMakeFiles 0
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(CMAKE_COMMAND) -E cmake_progress_start /Users/spencer/Projects/pokerom-trader/libpksav/CMakeFiles /Users/spencer/Projects/pokerom-trader/libpksav/lib//CMakeFiles/progress.marks
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/spencer/Projects/pokerom-trader/libpksav/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/clean
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/clean
 .PHONY : clean
 
 # The main clean target
@@ -158,22 +158,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/preinstall
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/preinstall
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /Users/spencer/Projects/pksav-sv && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 lib/CMakeFiles/pksav.dir/rule:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/CMakeFiles/pksav.dir/rule
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/CMakeFiles/pksav.dir/rule
 .PHONY : lib/CMakeFiles/pksav.dir/rule
 
 # Convenience name for target.
@@ -182,7 +182,7 @@ pksav: lib/CMakeFiles/pksav.dir/rule
 
 # fast build rule for target.
 pksav/fast:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/build
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/build
 .PHONY : pksav/fast
 
 common/pokedex.o: common/pokedex.c.o
@@ -190,7 +190,7 @@ common/pokedex.o: common/pokedex.c.o
 
 # target to build an object file
 common/pokedex.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokedex.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokedex.c.o
 .PHONY : common/pokedex.c.o
 
 common/pokedex.i: common/pokedex.c.i
@@ -198,7 +198,7 @@ common/pokedex.i: common/pokedex.c.i
 
 # target to preprocess a source file
 common/pokedex.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokedex.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokedex.c.i
 .PHONY : common/pokedex.c.i
 
 common/pokedex.s: common/pokedex.c.s
@@ -206,7 +206,7 @@ common/pokedex.s: common/pokedex.c.s
 
 # target to generate assembly for a file
 common/pokedex.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokedex.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokedex.c.s
 .PHONY : common/pokedex.c.s
 
 common/pokerus.o: common/pokerus.c.o
@@ -214,7 +214,7 @@ common/pokerus.o: common/pokerus.c.o
 
 # target to build an object file
 common/pokerus.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokerus.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokerus.c.o
 .PHONY : common/pokerus.c.o
 
 common/pokerus.i: common/pokerus.c.i
@@ -222,7 +222,7 @@ common/pokerus.i: common/pokerus.c.i
 
 # target to preprocess a source file
 common/pokerus.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokerus.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokerus.c.i
 .PHONY : common/pokerus.c.i
 
 common/pokerus.s: common/pokerus.c.s
@@ -230,7 +230,7 @@ common/pokerus.s: common/pokerus.c.s
 
 # target to generate assembly for a file
 common/pokerus.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokerus.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/pokerus.c.s
 .PHONY : common/pokerus.c.s
 
 common/stats.o: common/stats.c.o
@@ -238,7 +238,7 @@ common/stats.o: common/stats.c.o
 
 # target to build an object file
 common/stats.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/stats.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/stats.c.o
 .PHONY : common/stats.c.o
 
 common/stats.i: common/stats.c.i
@@ -246,7 +246,7 @@ common/stats.i: common/stats.c.i
 
 # target to preprocess a source file
 common/stats.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/stats.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/stats.c.i
 .PHONY : common/stats.c.i
 
 common/stats.s: common/stats.c.s
@@ -254,7 +254,7 @@ common/stats.s: common/stats.c.s
 
 # target to generate assembly for a file
 common/stats.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/stats.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/stats.c.s
 .PHONY : common/stats.c.s
 
 common/xds_common.o: common/xds_common.c.o
@@ -262,7 +262,7 @@ common/xds_common.o: common/xds_common.c.o
 
 # target to build an object file
 common/xds_common.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/xds_common.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/xds_common.c.o
 .PHONY : common/xds_common.c.o
 
 common/xds_common.i: common/xds_common.c.i
@@ -270,7 +270,7 @@ common/xds_common.i: common/xds_common.c.i
 
 # target to preprocess a source file
 common/xds_common.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/xds_common.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/xds_common.c.i
 .PHONY : common/xds_common.c.i
 
 common/xds_common.s: common/xds_common.c.s
@@ -278,7 +278,7 @@ common/xds_common.s: common/xds_common.c.s
 
 # target to generate assembly for a file
 common/xds_common.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/xds_common.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/common/xds_common.c.s
 .PHONY : common/xds_common.c.s
 
 error.o: error.c.o
@@ -286,7 +286,7 @@ error.o: error.c.o
 
 # target to build an object file
 error.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/error.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/error.c.o
 .PHONY : error.c.o
 
 error.i: error.c.i
@@ -294,7 +294,7 @@ error.i: error.c.i
 
 # target to preprocess a source file
 error.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/error.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/error.c.i
 .PHONY : error.c.i
 
 error.s: error.c.s
@@ -302,7 +302,7 @@ error.s: error.c.s
 
 # target to generate assembly for a file
 error.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/error.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/error.c.s
 .PHONY : error.c.s
 
 gba/checksum.o: gba/checksum.c.o
@@ -310,7 +310,7 @@ gba/checksum.o: gba/checksum.c.o
 
 # target to build an object file
 gba/checksum.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/checksum.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/checksum.c.o
 .PHONY : gba/checksum.c.o
 
 gba/checksum.i: gba/checksum.c.i
@@ -318,7 +318,7 @@ gba/checksum.i: gba/checksum.c.i
 
 # target to preprocess a source file
 gba/checksum.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/checksum.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/checksum.c.i
 .PHONY : gba/checksum.c.i
 
 gba/checksum.s: gba/checksum.c.s
@@ -326,7 +326,7 @@ gba/checksum.s: gba/checksum.c.s
 
 # target to generate assembly for a file
 gba/checksum.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/checksum.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/checksum.c.s
 .PHONY : gba/checksum.c.s
 
 gba/crypt.o: gba/crypt.c.o
@@ -334,7 +334,7 @@ gba/crypt.o: gba/crypt.c.o
 
 # target to build an object file
 gba/crypt.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/crypt.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/crypt.c.o
 .PHONY : gba/crypt.c.o
 
 gba/crypt.i: gba/crypt.c.i
@@ -342,7 +342,7 @@ gba/crypt.i: gba/crypt.c.i
 
 # target to preprocess a source file
 gba/crypt.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/crypt.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/crypt.c.i
 .PHONY : gba/crypt.c.i
 
 gba/crypt.s: gba/crypt.c.s
@@ -350,7 +350,7 @@ gba/crypt.s: gba/crypt.c.s
 
 # target to generate assembly for a file
 gba/crypt.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/crypt.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/crypt.c.s
 .PHONY : gba/crypt.c.s
 
 gba/pokedex.o: gba/pokedex.c.o
@@ -358,7 +358,7 @@ gba/pokedex.o: gba/pokedex.c.o
 
 # target to build an object file
 gba/pokedex.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/pokedex.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/pokedex.c.o
 .PHONY : gba/pokedex.c.o
 
 gba/pokedex.i: gba/pokedex.c.i
@@ -366,7 +366,7 @@ gba/pokedex.i: gba/pokedex.c.i
 
 # target to preprocess a source file
 gba/pokedex.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/pokedex.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/pokedex.c.i
 .PHONY : gba/pokedex.c.i
 
 gba/pokedex.s: gba/pokedex.c.s
@@ -374,7 +374,7 @@ gba/pokedex.s: gba/pokedex.c.s
 
 # target to generate assembly for a file
 gba/pokedex.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/pokedex.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/pokedex.c.s
 .PHONY : gba/pokedex.c.s
 
 gba/save.o: gba/save.c.o
@@ -382,7 +382,7 @@ gba/save.o: gba/save.c.o
 
 # target to build an object file
 gba/save.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/save.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/save.c.o
 .PHONY : gba/save.c.o
 
 gba/save.i: gba/save.c.i
@@ -390,7 +390,7 @@ gba/save.i: gba/save.c.i
 
 # target to preprocess a source file
 gba/save.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/save.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/save.c.i
 .PHONY : gba/save.c.i
 
 gba/save.s: gba/save.c.s
@@ -398,7 +398,7 @@ gba/save.s: gba/save.c.s
 
 # target to generate assembly for a file
 gba/save.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/save.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/save.c.s
 .PHONY : gba/save.c.s
 
 gba/shuffle.o: gba/shuffle.c.o
@@ -406,7 +406,7 @@ gba/shuffle.o: gba/shuffle.c.o
 
 # target to build an object file
 gba/shuffle.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/shuffle.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/shuffle.c.o
 .PHONY : gba/shuffle.c.o
 
 gba/shuffle.i: gba/shuffle.c.i
@@ -414,7 +414,7 @@ gba/shuffle.i: gba/shuffle.c.i
 
 # target to preprocess a source file
 gba/shuffle.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/shuffle.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/shuffle.c.i
 .PHONY : gba/shuffle.c.i
 
 gba/shuffle.s: gba/shuffle.c.s
@@ -422,7 +422,7 @@ gba/shuffle.s: gba/shuffle.c.s
 
 # target to generate assembly for a file
 gba/shuffle.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/shuffle.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/shuffle.c.s
 .PHONY : gba/shuffle.c.s
 
 gba/text.o: gba/text.c.o
@@ -430,7 +430,7 @@ gba/text.o: gba/text.c.o
 
 # target to build an object file
 gba/text.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/text.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/text.c.o
 .PHONY : gba/text.c.o
 
 gba/text.i: gba/text.c.i
@@ -438,7 +438,7 @@ gba/text.i: gba/text.c.i
 
 # target to preprocess a source file
 gba/text.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/text.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/text.c.i
 .PHONY : gba/text.c.i
 
 gba/text.s: gba/text.c.s
@@ -446,7 +446,7 @@ gba/text.s: gba/text.c.s
 
 # target to generate assembly for a file
 gba/text.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/text.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gba/text.c.s
 .PHONY : gba/text.c.s
 
 gen1/save.o: gen1/save.c.o
@@ -454,7 +454,7 @@ gen1/save.o: gen1/save.c.o
 
 # target to build an object file
 gen1/save.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/save.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/save.c.o
 .PHONY : gen1/save.c.o
 
 gen1/save.i: gen1/save.c.i
@@ -462,7 +462,7 @@ gen1/save.i: gen1/save.c.i
 
 # target to preprocess a source file
 gen1/save.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/save.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/save.c.i
 .PHONY : gen1/save.c.i
 
 gen1/save.s: gen1/save.c.s
@@ -470,7 +470,7 @@ gen1/save.s: gen1/save.c.s
 
 # target to generate assembly for a file
 gen1/save.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/save.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/save.c.s
 .PHONY : gen1/save.c.s
 
 gen1/text.o: gen1/text.c.o
@@ -478,7 +478,7 @@ gen1/text.o: gen1/text.c.o
 
 # target to build an object file
 gen1/text.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/text.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/text.c.o
 .PHONY : gen1/text.c.o
 
 gen1/text.i: gen1/text.c.i
@@ -486,7 +486,7 @@ gen1/text.i: gen1/text.c.i
 
 # target to preprocess a source file
 gen1/text.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/text.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/text.c.i
 .PHONY : gen1/text.c.i
 
 gen1/text.s: gen1/text.c.s
@@ -494,7 +494,7 @@ gen1/text.s: gen1/text.c.s
 
 # target to generate assembly for a file
 gen1/text.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/text.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen1/text.c.s
 .PHONY : gen1/text.c.s
 
 gen2/save.o: gen2/save.c.o
@@ -502,7 +502,7 @@ gen2/save.o: gen2/save.c.o
 
 # target to build an object file
 gen2/save.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/save.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/save.c.o
 .PHONY : gen2/save.c.o
 
 gen2/save.i: gen2/save.c.i
@@ -510,7 +510,7 @@ gen2/save.i: gen2/save.c.i
 
 # target to preprocess a source file
 gen2/save.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/save.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/save.c.i
 .PHONY : gen2/save.c.i
 
 gen2/save.s: gen2/save.c.s
@@ -518,7 +518,7 @@ gen2/save.s: gen2/save.c.s
 
 # target to generate assembly for a file
 gen2/save.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/save.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/save.c.s
 .PHONY : gen2/save.c.s
 
 gen2/text.o: gen2/text.c.o
@@ -526,7 +526,7 @@ gen2/text.o: gen2/text.c.o
 
 # target to build an object file
 gen2/text.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/text.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/text.c.o
 .PHONY : gen2/text.c.o
 
 gen2/text.i: gen2/text.c.i
@@ -534,7 +534,7 @@ gen2/text.i: gen2/text.c.i
 
 # target to preprocess a source file
 gen2/text.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/text.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/text.c.i
 .PHONY : gen2/text.c.i
 
 gen2/text.s: gen2/text.c.s
@@ -542,7 +542,7 @@ gen2/text.s: gen2/text.c.s
 
 # target to generate assembly for a file
 gen2/text.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/text.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/text.c.s
 .PHONY : gen2/text.c.s
 
 gen2/time.o: gen2/time.c.o
@@ -550,7 +550,7 @@ gen2/time.o: gen2/time.c.o
 
 # target to build an object file
 gen2/time.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/time.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/time.c.o
 .PHONY : gen2/time.c.o
 
 gen2/time.i: gen2/time.c.i
@@ -558,7 +558,7 @@ gen2/time.i: gen2/time.c.i
 
 # target to preprocess a source file
 gen2/time.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/time.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/time.c.i
 .PHONY : gen2/time.c.i
 
 gen2/time.s: gen2/time.c.s
@@ -566,7 +566,7 @@ gen2/time.s: gen2/time.c.s
 
 # target to generate assembly for a file
 gen2/time.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/time.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen2/time.c.s
 .PHONY : gen2/time.c.s
 
 gen4/text.o: gen4/text.c.o
@@ -574,7 +574,7 @@ gen4/text.o: gen4/text.c.o
 
 # target to build an object file
 gen4/text.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen4/text.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen4/text.c.o
 .PHONY : gen4/text.c.o
 
 gen4/text.i: gen4/text.c.i
@@ -582,7 +582,7 @@ gen4/text.i: gen4/text.c.i
 
 # target to preprocess a source file
 gen4/text.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen4/text.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen4/text.c.i
 .PHONY : gen4/text.c.i
 
 gen4/text.s: gen4/text.c.s
@@ -590,7 +590,7 @@ gen4/text.s: gen4/text.c.s
 
 # target to generate assembly for a file
 gen4/text.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen4/text.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen4/text.c.s
 .PHONY : gen4/text.c.s
 
 gen5/text.o: gen5/text.c.o
@@ -598,7 +598,7 @@ gen5/text.o: gen5/text.c.o
 
 # target to build an object file
 gen5/text.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen5/text.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen5/text.c.o
 .PHONY : gen5/text.c.o
 
 gen5/text.i: gen5/text.c.i
@@ -606,7 +606,7 @@ gen5/text.i: gen5/text.c.i
 
 # target to preprocess a source file
 gen5/text.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen5/text.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen5/text.c.i
 .PHONY : gen5/text.c.i
 
 gen5/text.s: gen5/text.c.s
@@ -614,7 +614,7 @@ gen5/text.s: gen5/text.c.s
 
 # target to generate assembly for a file
 gen5/text.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen5/text.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/gen5/text.c.s
 .PHONY : gen5/text.c.s
 
 math/base256.o: math/base256.c.o
@@ -622,7 +622,7 @@ math/base256.o: math/base256.c.o
 
 # target to build an object file
 math/base256.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/base256.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/base256.c.o
 .PHONY : math/base256.c.o
 
 math/base256.i: math/base256.c.i
@@ -630,7 +630,7 @@ math/base256.i: math/base256.c.i
 
 # target to preprocess a source file
 math/base256.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/base256.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/base256.c.i
 .PHONY : math/base256.c.i
 
 math/base256.s: math/base256.c.s
@@ -638,7 +638,7 @@ math/base256.s: math/base256.c.s
 
 # target to generate assembly for a file
 math/base256.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/base256.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/base256.c.s
 .PHONY : math/base256.c.s
 
 math/bcd.o: math/bcd.c.o
@@ -646,7 +646,7 @@ math/bcd.o: math/bcd.c.o
 
 # target to build an object file
 math/bcd.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/bcd.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/bcd.c.o
 .PHONY : math/bcd.c.o
 
 math/bcd.i: math/bcd.c.i
@@ -654,7 +654,7 @@ math/bcd.i: math/bcd.c.i
 
 # target to preprocess a source file
 math/bcd.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/bcd.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/bcd.c.i
 .PHONY : math/bcd.c.i
 
 math/bcd.s: math/bcd.c.s
@@ -662,7 +662,7 @@ math/bcd.s: math/bcd.c.s
 
 # target to generate assembly for a file
 math/bcd.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/bcd.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/math/bcd.c.s
 .PHONY : math/bcd.c.s
 
 util/fs.o: util/fs.c.o
@@ -670,7 +670,7 @@ util/fs.o: util/fs.c.o
 
 # target to build an object file
 util/fs.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/fs.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/fs.c.o
 .PHONY : util/fs.c.o
 
 util/fs.i: util/fs.c.i
@@ -678,7 +678,7 @@ util/fs.i: util/fs.c.i
 
 # target to preprocess a source file
 util/fs.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/fs.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/fs.c.i
 .PHONY : util/fs.c.i
 
 util/fs.s: util/fs.c.s
@@ -686,7 +686,7 @@ util/fs.s: util/fs.c.s
 
 # target to generate assembly for a file
 util/fs.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/fs.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/fs.c.s
 .PHONY : util/fs.c.s
 
 util/text_common.o: util/text_common.c.o
@@ -694,7 +694,7 @@ util/text_common.o: util/text_common.c.o
 
 # target to build an object file
 util/text_common.c.o:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/text_common.c.o
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/text_common.c.o
 .PHONY : util/text_common.c.o
 
 util/text_common.i: util/text_common.c.i
@@ -702,7 +702,7 @@ util/text_common.i: util/text_common.c.i
 
 # target to preprocess a source file
 util/text_common.c.i:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/text_common.c.i
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/text_common.c.i
 .PHONY : util/text_common.c.i
 
 util/text_common.s: util/text_common.c.s
@@ -710,7 +710,7 @@ util/text_common.s: util/text_common.c.s
 
 # target to generate assembly for a file
 util/text_common.c.s:
-	cd /Users/spencer/Projects/pksav-sv && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/text_common.c.s
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(MAKE) $(MAKESILENT) -f lib/CMakeFiles/pksav.dir/build.make lib/CMakeFiles/pksav.dir/util/text_common.c.s
 .PHONY : util/text_common.c.s
 
 # Help Target
@@ -804,6 +804,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /Users/spencer/Projects/pksav-sv && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /Users/spencer/Projects/pokerom-trader/libpksav && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

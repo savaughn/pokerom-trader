@@ -1,12 +1,12 @@
 lib/CMakeFiles/pksav.dir/gba/shuffle.c.o: \
-  /Users/spencer/Projects/pksav-sv/lib/gba/shuffle.c \
-  /Users/spencer/Projects/pksav-sv/lib/gba/checksum.h \
-  /Users/spencer/Projects/pksav-sv/lib/gba/save_internal.h \
-  /Users/spencer/Projects/pksav-sv/lib/gba/sections_internal.h \
-  /Users/spencer/Projects/pksav-sv/lib/gba/battle_tower.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/pokemon.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/common/constants.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/common/contest_stats.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/lib/gba/shuffle.c \
+  /Users/spencer/Projects/pokerom-trader/libpksav/lib/gba/checksum.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/lib/gba/save_internal.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/lib/gba/sections_internal.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/lib/gba/battle_tower.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/pokemon.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/common/constants.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/common/contest_stats.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include/stdint.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/stdint.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_int8_t.h \
@@ -34,21 +34,21 @@ lib/CMakeFiles/pksav.dir/gba/shuffle.c.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_uintptr_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/_types/_intmax_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/_types/_uintmax_t.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/common/trainer_id.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/common.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/ribbons.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/save.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/config.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/error.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/daycare.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/mail.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/items.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/common/item.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/map.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/pokedex.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/common/trainer_id.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/common.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/ribbons.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/save.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/config.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/error.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/daycare.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/mail.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/items.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/common/item.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/map.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/pokedex.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include/stdbool.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/roamer.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/time.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/roamer.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/time.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/stdlib.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/Availability.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/AvailabilityVersions.h \
@@ -88,8 +88,8 @@ lib/CMakeFiles/pksav.dir/gba/shuffle.c.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_dev_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_mode_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/assert.h \
-  /Users/spencer/Projects/pksav-sv/lib/gba/crypt.h \
-  /Users/spencer/Projects/pksav-sv/lib/gba/shuffle.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/lib/gba/crypt.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/lib/gba/shuffle.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/string.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_rsize_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_errno_t.h \

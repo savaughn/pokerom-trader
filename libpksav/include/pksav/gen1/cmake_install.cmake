@@ -1,4 +1,4 @@
-# Install script for directory: /Users/spencer/Projects/pksav-sv/include/pksav/gen1
+# Install script for directory: /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,16 +39,16 @@ endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Headers" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/pksav/gen1" TYPE FILE FILES
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen1/badges.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen1/common.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen1/daycare_data.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen1/items.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen1/options.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen1/pokemon.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen1/save.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen1/text.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen1/time.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen1/type.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/badges.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/common.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/daycare_data.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/items.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/options.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/pokemon.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/save.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/text.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/time.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen1/type.h"
     )
 endif()
 

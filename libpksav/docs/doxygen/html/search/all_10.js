@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['save_2eh_0',['save.h',['../a01596.html',1,'(Global Namespace)'],['../a01590.html',1,'(Global Namespace)'],['../a01593.html',1,'(Global Namespace)']]],
+  ['save_5ftime_1',['save_time',['../a01255.html#af58a83805960db0e61529ada99e98c9d',1,'pksav_gen2_save']]],
+  ['save_5ftype_2',['save_type',['../a01255.html#ad1a71bcb86b9ac1b9c4fe8872d31cc96',1,'pksav_gen2_save::save_type'],['../a01095.html#a72193e387e2dde2ae261bb7327720d07',1,'pksav_gba_save::save_type'],['../a01163.html#a16b628e785757e514443b6a22087ba0f',1,'pksav_gen1_save::save_type']]],
+  ['seconds_3',['seconds',['../a01103.html#af34cbca7f422b6da86fb7999bdb44a33',1,'pksav_gba_time_offset::seconds'],['../a01099.html#abf58d6ccfb0e828ee6fd44e8dafd0842',1,'pksav_gba_time::seconds'],['../a01259.html#a1eb21a49a9b134cf31be923652d02b3b',1,'pksav_gen2_time::seconds'],['../a01167.html#afab5f77c0ec01e0261ac7379e8e29fa4',1,'pksav_gen1_time::seconds']]],
+  ['sheen_4',['sheen',['../a00935.html#a0c371f44c2cef4db352c1abdb228ce4c',1,'pksav_contest_stats']]],
+  ['sid_5',['sid',['../a00951.html#a4a51924007d8155fb34f68cd7fc71d99',1,'pksav_trainer_id']]],
+  ['smart_6',['smart',['../a01067.html#adad24dcdb97dd36280122bcd867725f4',1,'pksav_gba_roamer::smart'],['../a00935.html#aa8c83510346fef92ef748e6ff190edf5',1,'pksav_contest_stats::smart']]],
+  ['spatk_7',['spatk',['../a01047.html#a1b57bbadaf8e92ee54d9b856b056225c',1,'pksav_gba_pokemon_party_data::spatk'],['../a01207.html#a64621dd2e446f981eb473830ba14f65d',1,'pksav_gen2_pokemon_party_data::spatk']]],
+  ['spcl_8',['spcl',['../a01123.html#ae4e5f4de20d08f714f6381d7447f43c4',1,'pksav_gen1_pokemon_party_data']]],
+  ['spd_9',['spd',['../a01207.html#a549fa879d426b8dd01508c6c9c3b0cb5',1,'pksav_gen2_pokemon_party_data::spd'],['../a01047.html#a8cbf69f737112ebaea0e2a6e2321c6a7',1,'pksav_gba_pokemon_party_data::spd'],['../a01123.html#ad35e9678c4e6239858542f495500f8b6',1,'pksav_gen1_pokemon_party_data::spd']]],
+  ['spdef_10',['spdef',['../a01207.html#ab7f0f34b13e8ea8c309d76c164fb75ce',1,'pksav_gen2_pokemon_party_data::spdef'],['../a01047.html#a560dc42e83969431857af3c4a8bce940',1,'pksav_gba_pokemon_party_data::spdef']]],
+  ['species_11',['species',['../a01219.html#a6449a8aeb12c9f3789a27fd7404de55b',1,'pksav_gen2_pokemon_box::species'],['../a01003.html#a3342bf3af3ac85f404a9a8c7e7ef9d08',1,'pksav_gba_mail::species'],['../a01023.html#aac6fca841bd1262316363f66642492e9',1,'pksav_gba_pokemon_growth_block::species'],['../a01067.html#a57fbb365efbccbc936da278361a8623c',1,'pksav_gba_roamer::species'],['../a01119.html#ab2ace302a561b69ed9f5656668dcda53',1,'pksav_gen1_pc_pokemon::species'],['../a01131.html#a625a688a04df569230e249d546aac6e6',1,'pksav_gen1_pokemon_party::species'],['../a01135.html#ad6a8764fe9ff0d7e29ce02cb4b574001',1,'pksav_gen1_pokemon_box::species'],['../a01203.html#a806c30f0c6d4e6d13942d306376d9f8b',1,'pksav_gen2_pc_pokemon::species'],['../a01215.html#a7177bd27b00b99d8dcfc94a09f0c9f66',1,'pksav_gen2_pokemon_party::species']]],
+  ['ssize_5ft_12',['ssize_t',['../a00059.html#af1b6e71db5c2e98aeed879181efd8b2e',1,'config.h']]],
+  ['stats_2eh_13',['stats.h',['../a00110.html',1,'']]],
+  ['status_14',['status',['../a01067.html#a98e6e0a547ab4312288e72d918d93a20',1,'pksav_gba_roamer']]],
+  ['steps_15',['steps',['../a00971.html#a99ecb8457db2e816fb38c930f4bf7197',1,'pksav_gba_emerald_frlg_daycare_pokemon::steps'],['../a00963.html#a1dbb1a305c49b8ff7fbc76526c769a76',1,'pksav_gba_rs_daycare::steps']]],
+  ['steps_5fto_5fegg_16',['steps_to_egg',['../a01175.html#a7b5f963b74397a6e092e3f4687ddeefa',1,'pksav_gen2_daycare_data']]],
+  ['stored_5fpokemon_17',['stored_pokemon',['../a01107.html#ab7be7ad47282e7c0c2eef19e690d4ac2',1,'pksav_gen1_daycare_data']]],
+  ['stored_5fpokemon1_5fdata_18',['stored_pokemon1_data',['../a01175.html#afd41b14c9419d004b4d1ecf59a36ab3c',1,'pksav_gen2_daycare_data']]],
+  ['stored_5fpokemon2_5fdata_19',['stored_pokemon2_data',['../a01175.html#ab7863ed2d0305790ef4aa193d01df9d6',1,'pksav_gen2_daycare_data']]],
+  ['stored_5fpokemon_5fnickname_20',['stored_pokemon_nickname',['../a01107.html#a5fd42df70c123140dc8ac4e56ce7387a',1,'pksav_gen1_daycare_data']]],
+  ['stored_5fpokemon_5fotname_21',['stored_pokemon_otname',['../a01107.html#a97a852bb3ee933ab9a4ebeccc986a024',1,'pksav_gen1_daycare_data']]]
+];

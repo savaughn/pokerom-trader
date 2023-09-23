@@ -1,4 +1,4 @@
-# Install script for directory: /Users/spencer/Projects/pksav-sv/include/pksav/gen2
+# Install script for directory: /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,17 +39,17 @@ endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Headers" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/pksav/gen2" TYPE FILE FILES
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2/badges.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2/common.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2/daycare_data.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2/items.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2/mom_money_policy.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2/options.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2/palette.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2/pokemon.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2/save.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2/text.h"
-    "/Users/spencer/Projects/pksav-sv/include/pksav/gen2/time.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/badges.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/common.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/daycare_data.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/items.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/mom_money_policy.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/options.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/palette.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/pokemon.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/save.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/text.h"
+    "/Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gen2/time.h"
     )
 endif()
 

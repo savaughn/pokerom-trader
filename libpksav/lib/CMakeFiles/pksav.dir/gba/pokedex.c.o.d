@@ -1,7 +1,7 @@
 lib/CMakeFiles/pksav.dir/gba/pokedex.c.o: \
-  /Users/spencer/Projects/pksav-sv/lib/gba/pokedex.c \
-  /Users/spencer/Projects/pksav-sv/include/pksav/common/pokedex.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/config.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/lib/gba/pokedex.c \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/common/pokedex.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/config.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include/stdint.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/stdint.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_int8_t.h \
@@ -29,8 +29,8 @@ lib/CMakeFiles/pksav.dir/gba/pokedex.c.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_uintptr_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/_types/_intmax_t.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/_types/_uintmax_t.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/error.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/error.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include/stdbool.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/pokedex.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/gba/common.h \
-  /Users/spencer/Projects/pksav-sv/include/pksav/common/constants.h
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/pokedex.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/gba/common.h \
+  /Users/spencer/Projects/pokerom-trader/libpksav/include/pksav/common/constants.h
