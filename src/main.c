@@ -201,6 +201,39 @@ void swapPartyPokemonAtIndices(struct pksav_gen2_save *save, int pokemon_index1,
     save->pokemon_storage.p_party->otnames[pokemon_index2][strlen(tmp_otname1)] = 0x50;
 }
 
+void swapPokemonAtIndexBetweenSaves(struct pksav_gen2_save* player1_save, struct pksav_gen2_save* player2_save, int selected_index1, int selected_index2)
+{
+    // swap nickname
+    char tmp_nickname1[11];
+    char tmp_nickname2[11];
+    pksav_gen2_import_text(player1_save->pokemon_storage.p_party->nicknames[selected_index1], tmp_nickname1, 10);
+    pksav_gen2_import_text(player2_save->pokemon_storage.p_party->nicknames[selected_index2], tmp_nickname2, 10);
+    pksav_gen2_export_text(tmp_nickname2, player1_save->pokemon_storage.p_party->nicknames[selected_index1], 10);
+    pksav_gen2_export_text(tmp_nickname1, player2_save->pokemon_storage.p_party->nicknames[selected_index2], 10);
+    player1_save->pokemon_storage.p_party->nicknames[selected_index1][strlen(tmp_nickname2)] = 0x50;
+    player2_save->pokemon_storage.p_party->nicknames[selected_index2][strlen(tmp_nickname1)] = 0x50;
+
+    // swap party
+    struct pksav_gen2_party_pokemon tmp_pokemon = player1_save->pokemon_storage.p_party->party[selected_index1];
+    player1_save->pokemon_storage.p_party->party[selected_index1] = player2_save->pokemon_storage.p_party->party[selected_index2];
+    player2_save->pokemon_storage.p_party->party[selected_index2] = tmp_pokemon;
+
+    // swap species
+    uint8_t tmp_species = player1_save->pokemon_storage.p_party->species[selected_index1];
+    player1_save->pokemon_storage.p_party->species[selected_index1] = player2_save->pokemon_storage.p_party->species[selected_index2];
+    player2_save->pokemon_storage.p_party->species[selected_index2] = tmp_species;
+
+    // swap otnames
+    char tmp_otname1[8];
+    char tmp_otname2[8];
+    pksav_gen2_import_text(player1_save->pokemon_storage.p_party->otnames[selected_index1], tmp_otname1, 7);
+    pksav_gen2_import_text(player2_save->pokemon_storage.p_party->otnames[selected_index2], tmp_otname2, 7);
+    pksav_gen2_export_text(tmp_otname2, player1_save->pokemon_storage.p_party->otnames[selected_index1], 7);
+    pksav_gen2_export_text(tmp_otname1, player2_save->pokemon_storage.p_party->otnames[selected_index2], 7);
+    player1_save->pokemon_storage.p_party->otnames[selected_index1][strlen(tmp_otname2)] = 0x50;
+    player2_save->pokemon_storage.p_party->otnames[selected_index2][strlen(tmp_otname1)] = 0x50;
+}
+
 int error_handler(enum pksav_error error, const char *message)
 {
     printf("%s\n", message);
@@ -209,12 +242,23 @@ int error_handler(enum pksav_error error, const char *message)
 
 int main(int argc, char *argv[])
 {
-    struct pksav_gen2_save save = loadSaveFromFile("../saves/crystal.gbc.sav", &error_handler);
-    printTrainerData(&save);
-    printParty(&save);
-    swapPartyPokemonAtIndices(&save, 0, 1);
-    printParty(&save);
+    char *player1_savefile = "../rom/pk-crystal.sav";
+    char *player2_savefile = "../rom/pk-crystal_player2.sav";
 
-    if (strcmp(argv[0], "no-write") == 0) {} else saveToFile(&save, "../rom/pk-crystal.sav", &error_handler);
+    struct pksav_gen2_save save_player2 = loadSaveFromFile(player2_savefile, &error_handler);
+    printTrainerData(&save_player2);
+    printParty(&save_player2);
+
+    struct pksav_gen2_save save_player1 = loadSaveFromFile(player1_savefile, &error_handler);
+    printTrainerData(&save_player1);
+    printParty(&save_player1);
+
+    swapPokemonAtIndexBetweenSaves(&save_player1, &save_player2, 0, 0);
+
+    printParty(&save_player1);
+    printParty(&save_player2);
+
+    if (strcmp(argv[0], "no-write") == 0) {} else saveToFile(&save_player1, player1_savefile, &error_handler);
+    if (strcmp(argv[0], "no-write") == 0) {} else saveToFile(&save_player2, player2_savefile, &error_handler);
     return 0;
 }
