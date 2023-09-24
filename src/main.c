@@ -1,22 +1,23 @@
 #include <pksav.h>
 #include <stdio.h>
 #include <string.h>
+#include "raylib.h"
 
 typedef int (*Error_Handler)(enum pksav_error, const char *);
 
-struct pksav_gen2_save loadSaveFromFile(char *path, Error_Handler error_handler)
+struct pksav_gen2_save loadSaveFromFile(const char *path, Error_Handler error_handler)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
 
     enum pksav_gen2_save_type save_type;
-    err = pksav_gen2_get_file_save_type(path, &save_type);
+    err = pksav_gen2_get_file_save_type("../rom/pk-crystal.sav", &save_type);
     if (err != PKSAV_ERROR_NONE)
     {
         error_handler(err, "Error getting save type");
     }
 
     struct pksav_gen2_save save;
-    err = pksav_gen2_load_save_from_file(path, &save);
+    err = pksav_gen2_load_save_from_file("../rom/pk-crystal.sav", &save);
     if (err != PKSAV_ERROR_NONE)
     {
         error_handler(err, "Error loading save");
@@ -144,7 +145,9 @@ void saveToFile(struct pksav_gen2_save *save, char *path, Error_Handler error_ha
     if (err != PKSAV_ERROR_NONE)
     {
         error_handler(err, "Error saving save");
-    } else {
+    }
+    else
+    {
         printf("Saved to %s\n", path);
     }
 }
@@ -201,7 +204,7 @@ void swapPartyPokemonAtIndices(struct pksav_gen2_save *save, int pokemon_index1,
     save->pokemon_storage.p_party->otnames[pokemon_index2][strlen(tmp_otname1)] = 0x50;
 }
 
-void swapPokemonAtIndexBetweenSaves(struct pksav_gen2_save* player1_save, struct pksav_gen2_save* player2_save, int selected_index1, int selected_index2)
+void swapPokemonAtIndexBetweenSaves(struct pksav_gen2_save *player1_save, struct pksav_gen2_save *player2_save, int selected_index1, int selected_index2)
 {
     // swap nickname
     char tmp_nickname1[11];
@@ -242,8 +245,11 @@ int error_handler(enum pksav_error error, const char *message)
 
 int main(int argc, char *argv[])
 {
-    char *player1_savefile = "../rom/pk-crystal.sav";
-    char *player2_savefile = "../rom/pk-crystal_player2.sav";
+
+    InitWindow(800, 450, "Pokemon Crystal Save Editor");
+
+    const char *player1_savefile = "../rom/pk-crystal.sav";
+    const char *player2_savefile = "../rom/pk-crystal_player2.sav";
 
     struct pksav_gen2_save save_player2 = loadSaveFromFile(player2_savefile, &error_handler);
     printTrainerData(&save_player2);
@@ -258,7 +264,24 @@ int main(int argc, char *argv[])
     printParty(&save_player1);
     printParty(&save_player2);
 
-    if (strcmp(argv[0], "no-write") == 0) {} else saveToFile(&save_player1, player1_savefile, &error_handler);
-    if (strcmp(argv[0], "no-write") == 0) {} else saveToFile(&save_player2, player2_savefile, &error_handler);
+    if (strcmp(argv[0], "no-write") == 0)
+    {
+    }
+    else
+        saveToFile(&save_player1, player1_savefile, &error_handler);
+    if (strcmp(argv[0], "no-write") == 0)
+    {
+    }
+    else
+        saveToFile(&save_player2, player2_savefile, &error_handler);
+
+    // raylib while loop
+    while (!WindowShouldClose())
+    {
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+        DrawText("Pokemon Crystal Save Editor", 190, 200, 20, LIGHTGRAY);
+        EndDrawing();
+    }
     return 0;
 }

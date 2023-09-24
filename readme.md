@@ -17,7 +17,7 @@ https://discord.gg/JUzzegS3AP
    #### Build pksav dependency
 
    ```bash
-   cd libpksav
+   cd deps/lpksav
    cmake .
    make
    cd ..
