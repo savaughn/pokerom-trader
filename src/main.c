@@ -1,25 +1,26 @@
 #include <pksav.h>
 #include <stdio.h>
+#include <string.h>
 
-struct pksav_gen2_save loadSaveFromFile(char *path)
+typedef int (*Error_Handler)(enum pksav_error, const char *);
+
+struct pksav_gen2_save loadSaveFromFile(char *path, Error_Handler error_handler)
 {
-    // bool is_gen2 = false;
-    // err = pksav_file_is_gen2_save(path, true, &is_gen2);
-    // if (!is_gen2)
-    // {
-    //     printf("Save is not a Gen 2 save file!\n");
-    // }
-    // if (err != PKSAV_ERROR_NONE)
-    // {
-    //     printf("Error checking save: %s\n", pksav_strerror(err));
-    // }
+    enum pksav_error err = PKSAV_ERROR_NONE;
+
+    enum pksav_gen2_save_type save_type;
+    err = pksav_gen2_get_file_save_type(path, &save_type);
+    if (err != PKSAV_ERROR_NONE)
+    {
+        error_handler(err, "Error getting save type");
+    }
 
     struct pksav_gen2_save save;
-    pksav_gen2_load_save_from_file(path, &save);
-    // if (err != PKSAV_ERROR_NONE)
-    // {
-    //     printf("Error loading save: %s\n", pksav_strerror(err));
-    // }
+    err = pksav_gen2_load_save_from_file(path, &save);
+    if (err != PKSAV_ERROR_NONE)
+    {
+        error_handler(err, "Error loading save");
+    }
     return save;
 }
 void printTrainerBadges(struct pksav_gen2_save *save)
@@ -71,7 +72,7 @@ void printTrainerBadges(struct pksav_gen2_save *save)
     {
         printf("Boulder ");
     }
-    
+
     if (kanto_badges & PKSAV_GEN2_KANTO_CASCADE_BADGE)
     {
         printf("Cascade ");
@@ -126,14 +127,6 @@ void printTrainerData(struct pksav_gen2_save *save)
 
     // print trainer badges
     printTrainerBadges(save);
-
-    // print trainer money
-    // size_t money = 0;
-    // pksav_import_bcd(save.trainer_info.p_money, 3, &money);
-    // printf("Trainer money: %zu\n", money);
-
-    struct pksav_gen2_time timePlayed = *save->save_time.p_time_played;
-    printf("Time played: %u:%u:%u\n", timePlayed.hours, timePlayed.minutes, timePlayed.seconds);
 }
 // void changePartyPokemonNicknameAtIndex(pksav_gen2_save_t *save, int pokemon_index, char *new_name)
 // {
@@ -142,86 +135,82 @@ void printTrainerData(struct pksav_gen2_save *save)
 //     pksav_text_from_gen2(save->pokemon_party->nicknames[pokemon_index], pokemon_name, 10);
 //     printf("Pokemon new name: %s\n", pokemon_name);
 // }
-void saveToFile(struct pksav_gen2_save *save, char *path)
+void saveToFile(struct pksav_gen2_save *save, char *path, Error_Handler error_handler)
 {
-    pksav_gen2_save_save(path, save);
+    enum pksav_error err = PKSAV_ERROR_NONE;
+    err = pksav_gen2_save_save(path, save);
     pksav_gen2_free_save(save);
+
+    if (err != PKSAV_ERROR_NONE)
+    {
+        error_handler(err, "Error saving save");
+    } else {
+        printf("Saved to %s\n", path);
+    }
 }
-// void printPartySpeciesAtIndex(pksav_gen2_save_t *save, int pokemon_index)
-// {
-//     uint8_t species = save->pokemon_party->party[pokemon_index].pc.species;
-//     printf("Pokemon species: %u\n", species);
-// }
-// void printPartyPokemonAtIndex(pksav_gen2_save_t *save, int pokemon_index)
-// {
-//     // print nickname
-//     char pokemon_nickname[11];
-//     pksav_text_from_gen2(save->pokemon_party->nicknames[pokemon_index], pokemon_nickname, 10);
-//     printf("Pokemon nickname: %s\n", pokemon_nickname);
-// }
-// void printParty(pksav_gen2_save_t *save)
-// {
-//     for (int i = 0; i < 6; i++)
-//     {
-//         printPartyPokemonAtIndex(save, i);
-//     }
-// }
-// void swapPartyPokemonAtIndices(pksav_gen2_save_t *save, int pokemon_index1, int pokemon_index2)
-// {
-// swap nickname
-// char tmp_nickname1[10];
-// char tmp_nickname2[10];
-// pksav_text_from_gen2(save->pokemon_party->nicknames[pokemon_index1], tmp_nickname1, 10);
-// pksav_text_from_gen2(save->pokemon_party->nicknames[pokemon_index2], tmp_nickname2, 10);
-// pksav_text_to_gen2(tmp_nickname2, save->pokemon_party->nicknames[pokemon_index1], 10);
-// pksav_text_to_gen2(tmp_nickname1, save->pokemon_party->nicknames[pokemon_index2], 10);
 
-// swap party
-// pksav_gen2_party_pokemon_t tmp_pokemon = save->pokemon_party->party[pokemon_index1];
-// save->pokemon_party->party[pokemon_index1] = save->pokemon_party->party[pokemon_index2];
-// save->pokemon_party->party[pokemon_index2] = tmp_pokemon;
-
-// // swap species
-// uint8_t tmp_species = save->pokemon_party->species[pokemon_index1];
-// save->pokemon_party->species[pokemon_index1] = save->pokemon_party->species[pokemon_index2];
-// save->pokemon_party->species[pokemon_index2] = tmp_species;
-
-// swap otnames
-// char tmp_otname1[8];
-// char tmp_otname2[8];
-// pksav_text_from_gen2(save->pokemon_party->otnames[pokemon_index1], tmp_otname1, 7);
-// pksav_text_from_gen2(save->pokemon_party->otnames[pokemon_index2], tmp_otname2, 7);
-// pksav_text_to_gen2(tmp_otname2, save->pokemon_party->otnames[pokemon_index1], 7);
-// pksav_text_to_gen2(tmp_otname1, save->pokemon_party->otnames[pokemon_index2], 7);
-// }
-
-int main()
+void printPartyPokemonAtIndex(struct pksav_gen2_save *save, int pokemon_index)
 {
-    struct pksav_gen2_save save = loadSaveFromFile("../saves/crystal.gbc.sav");
+    // print nickname
+    char pokemon_nickname[11];
+    pksav_gen2_import_text(save->pokemon_storage.p_party->nicknames[pokemon_index], pokemon_nickname, 10);
+    printf("%d. %s\n", pokemon_index + 1, pokemon_nickname);
+
+    // // print species
+    // uint8_t species = save->pokemon_storage.p_party->species[pokemon_index];
+    // printf("%d. %d\n", pokemon_index + 1, species);
+}
+void printParty(struct pksav_gen2_save *save)
+{
+    printf("Party:\n");
+    for (int i = 0; i < 6; i++)
+    {
+        printPartyPokemonAtIndex(save, i);
+    }
+}
+void swapPartyPokemonAtIndices(struct pksav_gen2_save *save, int pokemon_index1, int pokemon_index2)
+{
+    // swap nickname
+    char tmp_nickname1[11];
+    char tmp_nickname2[11];
+    pksav_gen2_import_text(save->pokemon_storage.p_party->nicknames[pokemon_index1], tmp_nickname1, 10);
+    pksav_gen2_import_text(save->pokemon_storage.p_party->nicknames[pokemon_index2], tmp_nickname2, 10);
+    pksav_gen2_export_text(tmp_nickname2, save->pokemon_storage.p_party->nicknames[pokemon_index1], 10);
+    pksav_gen2_export_text(tmp_nickname1, save->pokemon_storage.p_party->nicknames[pokemon_index2], 10);
+
+    // swap party
+    struct pksav_gen2_party_pokemon tmp_pokemon = save->pokemon_storage.p_party->party[pokemon_index1];
+    save->pokemon_storage.p_party->party[pokemon_index1] = save->pokemon_storage.p_party->party[pokemon_index2];
+    save->pokemon_storage.p_party->party[pokemon_index2] = tmp_pokemon;
+
+    // swap species
+    uint8_t tmp_species = save->pokemon_storage.p_party->species[pokemon_index1];
+    save->pokemon_storage.p_party->species[pokemon_index1] = save->pokemon_storage.p_party->species[pokemon_index2];
+    save->pokemon_storage.p_party->species[pokemon_index2] = tmp_species;
+
+    // swap otnames
+    char tmp_otname1[8];
+    char tmp_otname2[8];
+    pksav_gen2_import_text(save->pokemon_storage.p_party->otnames[pokemon_index1], tmp_otname1, 7);
+    pksav_gen2_import_text(save->pokemon_storage.p_party->otnames[pokemon_index2], tmp_otname2, 7);
+    pksav_gen2_export_text(tmp_otname2, save->pokemon_storage.p_party->otnames[pokemon_index1], 7);
+    pksav_gen2_export_text(tmp_otname1, save->pokemon_storage.p_party->otnames[pokemon_index2], 7);
+}
+
+int error_handler(enum pksav_error error, const char *message)
+{
+    printf("%s\n", message);
+    exit(1);
+}
+
+int main(int argc, char *argv[])
+{
+    struct pksav_gen2_save save = loadSaveFromFile("../saves/crystal.gbc.sav", &error_handler);
     printTrainerData(&save);
+    printParty(&save);
+    swapPartyPokemonAtIndices(&save, 0, 1);
+    printParty(&save);
 
-    // if (err != PKSAV_ERROR_NONE)
-    // {
-    //     printf("Error loading save: %s\n", pksav_strerror(err));
-    //     return 1;
-    // }
-    // printTrainerData(&save);
-
-    // printParty(&save);
-
-    // swapPartyPokemonAtIndices(&save, 0, 1);
-
-    // printParty(&save);
-
-    // Update 1st party pokemon name
-    // changePartyPokemonNicknameAtIndex(&save, 0, "GYARADOS");
-
-    // saveToFile(&save, "../rom/pk-crystal.sav");
-    // if (err != PKSAV_ERROR_NONE)
-    // {
-    //     printf("Error saving save: %s\n", pksav_strerror(err));
-    //     return 1;
-    // }
-
+    if (strcmp(argv[0], "no-write") == 0) {} else saveToFile(&save, "../rom/pk-crystal.sav", &error_handler);
     return 0;
 }
