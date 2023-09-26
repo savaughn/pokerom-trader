@@ -233,7 +233,7 @@ endif
 # Define include paths for required headers: INCLUDE_PATHS
 # NOTE: Some external/extras libraries could be required (stb, physac, easings...)
 #------------------------------------------------------------------------------------------------
-INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -I$(RAYLIB_PATH)/src/external -Isrc/ -Ideps/pksav/include 
+INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -Isrc/ -Ideps/pksav/include 
 
 # Define additional directories containing required header files
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
