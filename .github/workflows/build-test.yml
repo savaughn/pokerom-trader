@@ -3,7 +3,7 @@ name: Build and Test
 on:
   push:
     branches:
-      - v2/main
+      - main
 
 jobs:
   build:
@@ -21,6 +21,11 @@ jobs:
         cd deps/pksav/
         cmake .
         make 
+
+    - name: Build raylib
+      run: |
+        cd deps/raylib/src/
+        make PLATFORM=PLATFORM_DESKTOP
 
     - name: Build Project
       run: |
@@ -64,7 +69,7 @@ jobs:
         mkdir -p "${BUILD_DIR}/PokeromTrader.app/Contents/Resources"
         
         # Copy the executable to the .app bundle
-        cp "pokeromtrader.out" "${MACOS_DESTINATION}/${APP_BUNDLE_EXECUTABLE}"
+        cp "pokeromtrader" "${MACOS_DESTINATION}/${APP_BUNDLE_EXECUTABLE}"
         
         # Create Info.plist file
         echo '<?xml version="1.0" encoding="UTF-8"?>' > "${INFO_PLIST}"
