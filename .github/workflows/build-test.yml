@@ -16,9 +16,9 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Build libpksav
+    - name: Build pksav
       run: |
-        cd libpksav/
+        cd deps/pksav/
         cmake .
         make 
 

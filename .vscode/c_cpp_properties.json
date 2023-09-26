@@ -4,7 +4,8 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/libpksav/include"
+                "${workspaceFolder}/deps/pksav/include",
+                "${workspaceFolder}/../raylib/src/"
             ],
             "defines": [],
             "macFrameworkPath": [

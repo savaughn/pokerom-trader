@@ -9,6 +9,11 @@
 *.out
 *.dll
 *.so
+*.o
+*.a
+*.dylib
 
 build/
-.DS_Store
+obj/
+*.DS_Store
+src/pokeromtrader
