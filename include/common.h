@@ -27,4 +27,9 @@ struct TrainerSelection
     int trainer_index;
 };
 
+typedef enum {
+    SCREEN_FILE_SELECT,
+    SCREEN_TRADE
+} GameScreen;
+
 #endif // COMMON_H
