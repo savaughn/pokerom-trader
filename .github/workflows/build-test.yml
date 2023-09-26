@@ -31,6 +31,14 @@ jobs:
       run: |
         make all
 
+    - name: Bundle Executable with Library
+      run: |
+        # Copy libpksav.dylib to the same directory as the executable
+        cp deps/pksav/lib/libpksav.dylib src/
+        
+        # Update the library path in the executable
+        install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/pksav/lib/libpksav.dylib @executable_path/libpksav.dylib src/pokeromtrader
+
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -99,4 +107,3 @@ jobs:
     - name: Clean Up
       run: |
         make clean
-        
