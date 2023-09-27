@@ -27,4 +27,15 @@ struct TrainerSelection
     int trainer_index;
 };
 
+typedef enum {
+    SCREEN_FILE_SELECT,
+    SCREEN_TRADE
+} GameScreen;
+
+struct SaveFileData {
+    const char* saveDir;
+    char* saves_file_path[100];
+    int numSaves;
+};
+
 #endif // COMMON_H
