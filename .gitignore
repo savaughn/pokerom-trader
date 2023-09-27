@@ -17,3 +17,5 @@ build/
 obj/
 *.DS_Store
 src/pokeromtrader
+
+settings.json

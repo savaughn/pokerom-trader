@@ -2,6 +2,12 @@
 #include <string.h>
 #include "pksavhelper.h"
 
+int error_handler(enum pksav_error error, const char *message)
+{
+    printf("%s\n", message);
+    exit(1);
+}
+
 struct pksav_gen2_save loadSaveFromFile(const char *path, Error_Handler error_handler)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;

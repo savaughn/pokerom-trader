@@ -41,22 +41,13 @@ void PokemonButton(Rectangle rect, int index, char *pokemon_nickname)
     DrawText(pokemon_nickname, rect.x + 10, rect.y + 6, 20, selected ? LIGHTGRAY : BLACK);
 }
 
-void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection *trainerSelection)
+void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2])
 {
     char trainer_name[15];
     createTrainerNameStr(trainer, trainer_name);
     char trainer_id[11];
     createTrainerIdStr(trainer, trainer_id);
-
-    int current_trainer_index = -1;
-    for (int i = 0; i < 2; i++)
-    {
-        if (trainerSelection[i].trainer_id == trainer->trainer_id)
-        {
-            current_trainer_index = i;
-        }
-    }
-
+    int current_trainer_index = trainerSelection[0].trainer_id == trainer->trainer_id ? 0 : trainerSelection[1].trainer_id == trainer->trainer_id ? 1 : -1;
     int party_count = trainer->pokemon_party->count;
     static char selected_pokemon_nickname[11];
 
@@ -74,28 +65,22 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
         }
     }
 
-    if (trainerSelection[current_trainer_index].pokemon_index != -1)
+    if (current_trainer_index != -1 && trainerSelection[current_trainer_index].pokemon_index != -1)
     {
         pksav_gen2_import_text(trainer->pokemon_party->nicknames[trainerSelection[current_trainer_index].pokemon_index], selected_pokemon_nickname, 10);
         DrawText(selected_pokemon_nickname, trainerSelection[current_trainer_index].trainer_index ? (GetScreenWidth() / 2) + 50 : x, y + 300, 20, BLACK);
     }
 }
 
-void DrawTradeScreen(struct TrainerSelection *trainerSelection, struct TrainerInfo trainer1, struct TrainerInfo trainer2, bool *should_trade)
+void DrawTradeScreen(struct TrainerSelection trainerSelection[2], struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, bool *should_trade)
 {
-    // Trainer 1
-    DrawTrainerInfo(&trainer1, 50, 50, trainerSelection);
-    DrawTrainerInfo(&trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection);
-    // draw a button with rectangle lines
+    DrawTrainerInfo(trainer1, 50, 50, trainerSelection);
+    DrawTrainerInfo(trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection);
     DrawRectangleLines(GetScreenWidth() / 2 - 50, GetScreenHeight() / 2 + 50, 100, 50, BLACK);
-    // draw text trade in the middle of the button
     DrawText("Trade", GetScreenWidth() / 2 - 30, GetScreenHeight() / 2 + 65, 20, BLACK);
-    // check if the mouse is over the button
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){GetScreenWidth() / 2 - 50, GetScreenHeight() / 2 + 50, 100, 50}))
     {
-        // draw a rectangle over the button
         DrawRectangle(GetScreenWidth() / 2 - 50, GetScreenHeight() / 2 + 50, 100, 50, GRAY);
-        // check if the mouse is clicked
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             *should_trade = true;

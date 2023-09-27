@@ -4,6 +4,7 @@
 #include <pksav.h>
 #include "common.h"
 
+int error_handler(enum pksav_error error, const char *message);
 struct pksav_gen2_save loadSaveFromFile(const char *path, Error_Handler error_handler);
 void printTrainerBadges(struct pksav_gen2_save *save);
 void printTrainerData(struct pksav_gen2_save *save);

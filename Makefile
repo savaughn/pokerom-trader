@@ -540,6 +540,6 @@ clean:
 # .DEFAULT:
 # 	@echo "Nothing to do. Please specify a target (e.g., 'make run')."
 
-# mgba:
-# 	@mgba "$(ROM_PATH)/$(ROM_FILE)"
+mgba:
+	@mgba "$(ROM_PATH)/$(ROM_FILE)"
 
