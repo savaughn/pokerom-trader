@@ -2,16 +2,18 @@
 #include <string.h>
 #include <dirent.h>
 #include <pksav.h>
+#include "common.h"
 #include "raylib.h"
 #include "pksavhelper.h"
 #include "tradescreen.h"
 #include "fileselectscreen.h"
 #include "filehelper.h"
-#include "common.h"
+
+#define MAX_INPUT_CHARS 40
 
 int main(int argc, char *argv[])
 {
-    InitWindow(1280, 720, "Pokerom Trader");
+    InitWindow(800, 480, "Pokerom Trader");
 
     char player1_save_path[100];
     char player2_save_path[100];
@@ -19,22 +21,37 @@ int main(int argc, char *argv[])
     struct pksav_gen2_save save_player2;
     struct SaveFileData save_file_data = {
         .saveDir = "saves",
-        .numSaves = 0
     };
     get_save_files(&save_file_data);
 
     // create trainers
     struct TrainerInfo trainer1 = {
-        .trainer_id = 0};
+        .trainer_id = 0,
+    };
     struct TrainerInfo trainer2 = {
-        .trainer_id = 0};
+        .trainer_id = 0,
+    };
     struct TrainerSelection trainerSelection[2] = {
         [0] = {.trainer_id = trainer1.trainer_id, .pokemon_index = -1, .trainer_index = 0},
         [1] = {.trainer_id = trainer2.trainer_id, .pokemon_index = -1, .trainer_index = 1}};
-    static GameScreen current_screen = SCREEN_FILE_SELECT;
+    static GameScreen current_screen = SCREEN_MAIN_MENU;
 
-    while (!WindowShouldClose())
+    bool should_close_window = false;
+
+    char inputText[MAX_INPUT_CHARS + 1] = "\0"; // Input text buffer
+    int textSize = 0;                           // Current text size
+
+    Rectangle inputBox = {SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 20, 200, 40};
+    bool editingText = false; // Flag to indicate if the text is being edited
+
+    while (!should_close_window && !WindowShouldClose())
     {
+        // Escape key to close window
+        if (IsKeyPressed(KEY_ESCAPE))
+        {
+            should_close_window = true;
+        }
+
         // Update
         int selected_index_trainer1 = trainerSelection[0].pokemon_index;
         int selected_index_trainer2 = trainerSelection[1].pokemon_index;
@@ -62,7 +79,125 @@ int main(int argc, char *argv[])
             break;
 
         case SCREEN_TRADE:
-            DrawTradeScreen(trainerSelection, &trainer1, &trainer2, &should_trade);
+            DrawTradeScreen(trainerSelection, &trainer1, &trainer2, &should_trade, &current_screen);
+            break;
+        case SCREEN_MAIN_MENU:
+            DrawText("Main Menu", 190, 100, 20, BLACK);
+            DrawText("Trade", 190, 200, 20, BLACK);
+            DrawText("Settings", 190, 225, 20, BLACK);
+            DrawText("Quit", 190, 250, 20, BLACK);
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 200, 200, 20}))
+                {
+                    current_screen = SCREEN_FILE_SELECT;
+                }
+                else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 225, 200, 20}))
+                {
+                    current_screen = SCREEN_SETTINGS;
+                }
+                else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 250, 200, 20}))
+                {
+                    should_close_window = true;
+                }
+            }
+            break;
+        case SCREEN_SETTINGS:
+            DrawText("Settings", 190, 100, 20, BLACK);
+            DrawText("Change Save Directory", 190, 200, 20, BLACK);
+            DrawText("Back", 190, 225, 20, BLACK);
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 200, 200, 20}))
+                {
+                    current_screen = SCREEN_FILE_EDIT;
+                }
+                else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 220, 200, 20}))
+                {
+                    current_screen = SCREEN_MAIN_MENU;
+                }
+            }
+            break;
+        case SCREEN_FILE_EDIT:
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                // Check if the mouse is clicked within the input box
+                if (CheckCollisionPointRec(GetMousePosition(), inputBox))
+                {
+                    editingText = true;
+                }
+                else
+                {
+                    editingText = false;
+                }
+            }
+
+            if (editingText)
+            {
+                int key = GetCharPressed();
+                int backspace = GetKeyPressed();
+                if (key >= 32 && key <= 125 && textSize < MAX_INPUT_CHARS)
+                {
+                    // Append character to inputText
+                    inputText[textSize] = (char)key;
+                    textSize++;
+                }
+                else if ((key == KEY_BACKSPACE || backspace == KEY_BACKSPACE) && textSize > 0)
+                {
+                    // Remove last character
+                    textSize--;
+                    inputText[textSize] = '\0';
+                }
+
+                // Finish editing by pressing Enter
+                if (IsKeyPressed(KEY_ENTER))
+                {
+                    editingText = false;
+                }
+            }
+            DrawText("Specify folder name containing saves", 190, 100, 20, BLACK);
+            DrawText("Saves folder must be in same folder as application: ", 190, 200, 20, BLACK);
+
+            // Draw the input box
+            DrawRectangleRec(inputBox, WHITE);
+            DrawRectangleLinesEx(inputBox, 2, editingText ? BLACK : DARKGRAY);
+
+            // Draw the text inside the input box
+            DrawText(inputText, inputBox.x + 10, inputBox.y + 10, 20, BLACK);
+
+            // Draw the blinking cursor
+            if (editingText)
+            {
+                DrawLine(inputBox.x + 8 + MeasureText(inputText, 20), inputBox.y + 15,
+                         inputBox.x + 8 + MeasureText(inputText, 20), inputBox.y + 25, BLACK);
+            }
+
+            // Draw the save button
+            DrawText("Save", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, BLACK);
+
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+                {
+                    save_file_data.saveDir = inputText;
+                    printf("Save directory changed to %s\n", save_file_data.saveDir);
+                    save_file_data.numSaves = 0;
+                    *save_file_data.saves_file_path = NULL;
+                    get_save_files(&save_file_data);
+                    current_screen = SCREEN_SETTINGS;
+                }
+            }
+
+            // add a back button
+            DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
+            if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+            {
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+                {
+                    current_screen = SCREEN_SETTINGS;
+                }
+            }
+            break;
         default:
             break;
         }
