@@ -72,15 +72,14 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
     }
 }
 
-void DrawTradeScreen(struct TrainerSelection trainerSelection[2], struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, bool *should_trade)
+void DrawTradeScreen(struct TrainerSelection trainerSelection[2], struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, bool *should_trade, int *current_screen)
 {
     DrawTrainerInfo(trainer1, 50, 50, trainerSelection);
     DrawTrainerInfo(trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection);
-    DrawRectangleLines(GetScreenWidth() / 2 - 50, GetScreenHeight() / 2 + 50, 100, 50, BLACK);
-    DrawText("Trade", GetScreenWidth() / 2 - 30, GetScreenHeight() / 2 + 65, 20, BLACK);
-    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){GetScreenWidth() / 2 - 50, GetScreenHeight() / 2 + 50, 100, 50}))
+    uint8_t canSubmitTrade = trainerSelection[0].pokemon_index != -1 && trainerSelection[1].pokemon_index != -1;
+    DrawText("Trade!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, canSubmitTrade ? BLACK : LIGHTGRAY);
+    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && canSubmitTrade)
     {
-        DrawRectangle(GetScreenWidth() / 2 - 50, GetScreenHeight() / 2 + 50, 100, 50, GRAY);
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             *should_trade = true;
@@ -89,5 +88,19 @@ void DrawTradeScreen(struct TrainerSelection trainerSelection[2], struct Trainer
     else
     {
         *should_trade = false;
+    }
+
+    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
+    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+    {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            *should_trade = false;
+            trainer1->trainer_id = 0;
+            trainer2->trainer_id = 0;
+            trainerSelection[0].pokemon_index = -1;
+            trainerSelection[1].pokemon_index = -1;
+            *current_screen = SCREEN_FILE_SELECT;
+        }
     }
 }

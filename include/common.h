@@ -3,6 +3,16 @@
 
 #include <pksav.h>
 
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 480
+
+#define BUTTON_WIDTH 100
+#define BUTTON_HEIGHT 75
+#define BACK_BUTTON_X 100
+#define BACK_BUTTON_Y SCREEN_HEIGHT - 50
+#define NEXT_BUTTON_X SCREEN_WIDTH - 200
+#define NEXT_BUTTON_Y SCREEN_HEIGHT - 50
+
 typedef int (*Error_Handler)(enum pksav_error, const char *);
 
 struct TrainerInfo
@@ -29,11 +39,14 @@ struct TrainerSelection
 
 typedef enum {
     SCREEN_FILE_SELECT,
-    SCREEN_TRADE
+    SCREEN_TRADE,
+    SCREEN_MAIN_MENU,
+    SCREEN_SETTINGS,
+    SCREEN_FILE_EDIT
 } GameScreen;
 
 struct SaveFileData {
-    const char* saveDir;
+    char *saveDir;
     char* saves_file_path[100];
     int numSaves;
 };
