@@ -65,6 +65,8 @@ int main(int argc, char *argv[])
             trainerSelection[1].pokemon_index = -1;
 
             swapPokemonAtIndexBetweenSaves(&save_player1, &save_player2, selected_index_trainer1, selected_index_trainer2);
+            updateSeenOwnedPokemon(&save_player1, selected_index_trainer1);
+            updateSeenOwnedPokemon(&save_player2, selected_index_trainer2);
             saveToFile(&save_player1, player1_save_path, &error_handler);
             saveToFile(&save_player2, player2_save_path, &error_handler);
         }
