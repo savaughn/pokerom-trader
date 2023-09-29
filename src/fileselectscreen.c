@@ -41,10 +41,6 @@ void DrawFileSelectScreen(struct pksav_gen2_save *save_player1, struct pksav_gen
 
         if (hasSelectedTwoSaves)
         {
-            printf("selected_saves_index[0]: %d\n", selected_saves_index[0]);
-            printf("selected_saves_index[1]: %d\n", selected_saves_index[1]);
-            printf("selected_saves_path[0]: %s\n", save_file_data->saves_file_path[selected_saves_index[0]]);
-            printf("selected_saves_path[1]: %s\n", save_file_data->saves_file_path[selected_saves_index[1]]);
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
                 if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))

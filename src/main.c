@@ -107,16 +107,21 @@ int main(int argc, char *argv[])
         case SCREEN_SETTINGS:
             DrawText("Settings", 190, 100, 20, BLACK);
             DrawText("Change Save Directory", 190, 200, 20, BLACK);
-            DrawText("Back", 190, 225, 20, BLACK);
+            DrawText("About Pokerom Trader", 190, 225, 20, BLACK);
+            DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
                 if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 200, 200, 20}))
                 {
                     current_screen = SCREEN_FILE_EDIT;
                 }
-                else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 220, 200, 20}))
+                else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
                 {
                     current_screen = SCREEN_MAIN_MENU;
+                }
+                else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 225, 200, 20}))
+                {
+                    current_screen = SCREEN_ABOUT;
                 }
             }
             break;
@@ -205,6 +210,26 @@ int main(int argc, char *argv[])
                 }
             }
             break;
+
+        case SCREEN_ABOUT:{
+            int x = 50;
+            DrawText("About Pokerom Trader", x, 100, 20, BLACK);
+            DrawText("Pokerom Trader is a tool for trading Pokemon between two save files", x, 200, 20, BLACK);
+            DrawText("written by github.com/savaughn 2023", x, 225, 20, BLACK);
+            DrawText("Pokerom Trader is open source and licensed under the MIT license", x, 250, 20, BLACK);
+            DrawText("Pokerom Trader uses the following libraries:", x, 300, 20, BLACK);
+            DrawText("raylib - https://www.raylib.com/", x, 325, 20, BLACK);
+            DrawText("pksav - https://github.com/ncorgan/pksav", x, 350, 20, BLACK);
+            DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+                {
+                    current_screen = SCREEN_SETTINGS;
+                }
+            }
+            break;
+        }
         default:
             break;
         }

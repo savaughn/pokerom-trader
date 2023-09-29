@@ -42,7 +42,8 @@ typedef enum {
     SCREEN_TRADE,
     SCREEN_MAIN_MENU,
     SCREEN_SETTINGS,
-    SCREEN_FILE_EDIT
+    SCREEN_FILE_EDIT,
+    SCREEN_ABOUT
 } GameScreen;
 
 struct SaveFileData {
