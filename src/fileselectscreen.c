@@ -83,4 +83,21 @@ void DrawFileSelectScreen(struct pksav_gen2_save *save_player1, struct pksav_gen
             save_player2 = NULL;
         }
     }
+
+    // change directory button between back and next buttons in line horizontally centered vertically
+    int button_width = MeasureText("Change Save Directory", 20) + 20;
+    DrawText("Change Save Directory", SCREEN_WIDTH / 2 - button_width / 2, BACK_BUTTON_Y, 20, BLACK);
+    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){SCREEN_WIDTH / 2 - button_width / 2 - 10, BACK_BUTTON_Y - 30, button_width, BUTTON_HEIGHT}))
+    {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            *current_screen = SCREEN_FILE_EDIT;
+            selected_saves_index[0] = -1;
+            selected_saves_index[1] = -1;
+            trainer1->trainer_id = 0;
+            trainer2->trainer_id = 0;
+            save_player1 = NULL;
+            save_player2 = NULL;
+        }
+    }
 }

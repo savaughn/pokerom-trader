@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     char inputText[MAX_INPUT_CHARS + 1] = "\0"; // Input text buffer
     int textSize = 0;                           // Current text size
 
-    Rectangle inputBox = {SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 20, 200, 40};
+    Rectangle inputBox = { 50, SCREEN_HEIGHT / 2 - 20, SCREEN_WIDTH - 100, 40};
     bool editingText = false; // Flag to indicate if the text is being edited
 
     while (!should_close_window && !WindowShouldClose())
@@ -121,6 +121,12 @@ int main(int argc, char *argv[])
             }
             break;
         case SCREEN_FILE_EDIT:
+            // Placeholder Text
+            if (!editingText && textSize == 0) {
+                strcpy(inputText, save_file_data.saveDir);
+                textSize = strlen(inputText);
+            }
+        
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
                 // Check if the mouse is clicked within the input box
@@ -157,8 +163,8 @@ int main(int argc, char *argv[])
                     editingText = false;
                 }
             }
-            DrawText("Specify folder name containing saves", 190, 100, 20, BLACK);
-            DrawText("Saves folder must be in same folder as application: ", 190, 200, 20, BLACK);
+            DrawText("Specify folder name containing saves", 50, SCREEN_HEIGHT / 2 - 75, 20, BLACK);
+            DrawText("relative to executable (e.g. \"../my_saves\" or \"saves\")", 50, SCREEN_HEIGHT / 2 - 50, 20, BLACK);
 
             // Draw the input box
             DrawRectangleRec(inputBox, WHITE);
@@ -175,14 +181,13 @@ int main(int argc, char *argv[])
             }
 
             // Draw the save button
-            DrawText("Save", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, BLACK);
+            DrawText("Save!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, textSize ? BLACK : LIGHTGRAY);
 
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
-                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && textSize > 0)
                 {
                     save_file_data.saveDir = inputText;
-                    printf("Save directory changed to %s\n", save_file_data.saveDir);
                     save_file_data.numSaves = 0;
                     *save_file_data.saves_file_path = NULL;
                     get_save_files(&save_file_data);
