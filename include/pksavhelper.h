@@ -14,5 +14,6 @@ void printParty(struct pksav_gen2_save *save);
 void swapPartyPokemonAtIndices(struct pksav_gen2_save *save, int pokemon_index1, int pokemon_index2);
 void swapPokemonAtIndexBetweenSaves(struct pksav_gen2_save *player1_save, struct pksav_gen2_save *player2_save, int selected_index1, int selected_index2);
 void create_trainer(struct pksav_gen2_save *save, struct TrainerInfo *trainer);
+void updateSeenOwnedPokemon(struct pksav_gen2_save *save, int pokemon_party_index);
 
 #endif /* PKSAVHELPER_H */

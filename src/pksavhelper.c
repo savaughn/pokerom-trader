@@ -8,6 +8,26 @@ int error_handler(enum pksav_error error, const char *message)
     exit(1);
 }
 
+void updateSeenOwnedPokemon(struct pksav_gen2_save *save, int pokemon_party_index)
+{
+    enum pksav_error err;
+    uint16_t pokemon_species = save->pokemon_storage.p_party->species[pokemon_party_index];
+
+    // update pokedex seen
+    err = pksav_set_pokedex_bit(save->pokedex_lists.p_seen, pokemon_species, true);
+    if (err != PKSAV_ERROR_NONE)
+    {
+        error_handler(err, "Error setting seen pokedex bit");
+    }
+
+    // update pokedex owned
+    err = pksav_set_pokedex_bit(save->pokedex_lists.p_owned, pokemon_species, true);
+    if (err != PKSAV_ERROR_NONE)
+    {
+        error_handler(err, "Error setting owned pokedex bit");
+    }
+}
+
 struct pksav_gen2_save loadSaveFromFile(const char *path, Error_Handler error_handler)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
