@@ -7,6 +7,8 @@
 
 Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the PKSav C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon and items between different save files or Pokémon game versions.
 
+This currently only support gen2 and I have personally only done crystal to crystal trades. Perfect crystal to crystal trades seems to be working too. There is no backup system implemented yet. Make backup saves before using this on your own personal files, because this is still very early stage and has not been thoroughly tested. 
+
 ## Discord
 https://discord.gg/JUzzegS3AP
 
