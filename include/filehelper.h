@@ -11,9 +11,6 @@
 extern char *resolvedPath;
 extern char *absolutePath;
 
-// Function to get the absolute path
-void getAbsolutePath(const char *basePath, const char *fileName);
-
 // Function to get save files in a directory
 void get_save_files(struct SaveFileData *save_data);
 

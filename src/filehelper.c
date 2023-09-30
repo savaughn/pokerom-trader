@@ -15,7 +15,7 @@ void get_save_files(struct SaveFileData *save_data)
 {
     DIR *dir;
     struct dirent *entry;
-    char saveDir[MAX_INPUT_CHARS + 1];
+    char saveDir[100];
     strcpy(saveDir, (char*)save_data->saveDir);
     int numSaves = 0;
 
