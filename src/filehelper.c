@@ -15,7 +15,8 @@ void get_save_files(struct SaveFileData *save_data)
 {
     DIR *dir;
     struct dirent *entry;
-    char *saveDir = save_data->saveDir;
+    char saveDir[MAX_INPUT_CHARS + 1];
+    strcpy(saveDir, (char*)save_data->saveDir);
     int numSaves = 0;
 
     char *executablePath = NULL;
@@ -40,7 +41,7 @@ void get_save_files(struct SaveFileData *save_data)
     // Get the absolute path
     absolutePath = realpath(saveDirPath, NULL);
     if (absolutePath) {
-        saveDir = absolutePath;
+        strcpy(saveDir, absolutePath);
     }
 
     dir = opendir(saveDir);

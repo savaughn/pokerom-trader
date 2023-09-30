@@ -28,7 +28,7 @@ void updateSeenOwnedPokemon(struct pksav_gen2_save *save, int pokemon_party_inde
     }
 }
 
-struct pksav_gen2_save loadSaveFromFile(const char *path, Error_Handler error_handler)
+struct pksav_gen2_save loadSaveFromFile(const char *path)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
 
@@ -159,7 +159,7 @@ void printTrainerData(struct pksav_gen2_save *save)
 //     pksav_text_from_gen2(save->pokemon_party->nicknames[pokemon_index], pokemon_name, 10);
 //     printf("Pokemon new name: %s\n", pokemon_name);
 // }
-void saveToFile(struct pksav_gen2_save *save, char *path, Error_Handler error_handler)
+void saveToFile(struct pksav_gen2_save *save, char *path)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
     err = pksav_gen2_save_save(path, save);
@@ -281,4 +281,20 @@ void create_trainer(struct pksav_gen2_save *save, struct TrainerInfo *trainer)
 
     // Update the trainer's pokemon party
     trainer->pokemon_party = save->pokemon_storage.p_party;
+}
+
+void createTrainerNameStr(struct TrainerInfo *trainer, char *trainer_name)
+{
+    strcpy(trainer_name, "NAME/");
+    strcat(trainer_name, trainer->trainer_name);
+    strcat(trainer_name, " ");
+    strcat(trainer_name, trainer->trainer_gender == PKSAV_GEN2_GENDER_FEMALE ? "F" : "M");
+}
+
+void createTrainerIdStr(struct TrainerInfo *trainer, char *trainer_id)
+{
+    char id_str[6];
+    strcpy(trainer_id, "IDNo ");
+    snprintf(id_str, sizeof(id_str), "%u", trainer->trainer_id); // "IDNo %u" loses 3 chars even with enough space?
+    strcat(trainer_id, id_str);
 }
