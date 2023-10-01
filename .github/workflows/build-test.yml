@@ -19,7 +19,9 @@ jobs:
     - name: Build pksav
       run: |
         cd deps/pksav/
-        cmake .
+        mkdir build
+        cd build
+        cmake ..
         make 
 
     - name: Build raylib
@@ -34,15 +36,15 @@ jobs:
     - name: Bundle Executable with Library
       run: |
         # Copy libpksav.dylib to the same directory as the executable
-        cp deps/pksav/lib/libpksav.dylib src/
+        cp deps/pksav/build/lib/libpksav.dylib src/
         
         # Update the library path in the executable
-        install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/pksav/lib/libpksav.dylib @executable_path/libpksav.dylib src/pokeromtrader
+        install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/pksav/build/lib/libpksav.dylib @executable_path/libpksav.dylib src/pokeromtrader
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: pokeromtrader.out  # Specify a name for your artifacts
+        name: pokeromtrader  # Specify a name for your artifacts
         path: src/  # Specify the directory containing your build artifacts
 
   bundle_macos_release:
@@ -57,14 +59,14 @@ jobs:
       # Download the build artifact from the 'build' job
       uses: actions/download-artifact@v2
       with:
-        name: pokeromtrader.out  # Specify the name of the build artifact
+        name: pokeromtrader  # Specify the name of the build artifact
 
     - name: Bundle macOS Release
       run: |
         # You can access the downloaded artifact in the current directory
         BUILD_DIR="build/macos"
         MACOS_DESTINATION="${BUILD_DIR}/PokeromTrader.app/Contents/MacOS"
-        APP_BUNDLE_EXECUTABLE="pokeromtrader"
+        APP_BUNDLE_EXECUTABLE="pokeromtrader.app"
         APP_BUNDLE_ID="com.yourcompany.pokeromtrader"
         APP_BUNDLE_NAME="PokeromTrader"
         INFO_PLIST="${BUILD_DIR}/PokeromTrader.app/Contents/Info.plist"

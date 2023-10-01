@@ -233,7 +233,7 @@ endif
 # Define include paths for required headers: INCLUDE_PATHS
 # NOTE: Some external/extras libraries could be required (stb, physac, easings...)
 #------------------------------------------------------------------------------------------------
-INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -Isrc/ -Ideps/pksav/include 
+INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -Isrc/ -Ideps/pksav/build/include -Ideps/pksav/include
 
 # Define additional directories containing required header files
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
@@ -255,7 +255,7 @@ endif
 
 # Define library paths containing required libs: LDFLAGS
 #------------------------------------------------------------------------------------------------
-LDFLAGS = -L. -L$(RAYLIB_RELEASE_PATH) -L$(RAYLIB_PATH)/src -Ldeps/pksav/lib
+LDFLAGS = -L. -L$(RAYLIB_RELEASE_PATH) -L$(RAYLIB_PATH)/src -Ldeps/pksav/build/lib
 
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),WINDOWS)
