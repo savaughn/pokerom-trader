@@ -15,17 +15,16 @@ https://discord.gg/JUzzegS3AP
 ## Getting Started
 Currently this only runs on MacOS M1s.
 
-You'll need to make the executable executable by running the following command in the directory where the executable is located:
-```bash
-chmod +x pokeromtrader
-```
-You'll need to allow the executable to run on your computer by going to System Preferences > Security & Privacy or by right clicking the executable and selecting "Open" for the first time for both the executable and the pksav library (libpksav.dylib). 
+Download the latest release from the [releases page](https://github.com/savaughn/pokerom-trader/releases).
 
-Default save files folder is located in the "saves" folder. You can change it by going to settings and giving the path to your save files folder relative to the executable.
+Put your folder containing your save somewhere with a short path such as your desktop, home folder, or documents folder.
+In the app, click settings on the main menu and select 'Change save directory'. Input the full path to the folder containing your save files.
+e.g. /Users/username/Documents/saves
 
+To execute, right click PokeromTrader.app and select "Open" to bypass the MacOS security warning.
 
 ## Contributing
-If you wish to build this project from source or contribute to the project, then follow the instructions below.
+If you wish to build this project from source or contribute to the project, then follow the instructions below. Tip: You can just copy/paste the entire block of commands into your terminal.
 ### Installation
 
    ```bash
@@ -36,10 +35,11 @@ If you wish to build this project from source or contribute to the project, then
    #### Build pksav dependency
 
    ```bash
-   cd deps/lpksav
-   cmake .
-   make
-   cd ..
+   cd deps/pksav
+   mkdir build && cd build
+   cmake ..
+   cmake --build .
+   cd ../..
    ```
 
    #### Build raylib dependency
@@ -47,7 +47,7 @@ If you wish to build this project from source or contribute to the project, then
    ```bash
    cd raylib/src
    make PLATFORM=PLATFORM_DESKTOP
-   cd ../..
+   cd ../../..
    ```
 
    #### Build Pokerom Trader
@@ -56,6 +56,11 @@ If you wish to build this project from source or contribute to the project, then
    make
    ```
 
+   #### Build and Run Pokerom Trader
+
+   ```bash
+   make launch
+   ```
 
 ## License
 

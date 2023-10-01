@@ -13,7 +13,8 @@
 *.a
 *.dylib
 
-build/
+build/*
+deps/pksav/build/
 obj/
 *.DS_Store
 src/pokeromtrader
