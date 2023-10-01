@@ -36,16 +36,17 @@ jobs:
     - name: Bundle Executable with Library
       run: |
         # Copy libpksav.dylib to the same directory as the executable
-        cp deps/pksav/build/lib/libpksav.dylib src/
+        cp deps/pksav/build/lib/libpksav.dylib build/
         
         # Update the library path in the executable
-        install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/pksav/build/lib/libpksav.dylib @executable_path/libpksav.dylib src/pokeromtrader
+        install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/pksav/build/lib/libpksav.dylib @rpath/libpksav.dylib build/pokeromtrader
+        install_name_tool -add_rpath @executable_path/../Frameworks build/pokeromtrader
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: pokeromtrader  # Specify a name for your artifacts
-        path: src/  # Specify the directory containing your build artifacts
+        name: pokeromtrader-artifacts  # Specify a name for your artifacts
+        path: build/  # Specify the directory containing your build artifacts
 
   bundle_macos_release:
     runs-on: macos-latest
@@ -59,27 +60,29 @@ jobs:
       # Download the build artifact from the 'build' job
       uses: actions/download-artifact@v2
       with:
-        name: pokeromtrader  # Specify the name of the build artifact
+        name: pokeromtrader-artifacts  # Specify the name of the build artifact
 
     - name: Bundle macOS Release
       run: |
         # You can access the downloaded artifact in the current directory
-        BUILD_DIR="build/macos"
-        MACOS_DESTINATION="${BUILD_DIR}/PokeromTrader.app/Contents/MacOS"
-        APP_BUNDLE_EXECUTABLE="pokeromtrader.app"
+        BUILD_DIR="build"
+        MACOS_DESTINATION="${BUILD_DIR}/macos/PokeromTrader.app/Contents/MacOS"
+        MACOS_FRAMEWORKS_DESTINATION="${BUILD_DIR}/macos/PokeromTrader.app/Contents/Frameworks"
+        APP_BUNDLE_EXECUTABLE="pokeromtrader"
         APP_BUNDLE_ID="com.yourcompany.pokeromtrader"
         APP_BUNDLE_NAME="PokeromTrader"
-        INFO_PLIST="${BUILD_DIR}/PokeromTrader.app/Contents/Info.plist"
+        INFO_PLIST="${BUILD_DIR}/macos/PokeromTrader.app/Contents/Info.plist"
         
         # Create the build directory if it doesn't exist
         mkdir -p "${BUILD_DIR}"
         
         # Create the directory structure
         mkdir -p "${MACOS_DESTINATION}"
-        mkdir -p "${BUILD_DIR}/PokeromTrader.app/Contents/Resources"
+        mkdir -p "${MACOS_FRAMEWORKS_DESTINATION}"
         
         # Copy the executable to the .app bundle
-        cp "pokeromtrader" "${MACOS_DESTINATION}/${APP_BUNDLE_EXECUTABLE}"
+        cp "${{ github.workspace }}/pokeromtrader" "${MACOS_DESTINATION}/pokeromtrader"
+        cp "${{ github.workspace }}/libpksav.dylib" "${MACOS_FRAMEWORKS_DESTINATION}/libpksav.dylib"
         
         # Create Info.plist file
         echo '<?xml version="1.0" encoding="UTF-8"?>' > "${INFO_PLIST}"
@@ -95,10 +98,12 @@ jobs:
         echo '</dict>' >> "${INFO_PLIST}"
         echo '</plist>' >> "${INFO_PLIST}"
         
-        # Make the executable executable
-        chmod +x "${MACOS_DESTINATION}/${APP_BUNDLE_EXECUTABLE}"
-        
         echo "macOS release bundle created"
+
+    - name: Make App Executable
+      run: |
+        chmod +x build/macos/PokeromTrader.app/Contents/MacOS/pokeromtrader
+      working-directory: ${{ github.workspace }}
 
     - name: Upload macOS Release
       uses: actions/upload-artifact@v2

@@ -410,19 +410,20 @@ endif
 # Default target entry
 # NOTE: We call this Makefile target or Makefile.Android target
 all:
+	@mkdir -p build
 	@$(MAKE) $(MAKEFILE_PARAMS) -s -B
 
         # Define the launch target to run the executable
 .PHONY: launch
 launch:
 ifeq ($(filter launch,$(MAKECMDGOALS)),launch)
-	$(MAKE) $(MAKEFILE_PARAMS) -s -B && ./src/$(PROJECT_NAME) $(EXT)
+	$(MAKE) $(MAKEFILE_PARAMS) -s -B && ./build/$(PROJECT_NAME) $(EXT)
 endif
 
     # Project target defined by PROJECT_NAME
 $(PROJECT_NAME): $(OBJS)
 	@echo "Building $(PROJECT_NAME)..."
-	$(CC) -o src/$(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
+	$(CC) -o build/$(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 	@echo "Build process completed successfully!"
 
 
@@ -463,7 +464,7 @@ $(OBJ)/%.o: $(SOURCE)/%.c
 
 # Define source file and executable name
 SOURCE = src/main.c
-EXECUTABLE = src/pokeromtrader
+EXECUTABLE = build/pokeromtrader
 BUILD_DIR = build/macos
 
 # Define App Properties
@@ -507,35 +508,35 @@ clean:
 # ## clean all
 # clean: clean-exe clean-build
 
-# bundle: all
-# 	@# Create the build directory if it doesn't exist
-# 	@mkdir -p "$(BUILD_DIR)"
+bundle: all
+	@# Create the build directory if it doesn't exist
+	@mkdir -p "$(BUILD_DIR)"
 	
-# 	@# Create the directory structure
-# 	@mkdir -p "$(MACOS_DESTINATION)"
-# 	@mkdir -p "$(MACOS_BUNDLE)/Contents/Resources"
+	@# Create the directory structure
+	@mkdir -p "$(MACOS_DESTINATION)"
+	@mkdir -p "$(BUILD_DIR)$(MACOS_BUNDLE)/Contents/Resources"
 	
-# 	@# Copy the executable to the .app bundle
-# 	@cp "$(EXECUTABLE)" "$(MACOS_DESTINATION)/$(APP_BUNDLE_EXECUTABLE)"
+	@# Copy the executable to the .app bundle
+	@cp "$(EXECUTABLE)" "$(MACOS_DESTINATION)/$(APP_BUNDLE_EXECUTABLE)"
 	
-# 	@# Create Info.plist file
-# 	@echo '<?xml version="1.0" encoding="UTF-8"?>' > "$(INFO_PLIST)"
-# 	@echo '<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> "$(INFO_PLIST)"
-# 	@echo '<plist version="1.0">' >> "$(INFO_PLIST)"
-# 	@echo '<dict>' >> "$(INFO_PLIST)"
-# 	@echo '    <key>CFBundleExecutable</key>' >> "$(INFO_PLIST)"
-# 	@echo '    <string>$(APP_BUNDLE_EXECUTABLE)</string>' >> "$(INFO_PLIST)"
-# 	@echo '    <key>CFBundleIdentifier</key>' >> "$(INFO_PLIST)"
-# 	@echo '    <string>$(APP_BUNDLE_ID)</string>' >> "$(INFO_PLIST)"
-# 	@echo '    <key>CFBundleName</key>' >> "$(INFO_PLIST)"
-# 	@echo '    <string>$(APP_BUNDLE_NAME)</string>' >> "$(INFO_PLIST)"
-# 	@echo '</dict>' >> "$(INFO_PLIST)"
-# 	@echo '</plist>' >> "$(INFO_PLIST)"
+	@# Create Info.plist file
+	@echo '<?xml version="1.0" encoding="UTF-8"?>' > "$(INFO_PLIST)"
+	@echo '<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> "$(INFO_PLIST)"
+	@echo '<plist version="1.0">' >> "$(INFO_PLIST)"
+	@echo '<dict>' >> "$(INFO_PLIST)"
+	@echo '    <key>CFBundleExecutable</key>' >> "$(INFO_PLIST)"
+	@echo '    <string>$(APP_BUNDLE_EXECUTABLE)</string>' >> "$(INFO_PLIST)"
+	@echo '    <key>CFBundleIdentifier</key>' >> "$(INFO_PLIST)"
+	@echo '    <string>$(APP_BUNDLE_ID)</string>' >> "$(INFO_PLIST)"
+	@echo '    <key>CFBundleName</key>' >> "$(INFO_PLIST)"
+	@echo '    <string>$(APP_BUNDLE_NAME)</string>' >> "$(INFO_PLIST)"
+	@echo '</dict>' >> "$(INFO_PLIST)"
+	@echo '</plist>' >> "$(INFO_PLIST)"
 	
-# 	@# Make the executable executable
-# 	@chmod +x "$(MACOS_DESTINATION)/$(APP_BUNDLE_EXECUTABLE)"
+	@# Make the executable executable
+	@chmod +x "$(MACOS_DESTINATION)/$(APP_BUNDLE_EXECUTABLE)"
 	
-# 	@echo "$(MACOS_BUNDLE) bundle created"
+	@echo "$(MACOS_BUNDLE) bundle created"
 
 # .DEFAULT:
 # 	@echo "Nothing to do. Please specify a target (e.g., 'make run')."
