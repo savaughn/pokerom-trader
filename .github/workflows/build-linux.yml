@@ -1,0 +1,52 @@
+name: Build and Bundle Ubuntu
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_x64:
+    if: false  # This workflow is disabled
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake make
+        # Add any other dependencies you need here
+
+    - name: Build pksav
+      run: |
+        cd deps/pksav/
+        mkdir build
+        cd build
+        cmake ..
+        make 
+
+    - name: Build raylib
+      run: |
+        cd deps/raylib/src/
+        make PLATFORM=PLATFORM_DESKTOP
+
+    - name: Build Project
+      run: |
+        make all
+
+    - name: Bundle Executable with Library
+      run: |
+        # Copy libpksav.so to the same directory as the executable
+        cp deps/pksav/build/lib/libpksav.so build/
+
+        # Update the library path in the executable
+        patchelf --set-rpath '$ORIGIN/../lib' build/pokeromtrader
+
+    - name: Publish Build Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: pokeromtrader-artifacts  # Specify a name for your artifacts
+        path: build/  # Specify the directory containing your build artifacts
