@@ -1,22 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "filehelper.h"
+#ifdef _WIN32
+#else
 #include <dirent.h>
 #include <unistd.h>
-#include "filehelper.h"
-#include <libgen.h> // For dirname function
+#include <libgen.h>      // For dirname function
 #include <mach-o/dyld.h> // For _NSGetExecutablePath function
+#endif
 
 char *resolvedPath = NULL;
 char *absolutePath = NULL;
+#ifdef _WIN32
+void get_save_files(struct SaveFileData *save_data)
+{
+}
 
+#else
 // This will only work on macOS
 void get_save_files(struct SaveFileData *save_data)
 {
     DIR *dir;
     struct dirent *entry;
     char saveDir[100];
-    strcpy(saveDir, (char*)save_data->saveDir);
+    strcpy(saveDir, (char *)save_data->saveDir);
     int numSaves = 0;
 
     char *executablePath = NULL;
@@ -40,7 +48,8 @@ void get_save_files(struct SaveFileData *save_data)
 
     // Get the absolute path
     absolutePath = realpath(saveDirPath, NULL);
-    if (absolutePath) {
+    if (absolutePath)
+    {
         strcpy(saveDir, absolutePath);
     }
 
@@ -63,7 +72,8 @@ void get_save_files(struct SaveFileData *save_data)
 
             // Get the absolute path
             absolutePath = realpath(fullPath, NULL);
-            if (absolutePath) {
+            if (absolutePath)
+            {
                 save_data->saves_file_path[numSaves] = absolutePath;
                 numSaves++;
             }
@@ -75,7 +85,10 @@ void get_save_files(struct SaveFileData *save_data)
     free(saveDirPath);
 }
 
-void free_filehelper_pointers(void) {
+#endif
+
+void free_filehelper_pointers(void)
+{
     free(resolvedPath);
     free(absolutePath);
 }

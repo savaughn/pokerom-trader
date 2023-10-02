@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_x64:
-    if: false  # This workflow is disabled
+    # if: false  # This workflow is disabled
     runs-on: windows-latest
 
     steps:
