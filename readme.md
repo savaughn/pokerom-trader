@@ -9,11 +9,24 @@ Pokerom Trader is an open-source project that simplifies the process of trading 
 
 This currently only support gen2 and I have personally only done crystal to crystal trades. Perfect crystal to crystal trades seems to be working too. There is no backup system implemented yet. Make backup saves before using this on your own personal files, because this is still very early stage and has not been thoroughly tested. 
 
+## What's working
+- Gen 1 to Gen 1
+- Gen 2 to Gen 2
+- Platform: MacOS
+
+## What's not working
+- Gen 1 to Gen 2
+- Gen 2 to Gen 1
+- Trade Evolutions
+- Mail
+- See [issues tab](https://github.com/savaughn/pokerom-trader/issues) for current bugs 
+- Platform: Windows and linux
+
 ## Discord
 https://discord.gg/JUzzegS3AP
 
 ## Getting Started
-Currently this only runs on MacOS M1s.
+Currently this only runs on MacOS.
 
 Download the latest release from the [releases page](https://github.com/savaughn/pokerom-trader/releases).
 
