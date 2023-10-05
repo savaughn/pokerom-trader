@@ -485,7 +485,7 @@ MACOS_DESTINATION = $(BUILD_DIR)/$(MACOS_BUNDLE)/Contents/MacOS
 INFO_PLIST = $(BUILD_DIR)/$(MACOS_BUNDLE)/Contents/Info.plist
 
 # Define mGBA path and save file
-ROM_PATH = $(realpath saves)
+ROM_PATH = $(realpath build/saves)
 ROM_FILE = pk-crystal.gbc
 
 

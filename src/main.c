@@ -3,6 +3,7 @@
 #include "common.h"
 #include "filehelper.h"
 #include "raylibhelper.h"
+#include "pksavhelper.h"
 
 #define MAX_INPUT_CHARS 40
 
@@ -10,8 +11,8 @@ int main(int argc, char *argv[])
 {
     char player1_save_path[100];
     char player2_save_path[100];
-    struct pksav_gen2_save save_player1;
-    struct pksav_gen2_save save_player2;
+    PokemonSave pokemon_save_player1;
+    PokemonSave pokemon_save_player2;
     struct SaveFileData save_file_data;
     strcpy((char *)save_file_data.saveDir, "saves");
 
@@ -34,8 +35,8 @@ int main(int argc, char *argv[])
         trainerSelection,
         player1_save_path,
         player2_save_path,
-        &save_player1,
-        &save_player2);
+        &pokemon_save_player1,
+        &pokemon_save_player2);
 
     free_filehelper_pointers();
 

@@ -19,20 +19,16 @@
 
 typedef int (*Error_Handler)(enum pksav_error, const char *);
 
-struct TrainerInfo
-{
-    char trainer_name[8];
-    uint16_t trainer_id;
-    uint8_t trainer_gender;
-    uint8_t trainer_badges[2];
-    struct pksav_gen2_pokemon_party *pokemon_party;
+union PokemonPartyData {
+    struct pksav_gen1_pokemon_party gen1_pokemon_party;
+    struct pksav_gen2_pokemon_party gen2_pokemon_party;
 };
 
 typedef enum
 {
     EBadge_Region_Johto,
     EBadge_Region_Kanto
-} BadgeRegion;
+} BadgeRegionGen2;
 
 struct TrainerSelection
 {
@@ -54,6 +50,34 @@ struct SaveFileData {
     char *saveDir[MAX_INPUT_CHARS + 1];
     char* saves_file_path[100];
     int numSaves;
+};
+
+typedef enum
+{
+    SAVE_GENERATION_NONE,
+    SAVE_GENERATION_1,
+    SAVE_GENERATION_2
+} SaveGenerationType;
+
+typedef union
+{
+    struct pksav_gen1_save gen1_save;
+    struct pksav_gen2_save gen2_save;
+} SaveGeneration;
+
+typedef struct {
+    SaveGenerationType save_generation_type;
+    SaveGeneration save;
+} PokemonSave;
+
+struct TrainerInfo
+{
+    char trainer_name[8];
+    uint16_t trainer_id;
+    uint8_t trainer_gender;
+    uint8_t trainer_badges[2];
+    union PokemonPartyData pokemon_party;
+    SaveGenerationType trainer_generation;
 };
 
 #endif // COMMON_H
