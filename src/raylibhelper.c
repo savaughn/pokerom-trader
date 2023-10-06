@@ -27,12 +27,12 @@ void PokemonButton(Rectangle rect, int index, char *pokemon_nickname)
 
     DrawText(pokemon_nickname, rect.x + 10, rect.y + 6, 20, selected ? LIGHTGRAY : BLACK);
 }
-void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2])
+void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool showGender)
 {
     SaveGenerationType trainer_generation = trainer->trainer_generation;
     
     char trainer_name[15];
-    createTrainerNameStr(trainer, trainer_name);
+    createTrainerNameStr(trainer, trainer_name, showGender);
     char trainer_id[11];
     createTrainerIdStr(trainer, trainer_id);
     int current_trainer_index = trainerSelection[0].trainer_id == trainer->trainer_id ? 0 : trainerSelection[1].trainer_id == trainer->trainer_id ? 1
@@ -372,8 +372,8 @@ void DrawTradeScreen(PokemonSave *save_player1, PokemonSave *save_player2, char 
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    DrawTrainerInfo(trainer1, 50, 50, trainerSelection);
-    DrawTrainerInfo(trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection);
+    DrawTrainerInfo(trainer1, 50, 50, trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+    DrawTrainerInfo(trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection, save_player2->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
     uint8_t canSubmitTrade = trainerSelection[0].pokemon_index != -1 && trainerSelection[1].pokemon_index != -1;
     DrawText("Trade!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, canSubmitTrade ? BLACK : LIGHTGRAY);
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && canSubmitTrade)

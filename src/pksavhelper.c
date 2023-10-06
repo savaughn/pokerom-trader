@@ -213,9 +213,13 @@ void printTrainerData(struct pksav_gen2_save *save)
     uint16_t trainer_id = pksav_bigendian16(*save->trainer_info.p_id);
     printf("Trainer ID: %u\n", trainer_id);
 
-    // print trainer gender
-    uint8_t trainer_gender = *save->trainer_info.p_gender;
-    printf("Trainer Gender: %s\n", trainer_gender ? "F" : "M");
+    // Gender is only in Crystal and later games
+    if (save->save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL)
+    {
+        // print trainer gender
+        uint8_t trainer_gender = *save->trainer_info.p_gender;
+        printf("Trainer Gender: %s\n", trainer_gender ? "F" : "M");
+    }
 
     // print trainer badges
     printTrainerBadges(save);
@@ -380,6 +384,7 @@ void swapPokemonAtIndexBetweenSaves(PokemonSave *player1_save, PokemonSave *play
 void create_trainer(PokemonSave *pokemon_save, struct TrainerInfo *trainer)
 {
     SaveGenerationType save_generation_type = pokemon_save->save_generation_type;
+
     switch (save_generation_type)
     {
         case SAVE_GENERATION_1:
@@ -408,18 +413,16 @@ void create_trainer(PokemonSave *pokemon_save, struct TrainerInfo *trainer)
             char trainer_name[8];
             pksav_gen2_import_text(pokemon_save->save.gen2_save.trainer_info.p_name, trainer_name, 7);
 
-            // Trainer Id
-            uint16_t trainer_id = pksav_bigendian16(*pokemon_save->save.gen2_save.trainer_info.p_id);
-
-            // Trainer Gender
-            uint8_t trainer_gender = *pokemon_save->save.gen2_save.trainer_info.p_gender;
-
             // Update the trainer struct
             strcpy(trainer->trainer_name, trainer_name);
-            trainer->trainer_id = trainer_id;
-            trainer->trainer_gender = trainer_gender;
+            trainer->trainer_id = pksav_bigendian16(*pokemon_save->save.gen2_save.trainer_info.p_id);
             trainer->trainer_badges[EBadge_Region_Johto] = *pokemon_save->save.gen2_save.trainer_info.p_johto_badges;
             trainer->trainer_badges[EBadge_Region_Kanto] = *pokemon_save->save.gen2_save.trainer_info.p_kanto_badges;
+            // Trainer Gender (Crystal and later games only)
+            if (pokemon_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL)
+            {
+                trainer->trainer_gender = *pokemon_save->save.gen2_save.trainer_info.p_gender;
+            }
 
             // Update the trainer's pokemon party
             trainer->pokemon_party.gen2_pokemon_party = *pokemon_save->save.gen2_save.pokemon_storage.p_party;
@@ -429,11 +432,11 @@ void create_trainer(PokemonSave *pokemon_save, struct TrainerInfo *trainer)
     }
 }
 
-void createTrainerNameStr(struct TrainerInfo *trainer, char *trainer_name)
+void createTrainerNameStr(struct TrainerInfo *trainer, char *trainer_name, bool showGender)
 {
     strcpy(trainer_name, "NAME/");
     strcat(trainer_name, trainer->trainer_name);
-    if (trainer->trainer_generation == SAVE_GENERATION_2)
+    if (trainer->trainer_generation == SAVE_GENERATION_2 && showGender)
     {
         strcat(trainer_name, " ");
         strcat(trainer_name, trainer->trainer_gender == PKSAV_GEN2_GENDER_FEMALE ? "F" : "M");
