@@ -389,7 +389,7 @@ void create_trainer(PokemonSave *pokemon_save, struct TrainerInfo *trainer)
             pksav_gen1_import_text(pokemon_save->save.gen1_save.trainer_info.p_name, trainer_name, 7);
 
             // Trainer Id
-            uint16_t trainer_id = pksav_bigendian16(pokemon_save->save.gen1_save.trainer_info.p_id);
+            uint16_t trainer_id = pksav_bigendian16(*pokemon_save->save.gen1_save.trainer_info.p_id);
 
             // Update the trainer struct
             strcpy(trainer->trainer_name, trainer_name);
