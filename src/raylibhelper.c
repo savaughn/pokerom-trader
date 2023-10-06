@@ -30,7 +30,7 @@ void PokemonButton(Rectangle rect, int index, char *pokemon_nickname)
 void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool showGender)
 {
     SaveGenerationType trainer_generation = trainer->trainer_generation;
-    
+
     char trainer_name[15];
     createTrainerNameStr(trainer, trainer_name, showGender);
     char trainer_id[11];
@@ -63,7 +63,7 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
         {
             pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[i], pokemon_nickname, 10);
         }
-        
+
         PokemonButton((Rectangle){x - 10, y + 70 + (i * 30), 200, 30}, i, pokemon_nickname);
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x - 10, y + 70 + (i * 30), 200, 30}) && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
         {
@@ -261,6 +261,7 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
 {
     static int selected_saves_index[2] = {-1, -1};
     bool hasSelectedTwoSaves = selected_saves_index[0] != -1 && selected_saves_index[1] != -1;
+    static bool isSameGeneration = true;
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
@@ -270,7 +271,7 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
         DrawText(TextFormat("No save files found in save folder %s/", save_file_data->saveDir), 190, 250, 20, BLACK);
     }
 
-    DrawText("Select two save files to trade between", 190, 100, 20, BLACK);
+    DrawText("Select two save files of the same generation to trade between", SCREEN_WIDTH/ 2 - MeasureText("Select two save files of the same generation to trade between", 20)/2, 100, 20, BLACK);
     for (int i = 0; i < save_file_data->numSaves; i++)
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
@@ -297,11 +298,18 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
         }
         char *save_name = strrchr(save_file_data->saves_file_path[i], '/');
         save_name++;
-
         DrawText(save_name, 190, 200 + 25 * i, 20, (selected_saves_index[0] == i || selected_saves_index[1] == i) ? LIGHTGRAY : BLACK);
-        DrawText("Trade >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, hasSelectedTwoSaves ? BLACK : LIGHTGRAY);
 
-        if (hasSelectedTwoSaves)
+        // Reset generation check
+        if (!isSameGeneration)
+        {
+            isSameGeneration = selected_saves_index[1] == -1;
+        }
+
+        DrawText("Trade >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, hasSelectedTwoSaves && isSameGeneration ? BLACK : LIGHTGRAY);
+        if (!isSameGeneration) DrawText("Cross-gen trades are not yet supported", NEXT_BUTTON_X - 125, NEXT_BUTTON_Y + 25, 15, RED);
+
+        if (hasSelectedTwoSaves && isSameGeneration)
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
@@ -309,7 +317,7 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
                 {
                     // load selection to player1_save
                     *pokemon_save_player1 = loadSaveFromFile(save_file_data->saves_file_path[selected_saves_index[0]]);
-                    
+
                     // save the selected path name
                     strcpy(player1_save_path, save_file_data->saves_file_path[selected_saves_index[0]]);
                     // generate trainer info from save
@@ -322,8 +330,13 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
                     strcpy(player2_save_path, save_file_data->saves_file_path[selected_saves_index[1]]);
                     create_trainer(pokemon_save_player2, trainer2);
                     trainerSelection[1].trainer_id = trainer2->trainer_id;
-                    
-                    current_screen = SCREEN_TRADE;
+
+                    if (pokemon_save_player1->save_generation_type != pokemon_save_player2->save_generation_type)
+                    {
+                        isSameGeneration = false;
+                    } else {
+                        current_screen = SCREEN_TRADE;
+                    }
                 }
             }
         }
