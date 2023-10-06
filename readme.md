@@ -1,26 +1,17 @@
 # Pokerom Trader - Pokémon Save File Trading GUI
 
-![file select screen](https://github.com/savaughn/pokerom-trader/assets/25937456/77095008-ae24-4a1c-9045-5a818d0046ec)
+![file select screen](https://user-images.githubusercontent.com/25937456/273107563-1e773463-417a-4865-ace6-80958c2d0d3b.png)
 ![Pokerom Trader](https://github.com/savaughn/pokerom-trader/assets/25937456/c55aa92e-24ef-4ddf-931c-44c58d384621)
 
 ## Overview
 
-Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the PKSav C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon and items between different save files or Pokémon game versions.
+Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the PKSav C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon between different save files or Pokémon game versions.
 
 There is no backup system implemented yet. Make backup saves before using this on your own personal files, because this is still very early stage and has not been thoroughly tested. 
 
 Perfect Crystal save files seem to work.
 
 ## What's working
-<style>
-  .green {
-    color: green;
-  }
-
-  .red {
-    color: red;
-  }
-</style>
 
 |      | Red  | Blue | Yellow | Gold | Silver | Crystal |
 |------|------|------|--------|------|--------|---------|
@@ -40,25 +31,15 @@ https://discord.gg/JUzzegS3AP
 
 ## Getting Started
 
-<style>
-  .red {
-    color: red;
-  }
-
-  .green {
-    color: green;
-  }
-</style>
-
 | Platform          | Compatibility   |
 |-------------------|-----------------|
-| Windows           | <span class="red">&#10007;</span>  |
-| Linux             | <span class="red">&#10007;</span>   |
-| MacOS x86_64      | <span class="green">&#10003;</span>   |
-| MacOS arm64       | <span class="green">&#10003;</span>   |
-| iOS               | <span class="red">&#10007;</span>  |
-| Android           | <span class="red">&#10007;</span>  |
-| Nintendo Switch   | <span class="red">&#10007;</span>  |
+| Windows           | ❌ |
+| Linux             | ❌ |
+| MacOS x86_64      | ✅  |
+| MacOS arm64       | ✅  |
+| iOS               | ❌  |
+| Android           | ❌  |
+| Nintendo Switch   | ❌  |
 
 
 Download the latest release from the [releases page](https://github.com/savaughn/pokerom-trader/releases).
