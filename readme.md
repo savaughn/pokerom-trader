@@ -7,26 +7,59 @@
 
 Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the PKSav C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon and items between different save files or Pokémon game versions.
 
-This currently only support gen2 and I have personally only done crystal to crystal trades. Perfect crystal to crystal trades seems to be working too. There is no backup system implemented yet. Make backup saves before using this on your own personal files, because this is still very early stage and has not been thoroughly tested. 
+There is no backup system implemented yet. Make backup saves before using this on your own personal files, because this is still very early stage and has not been thoroughly tested. 
+
+Perfect Crystal save files seem to work.
 
 ## What's working
-- Gen 1 to Gen 1
-- Gen 2 to Gen 2
-- Platform: MacOS
+<style>
+  .green {
+    color: green;
+  }
+
+  .red {
+    color: red;
+  }
+</style>
+
+|      | Red  | Blue | Yellow | Gold | Silver | Crystal |
+|------|------|------|--------|------|--------|---------|
+| Red  | ✅  | ✅  | ✅      | ❌  | ❌     | ❌      |
+| Blue | ✅  | ✅   | ✅      | ❌  | ❌     | ❌     |
+| Yellow | ✅  | ✅   | ✅      | ❌  | ❌    | ❌     |
+| Gold | ❌  | ❌   | ❌     | ✅  | ✅     | ✅      |
+| Silver | ❌  | ❌   | ❌      | ✅  | ✅     | ✅      |
+| Crystal | ❌  | ❌   | ❌      | ✅  | ✅     | ✅      |
+
 
 ## What's not working
-- Gen 1 to Gen 2
-- Gen 2 to Gen 1
-- Trade Evolutions
-- Mail
 - See [issues tab](https://github.com/savaughn/pokerom-trader/issues) for current bugs 
-- Platform: Windows and linux
 
 ## Discord
 https://discord.gg/JUzzegS3AP
 
 ## Getting Started
-Currently this only runs on MacOS.
+
+<style>
+  .red {
+    color: red;
+  }
+
+  .green {
+    color: green;
+  }
+</style>
+
+| Platform          | Compatibility   |
+|-------------------|-----------------|
+| Windows           | <span class="red">&#10007;</span>  |
+| Linux             | <span class="red">&#10007;</span>   |
+| MacOS x86_64      | <span class="green">&#10003;</span>   |
+| MacOS arm64       | <span class="green">&#10003;</span>   |
+| iOS               | <span class="red">&#10007;</span>  |
+| Android           | <span class="red">&#10007;</span>  |
+| Nintendo Switch   | <span class="red">&#10007;</span>  |
+
 
 Download the latest release from the [releases page](https://github.com/savaughn/pokerom-trader/releases).
 
