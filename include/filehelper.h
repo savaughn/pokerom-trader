@@ -12,9 +12,13 @@ extern char *resolvedPath;
 extern char *absolutePath;
 
 // Function to get save files in a directory
-void get_save_files(struct SaveFileData *save_data);
+int get_save_files(struct SaveFileData *save_data);
 
 // free global pointers
 void free_filehelper_pointers(void);
+
+void write_key_to_config(char *key, char *value);
+char *read_key_from_config(char *key);
+char *get_absolute_path(char *path);
 
 #endif /* FILEHELPER_H */

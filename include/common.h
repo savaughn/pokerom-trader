@@ -15,7 +15,7 @@
 #define NEXT_BUTTON_Y SCREEN_HEIGHT - 50
 
 // File Edit Screen text input box
-#define MAX_INPUT_CHARS 40
+#define MAX_INPUT_CHARS 100
 
 typedef int (*Error_Handler)(enum pksav_error, const char *);
 
