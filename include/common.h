@@ -14,6 +14,8 @@
 #define NEXT_BUTTON_X SCREEN_WIDTH - 200
 #define NEXT_BUTTON_Y SCREEN_HEIGHT - 50
 
+#define SHOW_BILLS_PC 0
+
 // File Edit Screen text input box
 #define MAX_INPUT_CHARS 1001
 
@@ -43,7 +45,9 @@ typedef enum {
     SCREEN_MAIN_MENU,
     SCREEN_SETTINGS,
     SCREEN_FILE_EDIT,
-    SCREEN_ABOUT
+    SCREEN_ABOUT,
+    SCREEN_BILLS_PC_FILE_SELECT,
+    SCREEN_BILLS_PC
 } GameScreen;
 
 struct SaveFileData {
