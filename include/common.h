@@ -14,10 +14,18 @@
 #define NEXT_BUTTON_X SCREEN_WIDTH - 200
 #define NEXT_BUTTON_Y SCREEN_HEIGHT - 50
 
+#define SHOW_BILLS_PC 0
+
 // File Edit Screen text input box
 #define MAX_INPUT_CHARS 1001
 
 typedef int (*Error_Handler)(enum pksav_error, const char *);
+
+enum single_player_menu_types {
+    SINGLE_PLAYER_MENU_TYPE_EVOLVE,
+    SINGLE_PLAYER_MENU_TYPE_BILLS_PC,
+    SINGLE_PLAYER_MENU_TYPE_EXIT
+};
 
 union PokemonPartyData {
     struct pksav_gen1_pokemon_party gen1_pokemon_party;
@@ -43,7 +51,11 @@ typedef enum {
     SCREEN_MAIN_MENU,
     SCREEN_SETTINGS,
     SCREEN_FILE_EDIT,
-    SCREEN_ABOUT
+    SCREEN_ABOUT,
+    SCREEN_BILLS_PC_FILE_SELECT,
+    SCREEN_BILLS_PC,
+    SCREEN_EVOLVE_FILE_SELECT,
+    SCREEN_EVOLVE
 } GameScreen;
 
 struct SaveFileData {

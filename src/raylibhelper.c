@@ -275,8 +275,10 @@ void DrawMainMenuScreen(struct SaveFileData *save_file_data)
     ClearBackground(background_color);
     DrawText("Main Menu", 190, 100, 20, BLACK);
     DrawText("Trade", 190, 200, 20, BLACK);
-    DrawText("Settings", 190, 225, 20, BLACK);
-    DrawText("Quit", 190, 250, 20, BLACK);
+    if(SHOW_BILLS_PC) DrawText("Bill's PC", 190, 300, 20, BLACK);
+    DrawText("Evolve", 190, 225, 20, BLACK);
+    DrawText("Settings", 190, 250, 20, BLACK);
+    DrawText("Quit", 190, 275, 20, BLACK);
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 200, 200, 20}))
@@ -285,13 +287,23 @@ void DrawMainMenuScreen(struct SaveFileData *save_file_data)
             no_dir_err = err;
             current_screen = SCREEN_FILE_SELECT;
         }
-        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 225, 200, 20}))
+        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 250, 200, 20}))
         {
             current_screen = SCREEN_SETTINGS;
         }
-        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 250, 200, 20}))
+        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 275, 200, 20}))
         {
             should_close_window = true;
+        }
+        else if (SHOW_BILLS_PC && CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 300, 200, 20}))
+        {
+            get_save_files(save_file_data);
+            current_screen = SCREEN_BILLS_PC_FILE_SELECT;
+        }
+        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 225, 200, 20}))
+        {
+            get_save_files(save_file_data);
+            current_screen = SCREEN_EVOLVE_FILE_SELECT;
         }
     }
     EndDrawing();
@@ -476,7 +488,153 @@ void DrawTradeScreen(PokemonSave *save_player1, PokemonSave *save_player2, char 
 
     EndDrawing();
 }
+// Draw Bill's PC for moving PC pokemon to party or between boxes
+void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, PokemonSave *save_player1, char *player1_save_path, struct TrainerInfo *trainer1, struct TrainerSelection *trainerSelection, enum single_player_menu_types menu_type)
+{
+        
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+    
+    // select a save file
+    static int selected_saves_index = -1;
+    bool hasSelectedSave = selected_saves_index != -1;
 
+    if (save_file_data->numSaves == 0)
+    {
+        get_save_files(save_file_data);
+        DrawText(TextFormat("No save files found in save folder %s/", save_file_data->saveDir), 190, 250, 20, BLACK);
+    }
+    if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC) DrawText("Select a save file to access Bill's PC", 190, 100, 20, BLACK);
+    if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE) DrawText("Select a save file to access your party", 190, 100, 20, BLACK);
+    for (int i = 0; i < save_file_data->numSaves; i++)
+    {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 200 + 25 * i, SCREEN_WIDTH / 2, 25}))
+            {
+                if (selected_saves_index == i)
+                {
+                    selected_saves_index = -1;
+                }
+                else if (selected_saves_index == -1)
+                {
+                    selected_saves_index = i;
+                }
+                printf("selected_saves_index: %d\n", selected_saves_index);
+            }
+        }
+        char *save_name = strrchr(save_file_data->saves_file_path[i], '/');
+        save_name++;
+
+        DrawText(save_name, 190, 200 + 25 * i, 20, (selected_saves_index == i) ? LIGHTGRAY : BLACK);
+        if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC) DrawText("Open Bill's PC >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, hasSelectedSave ? BLACK : LIGHTGRAY);
+        if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE) DrawText("Open Party >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, hasSelectedSave ? BLACK : LIGHTGRAY);
+
+        if (hasSelectedSave)
+        {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+                {
+                    if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC) current_screen = SCREEN_BILLS_PC;
+                    if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE) current_screen = SCREEN_EVOLVE;
+                    // load selection to player1_save
+                    *save_player1 = loadSaveFromFile(save_file_data->saves_file_path[selected_saves_index]);
+                    // save the selected path name
+                    strcpy(player1_save_path, save_file_data->saves_file_path[selected_saves_index]);
+                    // generate trainer info from save
+                    create_trainer(save_player1, trainer1);
+                    // save trainer id to trainerSelection
+                    trainerSelection->trainer_id = trainer1->trainer_id;
+                }
+            }
+        }
+    }
+
+    if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC) DrawText("Bill's PC", 50, 50, 20, BLACK);
+    if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE) DrawText("Trade Evolve", 50, 50, 20, BLACK);
+    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
+    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+    {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            current_screen = SCREEN_MAIN_MENU;
+        }
+    }
+
+    EndDrawing();
+}
+
+void DrawBillsPCScreen(PokemonSave *save_player1, char *player1_save_path, struct TrainerInfo *trainer1, struct TrainerSelection *trainerSelection)
+{
+    // Update
+    int selected_index_trainer1 = trainerSelection->pokemon_index;
+    int save_generation = save_player1->save_generation_type;
+
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+    DrawText("Bill's PC", 50, 50, 20, BLACK);
+
+    DrawTrainerInfo(trainer1, 50, 100, &trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+
+    // Draw a veritcal box to the right of the trainer info
+    // labeled box n where n is the box number
+    // filled with a list of pokemon names from that box
+    // drawn arrows buttons right and left cycle through boxes
+    // draw the arrow buttons on the left and right of the box number
+    DrawRectangleLines(400, 100, 200, 300, BLACK);
+    DrawText("Box 1", 400, 100, 20, BLACK);
+    DrawText("<", 400, 150, 20, BLACK);
+    DrawText(">", 600, 150, 20, BLACK);
+    
+    struct pksav_gen1_pokemon_box *pokemon_box_gen1;
+    struct pksav_gen2_pokemon_box *pokemon_box_gen2;
+    int box_pokemon_count = 0;
+    if (save_generation == SAVE_GENERATION_1)
+    {
+        pokemon_box_gen1 = save_player1->save.gen1_save.pokemon_storage.p_current_box;
+        box_pokemon_count = pokemon_box_gen1->count;
+    } 
+    else
+    {
+        pokemon_box_gen2 = save_player1->save.gen2_save.pokemon_storage.p_current_box;
+        box_pokemon_count = pokemon_box_gen2->count;
+    }
+
+    // list pokemon in the box using PokemonButton
+    for (int i = 0; i < box_pokemon_count; i++)
+    {
+        char pokemon_nickname[11];
+        if (save_generation == SAVE_GENERATION_1)
+        {
+            pksav_gen1_import_text(pokemon_box_gen1->nicknames[i], pokemon_nickname, 10);
+        }
+        else
+        {
+            pksav_gen2_import_text(pokemon_box_gen2->nicknames[i], pokemon_nickname, 10);
+        }
+        PokemonButton((Rectangle){400, 200 + (i * 30), 200, 30}, i, pokemon_nickname);
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){400, 200 + (i * 30), 200, 30}) && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+        {
+            trainerSelection->pokemon_index = i;
+        }
+    }
+
+
+
+    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
+    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+    {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            trainer1->trainer_id = 0;
+            trainerSelection->pokemon_index = -1;
+            current_screen = SCREEN_MAIN_MENU;
+        }
+    }
+
+    EndDrawing();
+}
 void DrawRaylibScreenLoop(
     struct SaveFileData *save_file_data,
     struct TrainerInfo *trainer1,
@@ -514,14 +672,29 @@ void DrawRaylibScreenLoop(
         case SCREEN_FILE_EDIT:
             DrawFileEditScreen(save_file_data);
             break;
+        case SCREEN_BILLS_PC_FILE_SELECT:
+            DrawSinglePlayerFileSelectScreen(save_file_data, pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_BILLS_PC);
+            break;
+        case SCREEN_BILLS_PC:
+            DrawBillsPCScreen(pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0]);
+            break;
+        case SCREEN_EVOLVE_FILE_SELECT:
+            DrawSinglePlayerFileSelectScreen(save_file_data, pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_EVOLVE);
+            break;
+        case SCREEN_EVOLVE:
+            DrawBillsPCScreen(pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0]);
+            break;
         case SCREEN_ABOUT:
         {
             DrawAboutScreen();
             break;
         }
         default:
+            BeginDrawing();
+            ClearBackground(background_color);
             DrawText("Something went wrong", 190, 100, 20, BLACK);
             DrawText("Press ESC to exit", 190, 125, 20, BLACK);
+            EndDrawing();
             break;
         }
     }
