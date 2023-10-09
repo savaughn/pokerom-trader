@@ -5,8 +5,6 @@
 #include "raylibhelper.h"
 #include "pksavhelper.h"
 
-#define MAX_INPUT_CHARS 40
-
 int main(int argc, char *argv[])
 {
     char player1_save_path[100];
@@ -14,7 +12,16 @@ int main(int argc, char *argv[])
     PokemonSave pokemon_save_player1;
     PokemonSave pokemon_save_player2;
     struct SaveFileData save_file_data;
-    strcpy((char *)save_file_data.saveDir, "saves");
+    char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
+    if (config_save_path != NULL)
+    {
+        strcpy((char *)save_file_data.saveDir, config_save_path);
+    } else {
+        strcpy((char *)save_file_data.saveDir, "DIR_NOT_SET");
+    }
+
+    // malloc'd from read_key_from_config
+    free(config_save_path);
 
     // create trainers
     struct TrainerInfo trainer1 = {

@@ -2,6 +2,11 @@
 #include "raylib.h"
 #include "common.h"
 
+#define SCREEN_WIDTH_TEXT_CENTER(text, size) (SCREEN_WIDTH / 2 - MeasureText(text, size) / 2)
+#define SCREEN_HEIGHT_TEXT_CENTER(size) (SCREEN_HEIGHT / 2 - size / 2)
+#define SCREEN_CENTER(text, size) (Vector2){SCREEN_WIDTH_TEXT_CENTER(text, size), SCREEN_HEIGHT_TEXT_CENTER(size)}
+
+
 void DrawAboutScreen(void);
 void DrawFileEditScreen(struct SaveFileData *save_file_data);
 void DrawSettingsScreen(void);

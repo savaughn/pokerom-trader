@@ -15,7 +15,7 @@
 #define NEXT_BUTTON_Y SCREEN_HEIGHT - 50
 
 // File Edit Screen text input box
-#define MAX_INPUT_CHARS 40
+#define MAX_INPUT_CHARS 1001
 
 typedef int (*Error_Handler)(enum pksav_error, const char *);
 
@@ -47,7 +47,7 @@ typedef enum {
 } GameScreen;
 
 struct SaveFileData {
-    char *saveDir[MAX_INPUT_CHARS + 1];
+    char *saveDir[MAX_INPUT_CHARS];
     char* saves_file_path[100];
     int numSaves;
 };
