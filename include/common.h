@@ -19,6 +19,38 @@
 // File Edit Screen text input box
 #define MAX_INPUT_CHARS 1001
 
+//Generation 1 Pokémon that evolve through trade
+#define KADABRA 64
+#define MACHOKE 67
+#define GRAVELER 75
+#define HAUNTER 93
+
+// Bitmask for Generation 1 Pokémon that evolve through trade
+#define GEN1_BITMASK ((1ULL << KADABRA) | (1ULL << MACHOKE) | (1ULL << GRAVELER) | (1ULL << HAUNTER))
+
+// Generation 2 Pokémon that evolve through trade with specific items
+#define SCIZOR 212
+#define POLITOED 186
+#define SLOWKING 199
+#define STEELIX 208
+#define PORYGON2 233
+#define KINGDRA 230
+
+// Items required for evolution
+#define METAL_COAT 69
+#define KING_ROCK 221
+#define DRAGON_SCALE 88
+#define UP_GRADE 88
+#define DRAGON_SCALE 108
+
+typedef struct {
+    int species;
+    int item;
+} EvolutionCondition;
+
+// Bitmask for Generation 2 Pokémon that evolve through trade with specific items
+#define GEN2_BITMASK ((1ULL << SCIZOR) | (1ULL << POLITOED) | (1ULL << SLOWKING) | (1ULL << STEELIX) | (1ULL << PORYGON2) | (1ULL << KINGDRA))
+
 typedef int (*Error_Handler)(enum pksav_error, const char *);
 
 enum single_player_menu_types {
