@@ -44,9 +44,7 @@ https://discord.gg/JUzzegS3AP
 
 Download the latest release from the [releases page](https://github.com/savaughn/pokerom-trader/releases).
 
-Put your folder containing your save somewhere with a short path such as your desktop, home folder, or documents folder.
-In the app, click settings on the main menu and select 'Change save directory'. Input the full path to the folder containing your save files.
-e.g. /Users/username/Documents/saves
+Default saves folder is located ~/Library/PokeromTrader/saves. You can change this in the settings menu.
 
 To execute, right click PokeromTrader.app and select "Open" to bypass the MacOS security warning.
 
