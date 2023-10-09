@@ -1,6 +1,7 @@
 #include "raylibhelper.h"
 #include "filehelper.h"
 #include "pksavhelper.h"
+#include <sys/errno.h>
 
 const Rectangle input_box_rec = (Rectangle){50, SCREEN_HEIGHT / 2 - 20, SCREEN_WIDTH - 100, 40};
 const Color background_color = RAYWHITE;
@@ -116,11 +117,18 @@ void DrawAboutScreen(void)
 void DrawFileEditScreen(struct SaveFileData *save_file_data)
 {
     static bool editingText = false;
+    static char inputText[MAX_INPUT_CHARS] = "\0";
     static int textSize = 0;
-    static char inputText[MAX_INPUT_CHARS + 1] = "\0";
+    static bool hasShownPlaceholder = false;
+    static bool hasPressedClear = false;
+    static int err = 0;
+    char *input_text_backup[MAX_INPUT_CHARS];
+
+    textSize = strlen(inputText);
+    strcpy(input_text_backup, (char *)save_file_data->saveDir);
 
     // Placeholder Text
-    if (!editingText && textSize == 0)
+    if (!editingText && textSize == 0 && !hasShownPlaceholder)
     {
         strcpy(inputText, (char *)save_file_data->saveDir);
         textSize = strlen(inputText);
@@ -141,6 +149,7 @@ void DrawFileEditScreen(struct SaveFileData *save_file_data)
 
     if (editingText)
     {
+        hasShownPlaceholder = true;
         int key = GetCharPressed();
         int backspace = GetKeyPressed();
         if (key >= 32 && key <= 125 && textSize < MAX_INPUT_CHARS)
@@ -166,7 +175,6 @@ void DrawFileEditScreen(struct SaveFileData *save_file_data)
     BeginDrawing();
     ClearBackground(background_color);
     DrawText("Specify folder name containing saves", 50, SCREEN_HEIGHT / 2 - 75, 20, BLACK);
-    DrawText("absolute path to executable (e.g. \"../my_saves\" or \"saves\")", 50, SCREEN_HEIGHT / 2 - 50, 20, BLACK);
 
     // Draw the input box
     DrawRectangleRec(input_box_rec, WHITE);
@@ -174,6 +182,25 @@ void DrawFileEditScreen(struct SaveFileData *save_file_data)
 
     // Draw the text inside the input box
     DrawText(inputText, input_box_rec.x + 10, input_box_rec.y + 10, 20, BLACK);
+
+    Rectangle clear_button_rec = (Rectangle) {SCREEN_WIDTH- MeasureText("Clear input", 20) + 10 - 70, input_box_rec.y + 25 + input_box_rec.height - 5, MeasureText("Clear input", 20) + 10, 30};
+    DrawRectangleRec(clear_button_rec, RED);
+    DrawText("Clear input", clear_button_rec.x +5, clear_button_rec.y + 5, 20, WHITE);
+
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        if (CheckCollisionPointRec(GetMousePosition(), clear_button_rec) && textSize > 0)
+        {
+            // Clear the input text
+            memset(inputText, 0, sizeof(inputText));
+
+            textSize = 0;
+            editingText = true;
+            hasShownPlaceholder = true;
+            err = 0;
+            hasPressedClear = true;
+        }
+    }
 
     // Draw the blinking cursor
     if (editingText)
@@ -184,18 +211,22 @@ void DrawFileEditScreen(struct SaveFileData *save_file_data)
 
     // Draw the save button
     DrawText("Save!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, textSize ? BLACK : LIGHTGRAY);
-
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && textSize > 0)
         {
-            write_key_to_config("SAVE_FILE_DIR", inputText);
-            strcpy((char *)save_file_data->saveDir, inputText);
-            save_file_data->numSaves = 0;
-            *save_file_data->saves_file_path = NULL;
-            current_screen = SCREEN_SETTINGS;
+            err = write_key_to_config("SAVE_FILE_DIR", inputText);
+            if (err == 0) 
+            {
+                strcpy((char *)save_file_data->saveDir, inputText);
+                save_file_data->numSaves = 0;
+                *save_file_data->saves_file_path = NULL;
+                current_screen = SCREEN_SETTINGS;
+            }
         }
     }
+
+    if (err == 1) DrawText(TextFormat("error writing config %d", errno), 50, 50, 20, BLACK);
 
     // add a back button
     DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
@@ -203,6 +234,11 @@ void DrawFileEditScreen(struct SaveFileData *save_file_data)
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
+            if (hasPressedClear)
+            {
+                strcpy(inputText, input_text_backup);
+            }
+            hasPressedClear = false;
             current_screen = SCREEN_SETTINGS;
         }
     }
@@ -275,7 +311,8 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
         } else {
             DrawText("No save files found in save folder", 190, 200, 20, BLACK);
         }
-        DrawText(TextFormat("%s", save_file_data->saveDir), 190, 275, 20, BLACK);
+        char *save_dir = save_file_data->saveDir;
+        DrawText(TextFormat("%s", save_dir), SCREEN_CENTER(save_dir, 20).x, 275, 20, BLACK);
     }
     else
     {

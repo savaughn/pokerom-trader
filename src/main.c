@@ -17,10 +17,11 @@ int main(int argc, char *argv[])
     {
         strcpy((char *)save_file_data.saveDir, config_save_path);
     } else {
-        char *default_save_dir = get_absolute_path(".");
-        strcat(default_save_dir, "/saves");
-        strcpy((char *)save_file_data.saveDir, default_save_dir);
+        strcpy((char *)save_file_data.saveDir, "DIR_NOT_SET");
     }
+
+    // malloc'd from read_key_from_config
+    free(config_save_path);
 
     // create trainers
     struct TrainerInfo trainer1 = {

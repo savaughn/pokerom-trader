@@ -1,13 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "filehelper.h"
 #ifdef _WIN32
 #else
-#include <dirent.h>
 #include <unistd.h>
-#include <libgen.h>      // For dirname function
-#include <mach-o/dyld.h> // For _NSGetExecutablePath function
+#include <sys/errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #endif
 
 char *resolvedPath = NULL;
@@ -19,55 +16,13 @@ void get_save_files(struct SaveFileData *save_data)
 
 #else
 
-char *get_absolute_path(char *path)
-{
-    char *_absolutePath = NULL;
-    char *_executablePath = NULL;
-    uint32_t size = 0;
-    int result = 0;
-
-    // Get the path of the executable
-    result = _NSGetExecutablePath(NULL, &size);
-    if (result == -1)
-    {
-        _executablePath = malloc(size);
-        result = _NSGetExecutablePath(_executablePath, &size);
-    }
-
-    // Get the directory of the executable
-    char *executableDir = dirname(_executablePath);
-
-    // Combine the executable directory and save directory
-    char *saveDirPath = malloc(strlen(executableDir) + 1 + strlen(path) + 1);
-    sprintf(saveDirPath, "%s/%s", executableDir, path);
-
-    // Get the absolute path
-    _absolutePath = realpath(saveDirPath, NULL);
-    free(saveDirPath);
-    if (_absolutePath)
-    {
-        return _absolutePath;
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
-// This will only work on macOS
 int get_save_files(struct SaveFileData *save_data)
 {
     DIR *dir;
     struct dirent *entry;
-    char saveDir[100];
+    char saveDir[MAX_FILE_PATH_CHAR];
     strcpy(saveDir, (char *)save_data->saveDir);
     int numSaves = 0;
-
-    absolutePath = get_absolute_path(saveDir);
-    if (absolutePath)
-    {
-        strcpy(saveDir, absolutePath);
-    }
 
     dir = opendir(saveDir);
     if (dir == NULL)
@@ -102,92 +57,118 @@ int get_save_files(struct SaveFileData *save_data)
     return 0;
 }
 
-void write_key_to_config(char *key, char *value)
+int write_key_to_config(char *key, char *value)
 {
+    // Open config.ini
     FILE *fp;
-    char *configPath = get_absolute_path("config.ini");
-    printf("Writing %s=%s to %s\n", key, value, configPath);
-    fp = fopen(configPath, "a");
+    char *config_path[MAX_FILE_PATH_CHAR];
+    strcpy(config_path, getenv("HOME"));
+    strcat(config_path, "/Library/PokeromTrader/config.ini");
+
+    fp = fopen(config_path, "w");
     if (fp == NULL)
     {
-        printf("Error opening file!\n");
-        exit(1);
+        printf("Error opening file! %d\n", errno);
+        return 1;
     }
+
     // if key already exists, overwrite it
     char *key_value = read_key_from_config(key);
-    printf("key_value: %s\n", key_value);
     if (key_value != NULL)
     {
+        // If there's no change in value
         if (strcmp(key_value, value) == 0)
         {
             printf("Key %s already exists with value %s, not overwriting...\n", key, value);
             fclose(fp);
-            return;
+            return 0;
         }
+
+        // Overwriting with new key value
         printf("Key %s already exists, overwriting...\n", key);
-        fclose(fp);
-        fp = fopen(configPath, "r+");
-        char *line = NULL;
-        size_t len = 0;
-        ssize_t read;
-        char *new_file_contents = malloc(100);
-        new_file_contents[0] = '\0';
-        while ((read = getline(&line, &len, fp)) != -1)
-        {
-            char *token = strtok(line, "=");
-            if (strcmp(token, key) == 0)
-            {
-                char *new_line = malloc(strlen(key) + strlen(value) + 2);
-                sprintf(new_line, "%s=%s", key, value);
-                strcat(new_file_contents, new_line);
-            }
-            else
-            {
-                strcat(new_file_contents, line);
-            }
-        }
-        fclose(fp);
-        fp = fopen(configPath, "w");
-        fputs(new_file_contents, fp);
+        fputs(key_value, fp);
 
         fclose(fp);
-        free(new_file_contents);
-        free(line);
     }
     else
     {
         fprintf(fp, "%s=%s", key, value);
         fclose(fp);
     }
+    free(key_value);
+    return 0;
+}
+
+void create_config()
+{
+    FILE *fp;
+    char cwd[MAX_FILE_PATH_CHAR];
+
+    // Get current working dir
+    strcpy(cwd, getenv("HOME"));
+
+    // create directory PokeromTrader
+    char *dir_path = "/Library/PokeromTrader";
+    strcat(cwd, dir_path);
+    int status = mkdir(cwd, 0777);
+    if (status == -1)
+    {
+        printf("Error %d creating directory!\n", errno);
+        if (errno != 17) exit(errno);
+    }
+
+    // create saves folder
+    char saves_dir[MAX_FILE_PATH_CHAR];
+    strcpy(saves_dir, cwd);
+    strcat(saves_dir, "/saves");
+    status = mkdir(saves_dir, 0777);
+    if (status == -1)
+    {
+        puts("Error creating saves directory");
+        exit(errno);
+    }
+
+    // create config.ini file in cwd
+    strcat(cwd, "/config.ini");
+    fp = fopen(cwd, "a");
+
+    if (fp == NULL)
+    {
+        printf("Error %d creating file!\n", errno);
+        exit(errno);
+    }
+
+    // Write default key value to new config.ini
+    char *default_key[MAX_FILE_PATH_CHAR];
+    strcpy(default_key, "SAVE_FILE_DIR=");
+    strcat(default_key, saves_dir);
+    fputs(default_key, fp);
+
+    fclose(fp);
 }
 
 char *read_key_from_config(char *key)
 {
     FILE *fp;
-    char *configPath = get_absolute_path("config.ini");
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
     char *value = NULL;
 
-    printf("Reading %s from %s\n", key, configPath);
+    char config_path[MAX_FILE_PATH_CHAR];
+    strcpy(config_path, getenv("HOME"));
+    strcat(config_path, "/Library/PokeromTrader/config.ini");
 
-    fp = fopen(configPath, "r");
+    fp = fopen(config_path, "r");
+
+    // If missing, then create
     if (fp == NULL)
     {
-        // create the file if it doesn't exist
-        char *configPath = get_absolute_path(".");
-        strcat(configPath, "/config.ini");
-        fp = fopen(configPath, "w");
-        if (fp == NULL)
-        {
-            printf("Error creating file!\n");
-            exit(1);
-        }
-        char *default_save_dir = get_absolute_path(".");
-        strcat(default_save_dir, "/saves");
-        write_key_to_config("SAVE_FILE_DIR", default_save_dir);
         fclose(fp);
+        create_config();
+
+        // open after creation
+        fp = fopen(config_path, "r");
     }
 
     while ((read = getline(&line, &len, fp)) != -1)
