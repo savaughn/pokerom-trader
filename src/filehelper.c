@@ -125,7 +125,7 @@ void create_config()
     if (status == -1)
     {
         puts("Error creating saves directory");
-        exit(errno);
+        if (errno != 17) exit(errno);
     }
 
     // create config.ini file in cwd
