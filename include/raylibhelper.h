@@ -15,6 +15,7 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
 void DrawTradeScreen(PokemonSave *save_player1, PokemonSave *save_player2, char *player1_save_path, char *player2_save_path, struct TrainerSelection trainerSelection[2], struct TrainerInfo *trainer1, struct TrainerInfo *trainer2);
 void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, PokemonSave *save_player1, char *player1_save_path, struct TrainerInfo *trainer1, struct TrainerSelection *trainerSelection, enum single_player_menu_types menu_type);
 void DrawBillsPCScreen(PokemonSave *save_player1, char *player1_save_path, struct TrainerInfo *trainer1, struct TrainerSelection *trainerSelection);
+void DrawTradeEvolveScreen(PokemonSave *save_player1, char *save_path, struct TrainerInfo *trainer1);
 void DrawRaylibScreenLoop(
     struct SaveFileData *save_file_data,
     struct TrainerInfo *trainer1,
