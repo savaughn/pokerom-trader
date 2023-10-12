@@ -40,37 +40,49 @@ typedef struct {
 } EvolutionCondition;
 
 // Generation 1 Pokémon data
-static const struct pksav_gen1_party_pokemon alakazam = {
+static const struct pksav_gen1_party_pokemon alakazam_base_stats = {
     .party_data = {
         .max_hp = 55,
         .atk = 50,
         .def = 45,
         .spd = 120,
         .spcl = 135,
+    },
+    .pc_data = {
+        .catch_rate = 50,
+        .types = {PKSAV_GEN1_TYPE_PSYCHIC, PKSAV_GEN1_TYPE_PSYCHIC}
     }
 };
 
-static const struct pksav_gen1_party_pokemon machamp = {
+static const struct pksav_gen1_party_pokemon machamp_base_stats = {
     .party_data = {
         .max_hp = 90,
         .atk = 130,
         .def = 80,
         .spd = 55,
         .spcl = 65,
+    },
+    .pc_data = {
+        .catch_rate = 45,
+        .types = {PKSAV_GEN1_TYPE_FIGHTING, PKSAV_GEN1_TYPE_FIGHTING}
     }
 };
 
-static const struct pksav_gen1_party_pokemon golem = {
+static const struct pksav_gen1_party_pokemon golem_base_stats = {
     .party_data = {
         .max_hp = 80,
         .atk = 110,
         .def = 130,
         .spd = 45,
         .spcl = 55,
+    },
+    .pc_data = {
+        .catch_rate = 45,
+        .types = {PKSAV_GEN1_TYPE_ROCK, PKSAV_GEN1_TYPE_GROUND}
     }
 };
 
-static const struct pksav_gen1_party_pokemon gengar_base = {
+static const struct pksav_gen1_party_pokemon gengar_base_stats = {
     .party_data = {
         .max_hp = 60,
         .atk = 65,
@@ -80,6 +92,7 @@ static const struct pksav_gen1_party_pokemon gengar_base = {
     },
     .pc_data = {
         .catch_rate = 45,
+        .types = {PKSAV_GEN1_TYPE_GHOST, PKSAV_GEN1_TYPE_POISON}
     }
 };
 

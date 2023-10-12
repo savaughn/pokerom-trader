@@ -592,7 +592,7 @@ void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, Pokem
 
     EndDrawing();
 }
-void DrawTradeEvolveScreen(PokemonSave *pokemon_save, char *save_path)
+void DrawEvolveScreen(PokemonSave *pokemon_save, char *save_path)
 {
     // Call rng
     generateRandomNumberStep();
@@ -666,6 +666,7 @@ void DrawTradeEvolveScreen(PokemonSave *pokemon_save, char *save_path)
     if (selected_index != -1)
         DrawText(selected_nickname, NEXT_BUTTON_X, SCREEN_HEIGHT_TEXT_CENTER(20), 20, BLACK);
 
+    // No eligible pokemon message
     if (eligible_pokemon_count == 0)
     {
         const char *no_pkmn = "No pokemon eligible for trade evolution";
@@ -679,6 +680,8 @@ void DrawTradeEvolveScreen(PokemonSave *pokemon_save, char *save_path)
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             evolve_party_pokemon_at_index(pokemon_save, selected_index);
+            // Update pokedex
+            updateSeenOwnedPokemon(pokemon_save, selected_index);
             saveToFile(pokemon_save, save_path);
         }
     }
@@ -809,7 +812,7 @@ void DrawRaylibScreenLoop(
             DrawSinglePlayerFileSelectScreen(save_file_data, pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_EVOLVE);
             break;
         case SCREEN_EVOLVE:
-            DrawTradeEvolveScreen(pokemon_save_player1, player1_save_path);
+            DrawEvolveScreen(pokemon_save_player1, player1_save_path);
             break;
         case SCREEN_ABOUT:
         {
