@@ -175,24 +175,6 @@ static const struct pksav_gen2_party_pokemon kingdra = {
     }
 };
 
-struct EvolutionPair {
-    int baseSpecies;
-    int evolutionSpecies;
-};
-
-static const struct EvolutionPair evolutionPairs[] = {
-    {KADABRA, ALAKAZAM},
-    {MACHOKE, MACHAMP},
-    {GRAVELER, GOLEM},
-    {HAUNTER, GENGAR},
-    {SCIZOR, SCIZOR},
-    {STEELIX, STEELIX},
-    {POLITOED, POLITOED},
-    {SLOWKING, SLOWKING},
-    {PORYGON2, PORYGON2},
-    {SEADRA, KINGDRA}
-};
-
 int error_handler(enum pksav_error error, const char *message);
 void swapPartyPokemonAtIndices(struct pksav_gen2_save *save, int pokemon_index1, int pokemon_index2); // TODO: Update for cross-generation
 void swapPokemonAtIndexBetweenSaves(PokemonSave *player1_save, PokemonSave *player2_save, int selected_index1, int selected_index2);

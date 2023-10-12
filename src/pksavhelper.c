@@ -455,7 +455,6 @@ void evolve_party_pokemon_at_index(PokemonSave *pokemon_save, int pokemon_index)
         switch (species)
         {
         case KADABRA:
-            pokemon_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_index] = (uint8_t)ALAKAZAM;
             if (strcmp(pokemon_name, "KADABRA") == 0)
             {
                 pksav_gen1_export_text("ALAKAZAM", pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index], 10);
@@ -464,7 +463,6 @@ void evolve_party_pokemon_at_index(PokemonSave *pokemon_save, int pokemon_index)
             generate_pkmn_evolution(pokemon_save, pokemon_index, alakazam_base_stats, ALAKAZAM);
             break;
         case MACHOKE:
-            pokemon_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_index] = MACHAMP;
             if (strcmp(pokemon_name, "MACHOKE") == 0)
             {
                 pksav_gen1_export_text("MACHAMP", pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index], 10);
@@ -473,7 +471,6 @@ void evolve_party_pokemon_at_index(PokemonSave *pokemon_save, int pokemon_index)
             generate_pkmn_evolution(pokemon_save, pokemon_index, machamp_base_stats, MACHAMP);
             break;
         case GRAVELER:
-            pokemon_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_index] = GOLEM;
             if (strcmp(pokemon_name, "GRAVELER") == 0)
             {
                 pksav_gen1_export_text("GOLEM", pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index], 10);
@@ -497,6 +494,7 @@ void evolve_party_pokemon_at_index(PokemonSave *pokemon_save, int pokemon_index)
     }
     else
     {
+        // TODO: Implement trade evolutions for gen 2
         int species = pokemon_save->save.gen2_save.pokemon_storage.p_party->species[pokemon_index];
         char pokemon_name[11];
         pksav_gen2_import_text(pokemon_save->save.gen2_save.pokemon_storage.p_party->nicknames[pokemon_index], pokemon_name, 10);
