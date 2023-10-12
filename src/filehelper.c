@@ -57,7 +57,7 @@ int get_save_files(struct SaveFileData *save_data)
     return 0;
 }
 
-int write_key_to_config(char *key, char *value)
+int write_key_to_config(const char *key, const char *value)
 {
     // Open config.ini
     FILE *fp;
@@ -99,7 +99,7 @@ int write_key_to_config(char *key, char *value)
     return 0;
 }
 
-void create_config()
+void create_config(void)
 {
     FILE *fp;
     char cwd[MAX_FILE_PATH_CHAR];
@@ -108,7 +108,7 @@ void create_config()
     strcpy(cwd, getenv("HOME"));
 
     // create directory PokeromTrader
-    char *dir_path = "/Library/PokeromTrader";
+    const char *dir_path = "/Library/PokeromTrader";
     strcat(cwd, dir_path);
     int status = mkdir(cwd, 0777);
     if (status == -1)
@@ -147,7 +147,7 @@ void create_config()
     fclose(fp);
 }
 
-char *read_key_from_config(char *key)
+char *read_key_from_config(const char *key)
 {
     FILE *fp;
     char *line = NULL;
