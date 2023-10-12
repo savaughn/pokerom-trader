@@ -18,7 +18,7 @@ int get_save_files(struct SaveFileData *save_data);
 
 // free global pointers
 void free_filehelper_pointers(void);
-int write_key_to_config(char *key, char *value);
-char *read_key_from_config(char *key);
+int write_key_to_config(const char *key, const char *value);
+char *read_key_from_config(const char *key);
 
 #endif /* FILEHELPER_H */

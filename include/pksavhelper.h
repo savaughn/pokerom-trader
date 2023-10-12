@@ -77,6 +77,9 @@ static const struct pksav_gen1_party_pokemon gengar_base = {
         .def = 60,
         .spd = 110,
         .spcl = 130,
+    },
+    .pc_data = {
+        .catch_rate = 45,
     }
 };
 
@@ -178,12 +181,6 @@ static const struct EvolutionPair evolutionPairs[] = {
 };
 
 int error_handler(enum pksav_error error, const char *message);
-PokemonSave loadSaveFromFile(const char *path);
-void printTrainerBadges(struct pksav_gen2_save *save);  // TODO: Update for cross-generation
-void printTrainerData(struct pksav_gen2_save *save);    // TODO: Update for cross-generation
-void saveToFile(PokemonSave *save, char *path);
-void printPartyPokemonAtIndex(struct pksav_gen2_save *save, int pokemon_index); // TODO: Update for cross-generation
-void printParty(struct pksav_gen2_save *save);          // TODO: Update for cross-generation
 void swapPartyPokemonAtIndices(struct pksav_gen2_save *save, int pokemon_index1, int pokemon_index2); // TODO: Update for cross-generation
 void swapPokemonAtIndexBetweenSaves(PokemonSave *player1_save, PokemonSave *player2_save, int selected_index1, int selected_index2);
 void create_trainer(PokemonSave *save, struct TrainerInfo *trainer);
