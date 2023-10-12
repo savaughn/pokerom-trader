@@ -337,12 +337,12 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
         bool hasSelectedTwoSaves = selected_saves_index[0] != -1 && selected_saves_index[1] != -1;
         static bool isSameGeneration = true;
 
-        DrawText("Select two save files of the same generation to trade between", SCREEN_WIDTH / 2 - MeasureText("Select two save files of the same generation to trade between", 20) / 2, 100, 20, BLACK);
+        DrawText("Select two save files of the same generation to trade between", SCREEN_WIDTH / 2 - MeasureText("Select two save files of the same generation to trade between", 20) / 2, 25, 20, BLACK);
         for (int i = 0; i < save_file_data->numSaves; i++)
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
-                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 200 + 25 * i, SCREEN_WIDTH / 2, 25}))
+                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 75 + 25 * i, SCREEN_WIDTH / 2, 25}))
                 {
                     if (selected_saves_index[0] == i)
                     {
@@ -364,7 +364,7 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
             }
             char *save_name = strrchr(save_file_data->saves_file_path[i], '/');
             save_name++;
-            DrawText(save_name, 190, 200 + 25 * i, 20, (selected_saves_index[0] == i || selected_saves_index[1] == i) ? LIGHTGRAY : BLACK);
+            DrawText(save_name, 190, 75 + 25 * i, 20, (selected_saves_index[0] == i || selected_saves_index[1] == i) ? LIGHTGRAY : BLACK);
 
             // Reset generation check
             if (!isSameGeneration)
@@ -508,17 +508,19 @@ void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, Pokem
     if (save_file_data->numSaves == 0)
     {
         get_save_files(save_file_data);
-        DrawText(TextFormat("No save files found in save folder %s/", save_file_data->saveDir), 190, 250, 20, BLACK);
+        char *save_dir = save_file_data->saveDir;
+        DrawText("No save files found in save folder", SCREEN_WIDTH_TEXT_CENTER("No save files found in save folder", 20), 200, 20, BLACK);
+        DrawText(TextFormat("%s/", save_dir), SCREEN_WIDTH_TEXT_CENTER(save_dir, 20), 250, 20, BLACK);
     }
     if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC)
-        DrawText("Select a save file to access Bill's PC", 190, 100, 20, BLACK);
+        DrawText("Select a save file to access Bill's PC", 190, 25, 20, BLACK);
     if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE)
-        DrawText("Select a save file to access your party", 190, 100, 20, BLACK);
+        DrawText("Select a save file to access your party", 190, 25, 20, BLACK);
     for (int i = 0; i < save_file_data->numSaves; i++)
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 200 + 25 * i, SCREEN_WIDTH / 2, 25}))
+            if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 75 + 25 * i, SCREEN_WIDTH / 2, 25}))
             {
                 if (selected_saves_index == i)
                 {
@@ -533,7 +535,7 @@ void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, Pokem
         char *save_name = strrchr(save_file_data->saves_file_path[i], '/');
         save_name++;
 
-        DrawText(save_name, 190, 200 + 25 * i, 20, (selected_saves_index == i) ? LIGHTGRAY : BLACK);
+        DrawText(save_name, 190, 75 + 25 * i, 20, (selected_saves_index == i) ? LIGHTGRAY : BLACK);
         if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC)
             DrawText("Open Bill's PC >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, hasSelectedSave ? BLACK : LIGHTGRAY);
         if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE)
@@ -563,9 +565,9 @@ void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, Pokem
     }
 
     if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC)
-        DrawText("Bill's PC", 50, 50, 20, BLACK);
+        DrawText("Bill's PC", 25, 25, 20, BLACK);
     if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE)
-        DrawText("Trade Evolve", 50, 50, 20, BLACK);
+        DrawText("Trade Evolve", 25, 25, 20, BLACK);
     DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
     {
@@ -575,9 +577,22 @@ void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, Pokem
         }
     }
 
+    // change directory button
+    int button_width = MeasureText("Change Save Directory", 20) + 20;
+    DrawText("Change Save Directory", SCREEN_WIDTH / 2 - button_width / 2, BACK_BUTTON_Y, 20, BLACK);
+    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){SCREEN_WIDTH / 2 - button_width / 2 - 10, BACK_BUTTON_Y - 30, button_width, BUTTON_HEIGHT}))
+    {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            trainer1->trainer_id = 0;
+            trainerSelection->pokemon_index = -1;
+            current_screen = SCREEN_FILE_EDIT;
+        }
+    }
+
     EndDrawing();
 }
-void DrawTradeEvolveScreen(PokemonSave *save_player1, char *save_path, struct TrainerInfo *trainer1)
+void DrawTradeEvolveScreen(PokemonSave *pokemon_save, char *save_path)
 {
     // Call rng
     generateRandomNumberStep();
@@ -586,42 +601,45 @@ void DrawTradeEvolveScreen(PokemonSave *save_player1, char *save_path, struct Tr
     ClearBackground(RAYWHITE);
     DrawText("Trade Evolve", 50, 50, 20, BLACK);
 
-    SaveGenerationType save_generation = save_player1->save_generation_type;
-    int party_count; 
-    if (save_generation == SAVE_GENERATION_1)
-        party_count = save_player1->save.gen1_save.pokemon_storage.p_party->count;
-    else if (save_generation == SAVE_GENERATION_2)
-        party_count = save_player1->save.gen2_save.pokemon_storage.p_party->count;
+    SaveGenerationType save_generation = pokemon_save->save_generation_type;
+    int party_count = 0;
     static int selected_index = -1;
     static int result = 0;
     char pokemon_nickname[11];
     int eligible_pokemon_count = 0;
 
+    if (save_generation == SAVE_GENERATION_1)
+        party_count = pokemon_save->save.gen1_save.pokemon_storage.p_party->count;
+    else if (save_generation == SAVE_GENERATION_2)
+        party_count = pokemon_save->save.gen2_save.pokemon_storage.p_party->count;
+
+    // Search party for pkmn eligible for trade evolution
     for (int i = 0; i < party_count; i++)
     {
         if (save_generation == SAVE_GENERATION_1)
         {
-            result = check_trade_evolution_gen1(save_player1, i);
+            result = check_trade_evolution_gen1(pokemon_save, i);
+            // if eligible, draw pkmn button
             if (result)
             {
                 eligible_pokemon_count++;
-                pksav_gen1_import_text(save_player1->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
+                pksav_gen1_import_text(pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
                 PokemonButton((Rectangle){50, 100 + (eligible_pokemon_count * 30), 200, 30}, i, pokemon_nickname);
             }
         }
         else if (save_generation == SAVE_GENERATION_2)
         {
-            result = check_trade_evolution_gen2(save_player1, i);
+            result = check_trade_evolution_gen2(pokemon_save, i);
             if (result)
             {
                 eligible_pokemon_count++;
-                pksav_gen2_import_text(save_player1->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
-                PokemonButton((Rectangle){50, 100 + (eligible_pokemon_count * 30),  MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname);
+                pksav_gen2_import_text(pokemon_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
+                PokemonButton((Rectangle){50, 100 + (eligible_pokemon_count * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname);
                 if (result == 2)
                     DrawText("Missing required item!", 75 + MeasureText(pokemon_nickname, 20), 100 + (eligible_pokemon_count * 30), 20, RED);
             }
         }
-        // check for click collision
+        // Selected pokemon button
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 100 + (eligible_pokemon_count * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             if (selected_index == i)
@@ -639,17 +657,20 @@ void DrawTradeEvolveScreen(PokemonSave *save_player1, char *save_path, struct Tr
     char selected_nickname[11];
     if (save_generation == SAVE_GENERATION_1 && selected_index != -1)
     {
-        pksav_gen1_import_text(save_player1->save.gen1_save.pokemon_storage.p_party->nicknames[selected_index], selected_nickname, 10);
+        pksav_gen1_import_text(pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[selected_index], selected_nickname, 10);
     }
     else if (save_generation == SAVE_GENERATION_2 && selected_index != -1)
     {
-        pksav_gen2_import_text(save_player1->save.gen2_save.pokemon_storage.p_party->nicknames[selected_index], selected_nickname, 10);
+        pksav_gen2_import_text(pokemon_save->save.gen2_save.pokemon_storage.p_party->nicknames[selected_index], selected_nickname, 10);
     }
-    if (selected_index != -1) DrawText(selected_nickname, NEXT_BUTTON_X, SCREEN_HEIGHT_TEXT_CENTER(20), 20, BLACK);
+    if (selected_index != -1)
+        DrawText(selected_nickname, NEXT_BUTTON_X, SCREEN_HEIGHT_TEXT_CENTER(20), 20, BLACK);
 
     if (eligible_pokemon_count == 0)
     {
-        DrawText("No pokemon eligible for trade evolution", 50, 100, 20, BLACK);
+        const char *no_pkmn = "No pokemon eligible for trade evolution";
+        Vector2 text_center = SCREEN_CENTER(no_pkmn, 20);
+        DrawText(no_pkmn, text_center.x, text_center.y, 20, BLACK);
     }
     // Evolve button (next button)
     DrawText("Evolve!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, selected_index != -1 && result == 1 ? BLACK : LIGHTGRAY);
@@ -657,8 +678,8 @@ void DrawTradeEvolveScreen(PokemonSave *save_player1, char *save_path, struct Tr
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            evolve_party_pokemon_at_index(save_player1, selected_index);
-            // saveToFile(save_player1, save_path);
+            evolve_party_pokemon_at_index(pokemon_save, selected_index);
+            saveToFile(pokemon_save, save_path);
         }
     }
 
@@ -674,17 +695,16 @@ void DrawTradeEvolveScreen(PokemonSave *save_player1, char *save_path, struct Tr
 
     EndDrawing();
 }
-void DrawBillsPCScreen(PokemonSave *save_player1, char *player1_save_path, struct TrainerInfo *trainer1, struct TrainerSelection *trainerSelection)
+void DrawBillsPCScreen(PokemonSave *pokemon_save, char *save_path, struct TrainerInfo *trainer, struct TrainerSelection *trainerSelection)
 {
     // Update
-    int selected_index_trainer1 = trainerSelection->pokemon_index;
-    int save_generation = save_player1->save_generation_type;
+    int save_generation = pokemon_save->save_generation_type;
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
     DrawText("Bill's PC", 50, 50, 20, BLACK);
 
-    DrawTrainerInfo(trainer1, 50, 100, &trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+    DrawTrainerInfo(trainer, 50, 100, trainerSelection, pokemon_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
 
     // Draw a veritcal box to the right of the trainer info
     // labeled box n where n is the box number
@@ -701,12 +721,12 @@ void DrawBillsPCScreen(PokemonSave *save_player1, char *player1_save_path, struc
     int box_pokemon_count = 0;
     if (save_generation == SAVE_GENERATION_1)
     {
-        pokemon_box_gen1 = save_player1->save.gen1_save.pokemon_storage.p_current_box;
+        pokemon_box_gen1 = pokemon_save->save.gen1_save.pokemon_storage.p_current_box;
         box_pokemon_count = pokemon_box_gen1->count;
     }
     else
     {
-        pokemon_box_gen2 = save_player1->save.gen2_save.pokemon_storage.p_current_box;
+        pokemon_box_gen2 = pokemon_save->save.gen2_save.pokemon_storage.p_current_box;
         box_pokemon_count = pokemon_box_gen2->count;
     }
 
@@ -734,7 +754,7 @@ void DrawBillsPCScreen(PokemonSave *save_player1, char *player1_save_path, struc
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            trainer1->trainer_id = 0;
+            trainer->trainer_id = 0;
             trainerSelection->pokemon_index = -1;
             current_screen = SCREEN_MAIN_MENU;
         }
@@ -789,7 +809,7 @@ void DrawRaylibScreenLoop(
             DrawSinglePlayerFileSelectScreen(save_file_data, pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_EVOLVE);
             break;
         case SCREEN_EVOLVE:
-            DrawTradeEvolveScreen(pokemon_save_player1, player1_save_path, trainer1);
+            DrawTradeEvolveScreen(pokemon_save_player1, player1_save_path);
             break;
         case SCREEN_ABOUT:
         {

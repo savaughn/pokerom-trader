@@ -152,6 +152,8 @@ void swapPokemonAtIndexBetweenSaves(PokemonSave *player1_save, PokemonSave *play
         player1_save->save.gen2_save.pokemon_storage.p_party->otnames[selected_index1][strlen(tmp_otname2)] = 0x50;
         player2_save->save.gen2_save.pokemon_storage.p_party->otnames[selected_index2][strlen(tmp_otname1)] = 0x50;
     }
+
+    // TODO: Update DVs for both traded pokemon
 }
 
 void create_trainer(PokemonSave *pokemon_save, struct TrainerInfo *trainer)
@@ -202,6 +204,8 @@ void create_trainer(PokemonSave *pokemon_save, struct TrainerInfo *trainer)
         trainer->trainer_generation = SAVE_GENERATION_2;
         break;
     }
+    default:
+        break;
     }
 }
 
@@ -229,13 +233,13 @@ int check_trade_evolution_gen1(PokemonSave *pokemon_save, int pokemon_index)
     uint8_t species = pokemon_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_index];
 
     EvolutionCondition gen1Evolutions[] = {
-        {KADABRA},
-        {MACHOKE},
-        {GRAVELER},
-        {HAUNTER}};
+        {KADABRA, NULL},
+        {MACHOKE, NULL},
+        {GRAVELER, NULL},
+        {HAUNTER, NULL}};
 
     int i;
-    for (i = 0; i < sizeof(gen1Evolutions) / sizeof(gen1Evolutions[0]); i++)
+    for (i = 0; i < (int)(sizeof(gen1Evolutions) / sizeof(gen1Evolutions[0])); i++)
     {
         // Pokemon eligible for trade evolution
         if (gen1Evolutions[i].species == species)
@@ -244,7 +248,7 @@ int check_trade_evolution_gen1(PokemonSave *pokemon_save, int pokemon_index)
         }
 
         // No pokemon eligible for trade evolution
-        if (i == sizeof(gen1Evolutions) / sizeof(gen1Evolutions[0]))
+        if (i == (int)(sizeof(gen1Evolutions) / sizeof(gen1Evolutions[0])))
         {
             return 0;
         }
@@ -266,7 +270,7 @@ int check_trade_evolution_gen2(PokemonSave *pokemon_save, int pokemon_index)
         {SEADRA, DRAGON_SCALE}};
 
     int i;
-    for (i = 0; i < sizeof(gen2Evolutions) / sizeof(gen2Evolutions[0]); i++)
+    for (i = 0; i < (int)(sizeof(gen2Evolutions) / sizeof(gen2Evolutions[0])); i++)
     {
         // Pokemon eligible for trade evolution but missing item
         if (gen2Evolutions[i].species == species && gen2Evolutions[i].item != item)
@@ -291,7 +295,7 @@ int check_trade_evolution_gen2(PokemonSave *pokemon_save, int pokemon_index)
 }
 
 // Function to calculate HP based on base stat, IV, Stat Exp, and level
-int calculateHP(int baseHP, int dvHP, int statExp, int level)
+uint8_t calculateHP(uint8_t level, int baseHP, int dvHP, int statExp)
 {
     float hpCalc = (baseHP + dvHP) * 2 + floor(ceil(sqrt(statExp)) / 4);
     hpCalc = hpCalc * level / 100.0;
@@ -302,7 +306,7 @@ int calculateHP(int baseHP, int dvHP, int statExp, int level)
 
 // Function to calculate other stats (Attack, Defense, Special, Speed)
 // based on base stat, IV, Stat Exp, and level
-int calculateStat(int level, int baseStat, int dv, int statExp)
+uint8_t calculateStat(uint8_t level, int baseStat, int dv, int statExp)
 {
     float statCalc = (baseStat + dv) * 2 + floor(ceil(sqrt(statExp)) / 4);
     statCalc = statCalc * level / 100.0;
@@ -319,7 +323,7 @@ uint8_t addByte = 0;
 uint8_t subtractByte = 0;
 
 // Simulate one step of the random number generation process
-void generateRandomNumberStep()
+void generateRandomNumberStep(void)
 {
     // Increment rDiv (simulated as an 8-bit counter)
     rDiv++;
@@ -336,24 +340,78 @@ void generateRandomNumberStep()
 }
 
 // Function to get a random byte
-uint8_t getRandomByte()
+uint8_t getRandomByte(void)
 {
     return addByte; // Return the add byte as the generated random number
 }
 
-void randomize_gen1_IVs(uint8_t *ivs, size_t num_IVs)
+void randomize_gen1_DVs(uint8_t *dv_array)
 {
-    for (int i = 0; i < num_IVs; i++)
+    for (int i = 0; i < PKSAV_NUM_GB_IVS - 1; i++)
     {
         // random int between 0 and 15
-        uint8_t random_IV = getRandomByte() & 0xF;
+        dv_array[i] = (uint8_t)(getRandomByte() & 0xF);
         generateRandomNumberStep();
-
-        // set the IV
-        ivs[i] = random_IV;
     }
+
+    // Generate HP dv from other dvs (string LSBs together)
+    dv_array[PKSAV_GB_IV_HP] = (((dv_array[PKSAV_GB_IV_ATTACK] & 0x01) << 3) |
+                                ((dv_array[PKSAV_GB_IV_DEFENSE] & 0x01) << 2) |
+                                ((dv_array[PKSAV_GB_IV_SPEED] & 0x01) << 1) |
+                                (dv_array[PKSAV_GB_IV_SPECIAL] & 0x01));
 }
 /*************************************************************************/
+
+// Randomize the DVs of a pokemon on trade
+void update_pkmn_DVs(PokemonSave *pokemon_save, int pokemon_index)
+{
+    // randomize the dvs on trade except for HP
+    uint8_t traded_pkmn_rand_dvs[PKSAV_NUM_GB_IVS] = {0};
+    randomize_gen1_DVs(traded_pkmn_rand_dvs);
+
+    // set the ivs to pokemon at index
+    uint16_t *iv_data_ptr = &pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.iv_data;
+    for (int i = PKSAV_GB_IV_ATTACK; i < PKSAV_NUM_GB_IVS; i++)
+    {
+        pksav_set_gb_IV(i, traded_pkmn_rand_dvs[i], iv_data_ptr);
+    }
+}
+
+// Calculate and update the pokemon's stats based on its level, base stats, IVs, and EVs
+void update_pkmn_stats(PokemonSave *pokemon_save, int pokemon_index, const struct pksav_gen1_pokemon_party_data *pkmn_base)
+{
+    // Get the pokemon's DVs
+    uint8_t pkmn_dvs[PKSAV_NUM_GB_IVS];
+    pksav_get_gb_IVs(&pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.iv_data, pkmn_dvs, sizeof(pkmn_dvs));
+
+    // Get the pokemon's EVs
+    struct pksav_gen1_pc_pokemon pkmn_ev_data = pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data;
+    uint16_t pkmn_evs[PKSAV_NUM_GB_IVS] = {
+        [PKSAV_GB_IV_ATTACK] = pksav_bigendian16(pkmn_ev_data.ev_atk),
+        [PKSAV_GB_IV_DEFENSE] = pksav_bigendian16(pkmn_ev_data.ev_def),
+        [PKSAV_GB_IV_SPEED] = pksav_bigendian16(pkmn_ev_data.ev_spd),
+        [PKSAV_GB_IV_SPECIAL] = pksav_bigendian16(pkmn_ev_data.ev_spcl),
+        [PKSAV_GB_IV_HP] = pksav_bigendian16(pkmn_ev_data.ev_hp),
+    };
+
+    // Calculate the pokemon's HP stat
+    uint8_t pkmn_stats[PKSAV_NUM_GB_IVS] = {
+        [PKSAV_GB_IV_HP] = calculateHP(pkmn_ev_data.level, pkmn_base->max_hp, pkmn_dvs[PKSAV_GB_IV_HP], pkmn_evs[PKSAV_GB_IV_HP]),
+    };
+
+    // Calculate the pokemon's other stats
+    pkmn_stats[PKSAV_GB_IV_ATTACK] = calculateStat(pkmn_ev_data.level, pkmn_base->atk, pkmn_dvs[PKSAV_GB_IV_ATTACK], pkmn_evs[PKSAV_GB_IV_ATTACK]);
+    pkmn_stats[PKSAV_GB_IV_DEFENSE] = calculateStat(pkmn_ev_data.level, pkmn_base->def, pkmn_dvs[PKSAV_GB_IV_DEFENSE], pkmn_evs[PKSAV_GB_IV_DEFENSE]);
+    pkmn_stats[PKSAV_GB_IV_SPEED] = calculateStat(pkmn_ev_data.level, pkmn_base->spd, pkmn_dvs[PKSAV_GB_IV_SPEED], pkmn_evs[PKSAV_GB_IV_SPEED]);
+    pkmn_stats[PKSAV_GB_IV_SPECIAL] = calculateStat(pkmn_ev_data.level, pkmn_base->spcl, pkmn_dvs[PKSAV_GB_IV_SPECIAL], pkmn_evs[PKSAV_GB_IV_SPECIAL]);
+
+    // Update the pokemon's stats
+    pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].party_data.max_hp = pksav_bigendian16(pkmn_stats[PKSAV_GB_IV_HP]);
+    pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].party_data.atk = pksav_bigendian16(pkmn_stats[PKSAV_GB_IV_ATTACK]);
+    pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].party_data.def = pksav_bigendian16(pkmn_stats[PKSAV_GB_IV_DEFENSE]);
+    pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].party_data.spd = pksav_bigendian16(pkmn_stats[PKSAV_GB_IV_SPEED]);
+    pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].party_data.spcl = pksav_bigendian16(pkmn_stats[PKSAV_GB_IV_SPECIAL]);
+}
 
 void evolve_party_pokemon_at_index(PokemonSave *pokemon_save, int pokemon_index)
 {
@@ -393,47 +451,37 @@ void evolve_party_pokemon_at_index(PokemonSave *pokemon_save, int pokemon_index)
             pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].party_data = golem.party_data;
             break;
         case HAUNTER:
-            pokemon_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_index] = (uint8_t)GENGAR;
+            // Update species nickname if not named by player
             if (strcmp(pokemon_name, "HAUNTER") == 0)
             {
                 pksav_gen1_export_text("GENGAR", pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index], 10);
                 pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index][strlen("GENGAR")] = 0x50;
             }
 
-            // level
-            uint8_t level = pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.level;
+            // Generates and assigns random dvs
+            update_pkmn_DVs(pokemon_save, pokemon_index);
+            // Calculates and updates stats
+            update_pkmn_stats(pokemon_save, pokemon_index, &gengar_base.party_data);
+            // Update pokedex
+            updateSeenOwnedPokemon(pokemon_save, pokemon_index);
 
-            // Randomize DVs on trade
-            uint8_t traded_haunter_rand_dvs[PKSAV_NUM_GB_IVS - 1];
-            randomize_gen1_IVs(traded_haunter_rand_dvs, sizeof(traded_haunter_rand_dvs));
-            printf("DV_ATTACK: %u\n", traded_haunter_rand_dvs[PKSAV_GB_IV_ATTACK]);
-            printf("DV_DEFENSE: %u\n", traded_haunter_rand_dvs[PKSAV_GB_IV_DEFENSE]);
-            printf("DV_SPEED: %u\n", traded_haunter_rand_dvs[PKSAV_GB_IV_SPEED]);
-            printf("DV_SPECIAL: %u\n", traded_haunter_rand_dvs[PKSAV_GB_IV_SPECIAL]);
-
-            uint8_t traded_haunter_hpiv = (((traded_haunter_rand_dvs[PKSAV_GB_IV_ATTACK] & 0x01) << 3) |
-                               ((traded_haunter_rand_dvs[PKSAV_GB_IV_DEFENSE] & 0x01) << 2) |
-                               ((traded_haunter_rand_dvs[PKSAV_GB_IV_SPEED] & 0x01) << 1) |
-                               (traded_haunter_rand_dvs[PKSAV_GB_IV_SPECIAL] & 0x01));
-            printf("DV_HP: %u\n", traded_haunter_rand_dvs[PKSAV_GB_IV_HP]);
-
-            uint16_t ev_hp = pksav_bigendian16(pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.ev_hp);
-            uint16_t ev_atk = pksav_bigendian16(pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.ev_atk);
-            uint16_t ev_def = pksav_bigendian16(pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.ev_def);
-            uint16_t ev_spd = pksav_bigendian16(pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.ev_spd);
-            uint16_t ev_spcl = pksav_bigendian16(pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.ev_spcl);
-            uint8_t gengar_max_hp = calculateHP(gengar_base.party_data.max_hp, traded_haunter_hpiv, ev_hp, level);
-
-            // Calculate Gengar stats from DVs and haunter stats
-            uint8_t gengar_atk = calculateStat(level, gengar_base.party_data.atk, traded_haunter_rand_dvs[PKSAV_GB_IV_ATTACK], ev_atk);
-            uint8_t gengar_def = calculateStat(level, gengar_base.party_data.def, traded_haunter_rand_dvs[PKSAV_GB_IV_DEFENSE], ev_def);
-            uint8_t gengar_spd = calculateStat(level, gengar_base.party_data.spd, traded_haunter_rand_dvs[PKSAV_GB_IV_SPEED], ev_spd);
-            uint8_t gengar_spcl = calculateStat(level, gengar_base.party_data.spcl, traded_haunter_rand_dvs[PKSAV_GB_IV_SPECIAL], ev_spcl);
+            // Update species index
+            pokemon_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_index] = (uint8_t)GENGAR;
+            pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.species = GENGAR;
+            // Update types not needed since they are the same
+            // Update catch rate
+            pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.catch_rate = gengar_base.pc_data.catch_rate;
+            // Update condition to none
+            pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.condition = PKSAV_GB_CONDITION_NONE;
+            // Update health to max hp
+            pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.current_hp = pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].party_data.max_hp;
+            
+            // TODO: Update moves based on learn set and level
+            // engine/pokemon/evos_moves.asm
+            // pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.moves;
 
             break;
         }
-
-        // TODO: Update pokedex seen/owned
     }
     else
     {
