@@ -1,0 +1,37 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(lldb) Attach",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "${workspaceFolder}/build/pokeromtrader",
+            "MIMode": "lldb",
+        },        
+        {
+            "name": "(lldb) Launch",
+            "setupCommands": [
+                {
+                    "description": "lldb formatting",
+                    "text": "type format add --format u 'unsigned char'",
+                    "ignoreFailures": true
+                }
+            ],  
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/pokeromtrader",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "targetArchitecture": "arm64",
+            "preLaunchTask": "Build PokeromTrader"
+        }
+
+    ]
+}
