@@ -238,17 +238,18 @@ int check_trade_evolution_gen1(PokemonSave *pokemon_save, int pokemon_index)
     uint8_t species = pokemon_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_index];
 
     // Pokemon species eligible for trade evolution in Gen 1
-    EvolutionCondition gen1Evolutions[] = {
-        {KADABRA, NULL},
-        {MACHOKE, NULL},
-        {GRAVELER, NULL},
-        {HAUNTER, NULL}};
+    uint8_t gen1Evolutions[4] = {
+        (uint8_t)KADABRA,
+        (uint8_t)MACHOKE,
+        (uint8_t)GRAVELER,
+        (uint8_t)HAUNTER
+    };
 
     int i;
     for (i = 0; i < (int)(sizeof(gen1Evolutions) / sizeof(gen1Evolutions[0])); i++)
     {
         // Pokemon eligible for trade evolution
-        if (gen1Evolutions[i].species == species)
+        if (gen1Evolutions[i] == species)
         {
             return 1;
         }
@@ -272,7 +273,7 @@ int check_trade_evolution_gen2(PokemonSave *pokemon_save, int pokemon_index)
     int item = pokemon_save->save.gen2_save.pokemon_storage.p_party->party[pokemon_index].pc_data.held_item;
 
     // Pokemon species eligible for trade evolution in Gen 2 with required item
-    EvolutionCondition gen2Evolutions[] = {
+    EvolutionConditionGen2 gen2Evolutions[] = {
         {SCYTHER, METAL_COAT},
         {POLIWHIRL, KING_ROCK},
         {SLOWPOKE, KING_ROCK},

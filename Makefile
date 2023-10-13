@@ -191,7 +191,7 @@ endif
 #  -Wno-missing-braces  ignore invalid warning (GCC bug 53119)
 #  -Wno-unused-value    ignore unused return values of some functions (i.e. fread())
 #  -D_DEFAULT_SOURCE    use with -std=c99 on Linux and PLATFORM_WEB, required for timespec
-CFLAGS = -std=c99 -Wall -Wextra -Wpedantic -Wno-missing-braces -Wunused-result \
+CFLAGS = -std=c11 -Wall -Wextra -Wpedantic -Wno-missing-braces -Wunused-result \
             -Wformat=2 -Wno-unused-parameter -Wshadow \
             -Wwrite-strings -Wstrict-prototypes -Wold-style-definition \
             -Wredundant-decls -Wnested-externs -Wmissing-include-dirs -D_DEFAULT_SOURCE
@@ -426,7 +426,6 @@ endif
     # Project target defined by PROJECT_NAME
 $(PROJECT_NAME): $(OBJS)
 	@echo "Building $(PROJECT_NAME)..."
-	@echo 	$(CC) -o build/$(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 	$(CC) -o build/$(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 	@echo "Build process completed successfully!"
 

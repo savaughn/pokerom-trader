@@ -7,8 +7,6 @@
 #include <dirent.h>
 #include "common.h"
 
-#define MAX_FILE_PATH_CHAR 1001
-
 // Global pointers for resolvedPath and absolutePath
 extern char *resolvedPath;
 extern char *absolutePath;

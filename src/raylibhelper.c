@@ -129,12 +129,12 @@ void DrawAboutScreen(void)
 void DrawFileEditScreen(struct SaveFileData *save_file_data)
 {
     static bool editingText = false;
-    static char inputText[MAX_INPUT_CHARS] = "\0";
+    static char inputText[MAX_FILE_PATH_CHAR] = "\0";
     static int textSize = 0;
     static bool hasShownPlaceholder = false;
     static bool hasPressedClear = false;
     static int err = 0;
-    char *input_text_backup[MAX_INPUT_CHARS];
+    char input_text_backup[MAX_FILE_PATH_CHAR];
 
     textSize = strlen(inputText);
     strcpy(input_text_backup, (char *)save_file_data->saveDir);
@@ -164,7 +164,7 @@ void DrawFileEditScreen(struct SaveFileData *save_file_data)
         hasShownPlaceholder = true;
         int key = GetCharPressed();
         int backspace = GetKeyPressed();
-        if (key >= 32 && key <= 125 && textSize < MAX_INPUT_CHARS)
+        if (key >= 32 && key <= 125 && textSize < MAX_FILE_PATH_CHAR)
         {
             // Append character to inputText
             inputText[textSize] = (char)key;

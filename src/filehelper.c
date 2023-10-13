@@ -60,7 +60,7 @@ int get_save_files(struct SaveFileData *save_data)
 int write_key_to_config(const char *key, const char *value)
 {
     // Get config.ini path
-    char *config_path[MAX_FILE_PATH_CHAR];
+    char config_path[MAX_FILE_PATH_CHAR];
     strcpy(config_path, getenv("HOME"));
     strcat(config_path, "/Library/PokeromTrader/config.ini");
 
@@ -167,7 +167,7 @@ void create_default_config(void)
     fputs("# This is a generated file. Only modify values not keys.\n", fp);
 
     // Write default key values to new config.ini
-    char *default_key[MAX_FILE_PATH_CHAR];
+    char default_key[MAX_FILE_PATH_CHAR];
     strcpy(default_key, "SAVE_FILE_DIR=");
     strcat(default_key, saves_dir);
     fputs(default_key, fp);
@@ -201,7 +201,7 @@ char *read_key_from_config(const char *key)
         fp = fopen(config_path, "r");
     }
 
-    while ((read = getline(&line, &len, fp)) != -1)
+    while (getline(&line, &len, fp) != -1)
     {
         // if the line starts with a # or newline, skip it
         if (line[0] == '#' || line[0] == '\n')

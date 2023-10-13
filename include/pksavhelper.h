@@ -5,28 +5,28 @@
 #include "common.h"
 
 //Generation 1 Pokémon that evolve through trade
-#define KADABRA 38
-#define ALAKAZAM 149
-#define MACHOKE 41
-#define MACHAMP 126
-#define GRAVELER 39
-#define GOLEM 49
-#define HAUNTER 147
-#define GENGAR 14
+#define KADABRA (uint8_t)38
+#define ALAKAZAM (uint8_t)149
+#define MACHOKE (uint8_t)41
+#define MACHAMP (uint8_t)126
+#define GRAVELER (uint8_t)39
+#define GOLEM (uint8_t)49
+#define HAUNTER (uint8_t)147
+#define GENGAR (uint8_t)14
 
 // Generation 2 Pokémon that evolve through trade with specific items
-#define SCYTHER 123
-#define SCIZOR 212
-#define POLIWHIRL 61
-#define POLITOED 186
-#define SLOWPOKE 79
-#define SLOWKING 199
-#define ONIX 95
-#define STEELIX 208
-#define PORYGON 137
-#define PORYGON2 233
-#define SEADRA 117
-#define KINGDRA 230
+#define SCYTHER (uint8_t)123
+#define SCIZOR (uint8_t)212
+#define POLIWHIRL (uint8_t)61
+#define POLITOED (uint8_t)186
+#define SLOWPOKE (uint8_t)79
+#define SLOWKING (uint8_t)199
+#define ONIX (uint8_t)95
+#define STEELIX (uint8_t)208
+#define PORYGON (uint8_t)137
+#define PORYGON2 (uint8_t)233
+#define SEADRA (uint8_t)117
+#define KINGDRA (uint8_t)230
 
 // Items required for evolution
 #define METAL_COAT 143      // 0x8F
@@ -35,9 +35,9 @@
 #define UPGRADE 172         // 0xAC 
 
 typedef struct {
-    int species;
+    uint8_t species;
     int item;
-} EvolutionCondition;
+} EvolutionConditionGen2;
 
 // Generation 1 Pokémon data
 static const struct pksav_gen1_party_pokemon alakazam_base_stats = {

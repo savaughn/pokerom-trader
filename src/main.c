@@ -7,8 +7,8 @@
 
 int main(int argc, char *argv[])
 {
-    char player1_save_path[100];
-    char player2_save_path[100];
+    char player1_save_path[MAX_FILE_PATH_CHAR];
+    char player2_save_path[MAX_FILE_PATH_CHAR];
     PokemonSave pokemon_save_player1;
     PokemonSave pokemon_save_player2;
     struct SaveFileData save_file_data;
