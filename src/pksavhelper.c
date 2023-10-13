@@ -357,6 +357,41 @@ uint8_t get_random_byte(void)
     return add_byte; // Return the add byte as the generated random number
 }
 
+// Simulated hardware registers
+uint8_t hRandomAdd = 0;  // hRandomAdd register
+uint8_t hRandomSub = 0;  // hRandomSub register
+
+// Gen 2 used hardware registers to generate random numbers
+// Perform the random number generation step
+void generateRandomNumberStepGen2(void) {
+    rDiv++; // Increment rDiv (simulated as an 8-bit counter)
+
+    // Simulate the addition step
+    uint16_t sum = rDiv + hRandomAdd;
+    hRandomAdd = (uint8_t)sum;
+
+    // Simulate the subtraction step
+    uint16_t diff = rDiv - hRandomSub;
+    hRandomSub = (uint8_t)diff;
+}
+
+// Function to get a random byte
+uint8_t getRandomByteGen2(void) {
+    return hRandomAdd; // Return the simulated hRandomAdd register
+}
+
+void generate_rand_num_step(SaveGenerationType save_generation_type)
+{
+    if (save_generation_type == SAVE_GENERATION_1)
+    {
+        generateRandomNumberStep();
+    }
+    else
+    {
+        generateRandomNumberStepGen2();
+    }
+}
+
 void randomize_gen1_DVs(uint8_t *dv_array)
 {
     for (int i = 0; i < PKSAV_NUM_GB_IVS - 1; i++)
@@ -364,6 +399,22 @@ void randomize_gen1_DVs(uint8_t *dv_array)
         // random int between 0 and 15
         dv_array[i] = (uint8_t)(get_random_byte() & 0xF);
         generate_random_number_step();
+    }
+
+    // Generate HP dv from other dvs (string LSBs together)
+    dv_array[PKSAV_GB_IV_HP] = (((dv_array[PKSAV_GB_IV_ATTACK] & 0x01) << 3) |
+                                ((dv_array[PKSAV_GB_IV_DEFENSE] & 0x01) << 2) |
+                                ((dv_array[PKSAV_GB_IV_SPEED] & 0x01) << 1) |
+                                (dv_array[PKSAV_GB_IV_SPECIAL] & 0x01));
+}
+
+void randomize_gen2_DVs(uint8_t *dv_array)
+{
+    for (int i = 0; i < PKSAV_NUM_GB_IVS - 1; i++)
+    {
+        // random int between 0 and 15
+        dv_array[i] = (uint8_t)(getRandomByteGen2() & 0xF);
+        generateRandomNumberStepGen2();
     }
 
     // Generate HP dv from other dvs (string LSBs together)
@@ -395,7 +446,7 @@ void update_pkmn_DVs(PokemonSave *pokemon_save, int pokemon_index)
 }
 
 // Calculate and update the pokemon's stats based on its level, base stats, IVs, and EVs
-void update_pkmn_stats(PokemonSave *pokemon_save, int pokemon_index, const struct pksav_gen1_pokemon_party_data *pkmn_base)
+void update_pkmn_stats_gen1(PokemonSave *pokemon_save, int pokemon_index, const struct pksav_gen1_pokemon_party_data *pkmn_base)
 {
     // Get the pokemon's DVs
     uint8_t pkmn_dvs[PKSAV_NUM_GB_IVS];
@@ -434,7 +485,7 @@ void update_pkmn_stats(PokemonSave *pokemon_save, int pokemon_index, const struc
 void generate_pkmn_evolution(PokemonSave *pokemon_save, int pokemon_index, struct pksav_gen1_party_pokemon pkmn_base, int species_index)
 {
     // Calculates and updates stats
-    update_pkmn_stats(pokemon_save, pokemon_index, &pkmn_base.party_data);
+    update_pkmn_stats_gen1(pokemon_save, pokemon_index, &pkmn_base.party_data);
 
     // Update species index
     pokemon_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_index] = (uint8_t)species_index;

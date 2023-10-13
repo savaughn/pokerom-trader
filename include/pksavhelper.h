@@ -191,5 +191,6 @@ void generate_random_number_step(void);
 void update_pkmn_DVs(PokemonSave *pokemon_save, int pokemon_index);
 bool get_is_random_DVs_disabled(void);
 void set_is_random_DVs_disabled(bool is_disabled);
+void generate_rand_num_step(SaveGenerationType save_generation_type);
 
 #endif /* PKSAVHELPER_H */

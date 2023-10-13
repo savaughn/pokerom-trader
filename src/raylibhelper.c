@@ -680,29 +680,30 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
 }
 void draw_evolve(PokemonSave *pokemon_save, char *save_path)
 {
+    SaveGenerationType save_generation_type = pokemon_save->save_generation_type;
+    
     // Call rng
-    generate_random_number_step();
+    generate_rand_num_step(save_generation_type);
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
     DrawText("Trade Evolve", 50, 50, 20, BLACK);
 
-    SaveGenerationType save_generation = pokemon_save->save_generation_type;
     int party_count = 0;
     static int selected_index = -1;
     static int result = 0;
     char pokemon_nickname[11];
     int eligible_pokemon_count = 0;
 
-    if (save_generation == SAVE_GENERATION_1)
+    if (save_generation_type == SAVE_GENERATION_1)
         party_count = pokemon_save->save.gen1_save.pokemon_storage.p_party->count;
-    else if (save_generation == SAVE_GENERATION_2)
+    else if (save_generation_type == SAVE_GENERATION_2)
         party_count = pokemon_save->save.gen2_save.pokemon_storage.p_party->count;
 
     // Search party for pkmn eligible for trade evolution
     for (int i = 0; i < party_count; i++)
     {
-        if (save_generation == SAVE_GENERATION_1)
+        if (save_generation_type == SAVE_GENERATION_1)
         {
             result = check_trade_evolution_gen1(pokemon_save, i);
             // if eligible, draw pkmn button
@@ -713,7 +714,7 @@ void draw_evolve(PokemonSave *pokemon_save, char *save_path)
                 draw_pkmn_button((Rectangle){50, 100 + (eligible_pokemon_count * 30), 200, 30}, i, pokemon_nickname);
             }
         }
-        else if (save_generation == SAVE_GENERATION_2)
+        else if (save_generation_type == SAVE_GENERATION_2)
         {
             result = check_trade_evolution_gen2(pokemon_save, i);
             if (result)
@@ -741,11 +742,11 @@ void draw_evolve(PokemonSave *pokemon_save, char *save_path)
 
     // Draw selected nickname to the right of the screen
     char selected_nickname[11];
-    if (save_generation == SAVE_GENERATION_1 && selected_index != -1)
+    if (save_generation_type == SAVE_GENERATION_1 && selected_index != -1)
     {
         pksav_gen1_import_text(pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[selected_index], selected_nickname, 10);
     }
-    else if (save_generation == SAVE_GENERATION_2 && selected_index != -1)
+    else if (save_generation_type == SAVE_GENERATION_2 && selected_index != -1)
     {
         pksav_gen2_import_text(pokemon_save->save.gen2_save.pokemon_storage.p_party->nicknames[selected_index], selected_nickname, 10);
     }
