@@ -10,7 +10,7 @@ int error_handler(enum pksav_error error, const char *message)
     exit(1);
 }
 
-void updateSeenOwnedPokemon(PokemonSave *pokemon_save, int pokemon_party_index)
+void update_seen_owned_pkmn(PokemonSave *pokemon_save, int pokemon_party_index)
 {
     enum pksav_error err;
     if (pokemon_save->save_generation_type == SAVE_GENERATION_1)
@@ -45,7 +45,7 @@ void updateSeenOwnedPokemon(PokemonSave *pokemon_save, int pokemon_party_index)
     }
 }
 
-void swapPartyPokemonAtIndices(struct pksav_gen2_save *save, int pokemon_index1, int pokemon_index2)
+void swap_party_pkmn_at_indices(struct pksav_gen2_save *save, int pokemon_index1, int pokemon_index2)
 {
     // swap nickname
     char tmp_nickname1[11];
@@ -78,7 +78,7 @@ void swapPartyPokemonAtIndices(struct pksav_gen2_save *save, int pokemon_index1,
     save->pokemon_storage.p_party->otnames[pokemon_index2][strlen(tmp_otname1)] = 0x50;
 }
 
-void swapPokemonAtIndexBetweenSaves(PokemonSave *player1_save, PokemonSave *player2_save, int selected_index1, int selected_index2)
+void swap_pkmn_at_index_between_saves(PokemonSave *player1_save, PokemonSave *player2_save, int selected_index1, int selected_index2)
 {
     // swap nickname
     char tmp_nickname1[11];
@@ -211,11 +211,11 @@ void create_trainer(PokemonSave *pokemon_save, struct TrainerInfo *trainer)
 }
 
 // Concantenate the trainer's name and id into a string for Raylib to draw
-void createTrainerNameStr(struct TrainerInfo *trainer, char *trainer_name, bool showGender)
+void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name, bool show_gender)
 {
     strcpy(trainer_name, "NAME/");
     strcat(trainer_name, trainer->trainer_name);
-    if (trainer->trainer_generation == SAVE_GENERATION_2 && showGender)
+    if (trainer->trainer_generation == SAVE_GENERATION_2 && show_gender)
     {
         strcat(trainer_name, " ");
         strcat(trainer_name, trainer->trainer_gender == PKSAV_GEN2_GENDER_FEMALE ? "F" : "M");
@@ -223,7 +223,7 @@ void createTrainerNameStr(struct TrainerInfo *trainer, char *trainer_name, bool 
 }
 
 // Concantenate the trainer's id into a string for Raylib to draw
-void createTrainerIdStr(struct TrainerInfo *trainer, char *trainer_id)
+void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id)
 {
     char id_str[6];
     strcpy(trainer_id, "IDNo ");
@@ -238,7 +238,7 @@ int check_trade_evolution_gen1(PokemonSave *pokemon_save, int pokemon_index)
     uint8_t species = pokemon_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_index];
 
     // Pokemon species eligible for trade evolution in Gen 1
-    uint8_t gen1Evolutions[4] = {
+    uint8_t gen1_evolutions[4] = {
         (uint8_t)KADABRA,
         (uint8_t)MACHOKE,
         (uint8_t)GRAVELER,
@@ -246,16 +246,16 @@ int check_trade_evolution_gen1(PokemonSave *pokemon_save, int pokemon_index)
     };
 
     int i;
-    for (i = 0; i < (int)(sizeof(gen1Evolutions) / sizeof(gen1Evolutions[0])); i++)
+    for (i = 0; i < (int)(sizeof(gen1_evolutions) / sizeof(gen1_evolutions[0])); i++)
     {
         // Pokemon eligible for trade evolution
-        if (gen1Evolutions[i] == species)
+        if (gen1_evolutions[i] == species)
         {
             return 1;
         }
 
         // No pokemon eligible for trade evolution
-        if (i == (int)(sizeof(gen1Evolutions) / sizeof(gen1Evolutions[0])))
+        if (i == (int)(sizeof(gen1_evolutions) / sizeof(gen1_evolutions[0])))
         {
             return 0;
         }
@@ -273,7 +273,7 @@ int check_trade_evolution_gen2(PokemonSave *pokemon_save, int pokemon_index)
     int item = pokemon_save->save.gen2_save.pokemon_storage.p_party->party[pokemon_index].pc_data.held_item;
 
     // Pokemon species eligible for trade evolution in Gen 2 with required item
-    EvolutionConditionGen2 gen2Evolutions[] = {
+    EvolutionConditionGen2 gen2_evolutions[] = {
         {SCYTHER, METAL_COAT},
         {POLIWHIRL, KING_ROCK},
         {SLOWPOKE, KING_ROCK},
@@ -282,22 +282,22 @@ int check_trade_evolution_gen2(PokemonSave *pokemon_save, int pokemon_index)
         {SEADRA, DRAGON_SCALE}};
 
     int i;
-    for (i = 0; i < (int)(sizeof(gen2Evolutions) / sizeof(gen2Evolutions[0])); i++)
+    for (i = 0; i < (int)(sizeof(gen2_evolutions) - 1); i++)
     {
         // Pokemon eligible for trade evolution but missing item
-        if (gen2Evolutions[i].species == species && gen2Evolutions[i].item != item)
+        if (gen2_evolutions[i].species == species && gen2_evolutions[i].item != item)
         {
             return 2;
         }
 
         // Pokemon eligible for trade evolution
-        if (gen2Evolutions[i].species == species && gen2Evolutions[i].item == item)
+        if (gen2_evolutions[i].species == species && gen2_evolutions[i].item == item)
         {
             return 1;
         }
 
         // No pokemon eligible for trade evolution
-        if (i == sizeof(gen2Evolutions) / sizeof(gen2Evolutions[0]))
+        if (i == sizeof(gen2_evolutions) - 1)
         {
             return 0;
         }
@@ -307,54 +307,54 @@ int check_trade_evolution_gen2(PokemonSave *pokemon_save, int pokemon_index)
 }
 
 // Function to calculate HP based on base stat, IV, Stat Exp, and level
-uint8_t calculateHP(uint8_t level, int baseHP, int dvHP, int statExp)
+uint8_t calculate_hp(uint8_t level, int base_hp, int dv_hp, int stat_exp)
 {
-    float hpCalc = (baseHP + dvHP) * 2 + floor(ceil(sqrt(statExp)) / 4);
-    hpCalc = hpCalc * level / 100.0;
-    hpCalc = floor(hpCalc) + level + 10;
+    float hp_calc = (base_hp + dv_hp) * 2 + floor(ceil(sqrt(stat_exp)) / 4);
+    hp_calc = hp_calc * level / 100.0;
+    hp_calc = floor(hp_calc) + level + 10;
 
-    return (int)hpCalc;
+    return (int)hp_calc;
 }
 
 // Function to calculate stats (Attack, Defense, Special, Speed)
 // based on base stat, IV, Stat Exp, and level
-uint8_t calculateStat(uint8_t level, int baseStat, int dv, int statExp)
+uint8_t calculate_stat(uint8_t level, int base_stat, int dv, int stat_exp)
 {
-    float statCalc = (baseStat + dv) * 2 + floor(ceil(sqrt(statExp)) / 4);
-    statCalc = statCalc * level / 100.0;
-    statCalc = floor(statCalc) + 5;
+    float stat_calc = (base_stat + dv) * 2 + floor(ceil(sqrt(stat_exp)) / 4);
+    stat_calc = stat_calc * level / 100.0;
+    stat_calc = floor(stat_calc) + 5;
 
-    return (int)statCalc;
+    return (int)stat_calc;
 }
 /************************************************************************
  * Simulate the random number generation for Generation 1
  */
-uint8_t rDiv = 0;
-uint8_t carryBit = 0;
-uint8_t addByte = 0;
-uint8_t subtractByte = 0;
+uint8_t r_div = 0;
+uint8_t carry_bit = 0;
+uint8_t add_byte = 0;
+uint8_t subtract_byte = 0;
 
 // Simulate one step of the random number generation process
-void generateRandomNumberStep(void)
+void generate_random_number_step(void)
 {
-    // Increment rDiv (simulated as an 8-bit counter)
-    rDiv++;
+    // Increment r_div (simulated as an 8-bit counter)
+    r_div++;
 
     // Simulate the addition step
-    uint16_t sum = rDiv + carryBit + addByte;
-    carryBit = (sum > 255) ? 1 : 0;
-    addByte = sum & 0xFF;
+    uint16_t sum = r_div + carry_bit + add_byte;
+    carry_bit = (sum > 255) ? 1 : 0;
+    add_byte = sum & 0xFF;
 
     // Simulate the subtraction step
-    uint16_t difference = rDiv + carryBit - subtractByte;
-    carryBit = (difference > 255) ? 1 : 0;
-    subtractByte = difference & 0xFF;
+    uint16_t difference = r_div + carry_bit - subtract_byte;
+    carry_bit = (difference > 255) ? 1 : 0;
+    subtract_byte = difference & 0xFF;
 }
 
 // Function to get a random byte
-uint8_t getRandomByte(void)
+uint8_t get_random_byte(void)
 {
-    return addByte; // Return the add byte as the generated random number
+    return add_byte; // Return the add byte as the generated random number
 }
 
 void randomize_gen1_DVs(uint8_t *dv_array)
@@ -362,8 +362,8 @@ void randomize_gen1_DVs(uint8_t *dv_array)
     for (int i = 0; i < PKSAV_NUM_GB_IVS - 1; i++)
     {
         // random int between 0 and 15
-        dv_array[i] = (uint8_t)(getRandomByte() & 0xF);
-        generateRandomNumberStep();
+        dv_array[i] = (uint8_t)(get_random_byte() & 0xF);
+        generate_random_number_step();
     }
 
     // Generate HP dv from other dvs (string LSBs together)
@@ -403,7 +403,7 @@ void update_pkmn_stats(PokemonSave *pokemon_save, int pokemon_index, const struc
 
     // Get the pokemon's EVs
     struct pksav_gen1_pc_pokemon pkmn_ev_data = pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data;
-    uint16_t pkmn_evs[PKSAV_NUM_GB_IVS] = {
+    const uint16_t pkmn_evs[PKSAV_NUM_GB_IVS] = {
         [PKSAV_GB_IV_ATTACK] = pksav_bigendian16(pkmn_ev_data.ev_atk),
         [PKSAV_GB_IV_DEFENSE] = pksav_bigendian16(pkmn_ev_data.ev_def),
         [PKSAV_GB_IV_SPEED] = pksav_bigendian16(pkmn_ev_data.ev_spd),
@@ -413,14 +413,14 @@ void update_pkmn_stats(PokemonSave *pokemon_save, int pokemon_index, const struc
 
     // Calculate the pokemon's HP stat
     uint8_t pkmn_stats[PKSAV_NUM_GB_IVS] = {
-        [PKSAV_GB_IV_HP] = calculateHP(pkmn_ev_data.level, pkmn_base->max_hp, pkmn_dvs[PKSAV_GB_IV_HP], pkmn_evs[PKSAV_GB_IV_HP]),
+        [PKSAV_GB_IV_HP] = calculate_hp(pkmn_ev_data.level, pkmn_base->max_hp, pkmn_dvs[PKSAV_GB_IV_HP], pkmn_evs[PKSAV_GB_IV_HP]),
     };
 
     // Calculate the pokemon's other stats
-    pkmn_stats[PKSAV_GB_IV_ATTACK] = calculateStat(pkmn_ev_data.level, pkmn_base->atk, pkmn_dvs[PKSAV_GB_IV_ATTACK], pkmn_evs[PKSAV_GB_IV_ATTACK]);
-    pkmn_stats[PKSAV_GB_IV_DEFENSE] = calculateStat(pkmn_ev_data.level, pkmn_base->def, pkmn_dvs[PKSAV_GB_IV_DEFENSE], pkmn_evs[PKSAV_GB_IV_DEFENSE]);
-    pkmn_stats[PKSAV_GB_IV_SPEED] = calculateStat(pkmn_ev_data.level, pkmn_base->spd, pkmn_dvs[PKSAV_GB_IV_SPEED], pkmn_evs[PKSAV_GB_IV_SPEED]);
-    pkmn_stats[PKSAV_GB_IV_SPECIAL] = calculateStat(pkmn_ev_data.level, pkmn_base->spcl, pkmn_dvs[PKSAV_GB_IV_SPECIAL], pkmn_evs[PKSAV_GB_IV_SPECIAL]);
+    pkmn_stats[PKSAV_GB_IV_ATTACK] = calculate_stat(pkmn_ev_data.level, pkmn_base->atk, pkmn_dvs[PKSAV_GB_IV_ATTACK], pkmn_evs[PKSAV_GB_IV_ATTACK]);
+    pkmn_stats[PKSAV_GB_IV_DEFENSE] = calculate_stat(pkmn_ev_data.level, pkmn_base->def, pkmn_dvs[PKSAV_GB_IV_DEFENSE], pkmn_evs[PKSAV_GB_IV_DEFENSE]);
+    pkmn_stats[PKSAV_GB_IV_SPEED] = calculate_stat(pkmn_ev_data.level, pkmn_base->spd, pkmn_dvs[PKSAV_GB_IV_SPEED], pkmn_evs[PKSAV_GB_IV_SPEED]);
+    pkmn_stats[PKSAV_GB_IV_SPECIAL] = calculate_stat(pkmn_ev_data.level, pkmn_base->spcl, pkmn_dvs[PKSAV_GB_IV_SPECIAL], pkmn_evs[PKSAV_GB_IV_SPECIAL]);
 
     // Update the pokemon's stats
     pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].party_data.max_hp = pksav_bigendian16(pkmn_stats[PKSAV_GB_IV_HP]);

@@ -59,10 +59,10 @@ typedef enum {
 
 struct SaveFileData {
     // current saves file directory string
-    char saveDir[MAX_FILE_PATH_CHAR];
+    char save_dir[MAX_FILE_PATH_CHAR];
     // array of saves file paths in the current saves file directory
     char *saves_file_path[MAX_FILE_PATH_COUNT];
-    int numSaves;
+    int num_saves;
 };
 
 typedef enum

@@ -178,16 +178,16 @@ static const struct pksav_gen2_party_pokemon kingdra = {
 static bool disable_random_DVs_on_trade = false;
 
 int error_handler(enum pksav_error error, const char *message);
-void swapPartyPokemonAtIndices(struct pksav_gen2_save *save, int pokemon_index1, int pokemon_index2); // TODO: Update for cross-generation
-void swapPokemonAtIndexBetweenSaves(PokemonSave *player1_save, PokemonSave *player2_save, int selected_index1, int selected_index2);
+void swap_party_pkmn_at_indices(struct pksav_gen2_save *save, int pokemon_index1, int pokemon_index2); // TODO: Update for cross-generation
+void swap_pkmn_at_index_between_saves(PokemonSave *player1_save, PokemonSave *player2_save, int selected_index1, int selected_index2);
 void create_trainer(PokemonSave *save, struct TrainerInfo *trainer);
-void updateSeenOwnedPokemon(PokemonSave *save, int pokemon_party_index);
-void createTrainerNameStr(struct TrainerInfo *trainer, char *trainer_name, bool showGender);
-void createTrainerIdStr(struct TrainerInfo *trainer, char *trainer_id);
+void update_seen_owned_pkmn(PokemonSave *save, int pokemon_party_index);
+void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name, bool show_gender);
+void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id);
 int check_trade_evolution_gen1(PokemonSave *pokemon_save, int pokemon_index);
 int check_trade_evolution_gen2(PokemonSave *pokemon_save, int pokemon_index);
 void evolve_party_pokemon_at_index(PokemonSave *pokemon_save, int pokemon_index);
-void generateRandomNumberStep(void);
+void generate_random_number_step(void);
 void update_pkmn_DVs(PokemonSave *pokemon_save, int pokemon_index);
 bool get_is_random_DVs_disabled(void);
 void set_is_random_DVs_disabled(bool is_disabled);

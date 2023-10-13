@@ -30,7 +30,7 @@
             "externalConsole": false,
             "MIMode": "lldb",
             "targetArchitecture": "arm64",
-            "preLaunchTask": "Build PokeromTrader"
+            "preLaunchTask": "Build PokeromTrader",
         }
 
     ]

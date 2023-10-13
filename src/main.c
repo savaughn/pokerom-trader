@@ -16,9 +16,9 @@ int main(int argc, char *argv[])
     char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
     if (config_save_path != NULL)
     {
-        strcpy((char *)save_file_data.saveDir, config_save_path);
+        strcpy((char *)save_file_data.save_dir, config_save_path);
     } else {
-        strcpy((char *)save_file_data.saveDir, "DIR_NOT_SET");
+        strcpy((char *)save_file_data.save_dir, "DIR_NOT_SET");
     }
 
     // Read and save the disable random setting from config.ini
@@ -28,23 +28,23 @@ int main(int argc, char *argv[])
     free(config_save_path);
 
     // create trainers
-    struct TrainerInfo trainer1 = {
+    struct TrainerInfo trainer_1 = {
         .trainer_id = 0,
     };
-    struct TrainerInfo trainer2 = {
+    struct TrainerInfo trainer_2 = {
         .trainer_id = 0,
     };
     // A struct to hold the trainer selection data
-    struct TrainerSelection trainerSelection[2] = {
-        [0] = {.trainer_id = trainer1.trainer_id, .pokemon_index = -1, .trainer_index = 0},
-        [1] = {.trainer_id = trainer2.trainer_id, .pokemon_index = -1, .trainer_index = 1}};
+    struct TrainerSelection trainer_selection[2] = {
+        [0] = {.trainer_id = trainer_1.trainer_id, .pokemon_index = -1, .trainer_index = 0},
+        [1] = {.trainer_id = trainer_2.trainer_id, .pokemon_index = -1, .trainer_index = 1}};
 
     // Draw
-    DrawRaylibScreenLoop(
+    draw_raylib_screen_loop(
         &save_file_data,
-        &trainer1,
-        &trainer2,
-        trainerSelection,
+        &trainer_1,
+        &trainer_2,
+        trainer_selection,
         player1_save_path,
         player2_save_path,
         &pokemon_save_player1,

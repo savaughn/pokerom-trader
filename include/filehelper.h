@@ -7,9 +7,9 @@
 #include <dirent.h>
 #include "common.h"
 
-// Global pointers for resolvedPath and absolutePath
-extern char *resolvedPath;
-extern char *absolutePath;
+// Global pointers for resolved_path and absolute_path
+extern char *resolved_path;
+extern char *absolute_path;
 
 // Function to get save files in a directory
 int get_save_files(struct SaveFileData *save_data);
