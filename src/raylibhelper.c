@@ -9,7 +9,9 @@ const Color background_color = RAYWHITE;
 static bool should_close_window = false;
 static GameScreen current_screen = SCREEN_MAIN_MENU;
 static int no_dir_err = 0;
+static bool was_mouse_pressed = false;  // Prevents back navigating two screens with one mouse click
 
+// Draws a button with the pokemon nickname with mouse-over and selected states
 void PokemonButton(Rectangle rect, int index, char *pokemon_nickname)
 {
     bool mouse_over = false;
@@ -30,16 +32,21 @@ void PokemonButton(Rectangle rect, int index, char *pokemon_nickname)
 
     DrawText(pokemon_nickname, rect.x + 10, rect.y + 6, 20, selected ? LIGHTGRAY : BLACK);
 }
+
+// Draws the trainers name, id, and party pokemon in pokemon buttons
 void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool showGender)
 {
+    // Get trainer generation 1 or 2
     SaveGenerationType trainer_generation = trainer->trainer_generation;
 
+    // Create the trainer name and id strings for Raylib drawing
     char trainer_name[15];
     createTrainerNameStr(trainer, trainer_name, showGender);
     char trainer_id[11];
     createTrainerIdStr(trainer, trainer_id);
     int current_trainer_index = trainerSelection[0].trainer_id == trainer->trainer_id ? 0 : trainerSelection[1].trainer_id == trainer->trainer_id ? 1
                                                                                                                                                   : -1;
+    // Get the party count for drawing the pokemon buttons
     int party_count = 0;
     if (trainer_generation == SAVE_GENERATION_1)
     {
@@ -49,6 +56,8 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
     {
         party_count = trainer->pokemon_party.gen2_pokemon_party.count;
     }
+    
+    // Name of the pokemon selected from list
     static char selected_pokemon_nickname[11];
 
     DrawText(trainer_name, x, y, 20, BLACK);
@@ -107,11 +116,13 @@ void DrawAboutScreen(void)
 
     EndDrawing();
 
+    // pressing this goes to main menu because the press is still down on next screen
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
         {
             current_screen = SCREEN_SETTINGS;
+            was_mouse_pressed = true;
         }
     }
 }
@@ -250,26 +261,61 @@ void DrawSettingsScreen(void)
 {
     BeginDrawing();
     ClearBackground(background_color);
-    DrawText("Settings", 190, 100, 20, BLACK);
-    DrawText("Change Save Directory", 190, 200, 20, BLACK);
-    DrawText("About Pokerom Trader", 190, 225, 20, BLACK);
+    DrawText("Settings", 50, 50, 20, BLACK);
+    DrawText("Change Save Directory", 50, 200, 20, BLACK);
+    // Toggle for random ivs on trade boolean
+    DrawText("Disable random DVs on trade", 50, 225, 20, BLACK);
+    // Checkbox for random ivs on trade
+    DrawText("ON", 385, 225, 20, BLACK);
+    Rectangle checkbox_rec_on = (Rectangle){385 + MeasureText("ON", 20) + 5, 225, 20, 20};
+    DrawRectangleLinesEx(checkbox_rec_on, 2, BLACK);
+    Rectangle checkbox_rec_off = (Rectangle){checkbox_rec_on.x + checkbox_rec_on.width + 5, 225, 20, 20};
+    DrawRectangleLinesEx(checkbox_rec_off, 2, BLACK);
+    DrawText("OFF", checkbox_rec_off.x + checkbox_rec_off.width + 5, checkbox_rec_off.y, 20, BLACK);
+    
+    bool _is_rand_disabled = get_is_random_DVs_disabled();
+    if (_is_rand_disabled)
+    {
+        // Draw filled in square
+        DrawRectangle(checkbox_rec_on.x + 3, checkbox_rec_on.y + 3, checkbox_rec_on.width - 6, checkbox_rec_on.height - 6, BLACK);
+        DrawText("DVs will be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, BLACK);
+    } else {
+        // Draw filled in square
+        DrawRectangle(checkbox_rec_off.x + 3, checkbox_rec_off.y + 3, checkbox_rec_off.width - 6, checkbox_rec_off.height - 6, BLACK);
+        DrawText("DVs will not be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, BLACK);
+    }
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_on))
+        {
+            set_is_random_DVs_disabled(true);
+            write_key_to_config("DISABLE_RANDOM_IVS_ON_TRADE", "true");
+        } 
+        else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_off))
+        {
+            set_is_random_DVs_disabled(false);
+            write_key_to_config("DISABLE_RANDOM_IVS_ON_TRADE", "false");
+        }
+    }
+    DrawText("About Pokerom Trader", 50, 325, 20, BLACK);
     DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 200, 200, 20}))
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 200, 200, 20}))
         {
             current_screen = SCREEN_FILE_EDIT;
         }
-        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 225, 200, 20}))
+        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 325, 200, 20}))
         {
             current_screen = SCREEN_ABOUT;
         }
         else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
         {
-            current_screen = SCREEN_MAIN_MENU;
+            if (!was_mouse_pressed) current_screen = SCREEN_MAIN_MENU;
         }
     }
     EndDrawing();
+    was_mouse_pressed = false;
 }
 void DrawMainMenuScreen(struct SaveFileData *save_file_data)
 {
@@ -679,9 +725,15 @@ void DrawEvolveScreen(PokemonSave *pokemon_save, char *save_path)
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
+            // Generates and assigns random dvs for simulated trade to new trainer
+            update_pkmn_DVs(pokemon_save, selected_index);
+            // Evolve pokemon with the simulated new trainer
             evolve_party_pokemon_at_index(pokemon_save, selected_index);
             // Update pokedex
             updateSeenOwnedPokemon(pokemon_save, selected_index);
+            // Generates and assigns random dvs on simulated trade back to OT
+            update_pkmn_DVs(pokemon_save, selected_index);
+            // Finalize pkmn data changes
             saveToFile(pokemon_save, save_path);
         }
     }

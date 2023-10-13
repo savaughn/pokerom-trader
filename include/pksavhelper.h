@@ -175,6 +175,8 @@ static const struct pksav_gen2_party_pokemon kingdra = {
     }
 };
 
+static bool disable_random_DVs_on_trade = false;
+
 int error_handler(enum pksav_error error, const char *message);
 void swapPartyPokemonAtIndices(struct pksav_gen2_save *save, int pokemon_index1, int pokemon_index2); // TODO: Update for cross-generation
 void swapPokemonAtIndexBetweenSaves(PokemonSave *player1_save, PokemonSave *player2_save, int selected_index1, int selected_index2);
@@ -186,4 +188,8 @@ int check_trade_evolution_gen1(PokemonSave *pokemon_save, int pokemon_index);
 int check_trade_evolution_gen2(PokemonSave *pokemon_save, int pokemon_index);
 void evolve_party_pokemon_at_index(PokemonSave *pokemon_save, int pokemon_index);
 void generateRandomNumberStep(void);
+void update_pkmn_DVs(PokemonSave *pokemon_save, int pokemon_index);
+bool get_is_random_DVs_disabled(void);
+void set_is_random_DVs_disabled(bool is_disabled);
+
 #endif /* PKSAVHELPER_H */

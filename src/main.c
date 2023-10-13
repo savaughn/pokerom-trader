@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
     PokemonSave pokemon_save_player1;
     PokemonSave pokemon_save_player2;
     struct SaveFileData save_file_data;
+    // Read and save the saves file directory from config.ini
     char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
     if (config_save_path != NULL)
     {
@@ -19,6 +20,9 @@ int main(int argc, char *argv[])
     } else {
         strcpy((char *)save_file_data.saveDir, "DIR_NOT_SET");
     }
+
+    // Read and save the disable random setting from config.ini
+    set_is_random_DVs_disabled(strcmp(read_key_from_config("DISABLE_RANDOM_IVS_ON_TRADE"), "false"));
 
     // malloc'd from read_key_from_config
     free(config_save_path);
@@ -30,6 +34,7 @@ int main(int argc, char *argv[])
     struct TrainerInfo trainer2 = {
         .trainer_id = 0,
     };
+    // A struct to hold the trainer selection data
     struct TrainerSelection trainerSelection[2] = {
         [0] = {.trainer_id = trainer1.trainer_id, .pokemon_index = -1, .trainer_index = 0},
         [1] = {.trainer_id = trainer2.trainer_id, .pokemon_index = -1, .trainer_index = 1}};

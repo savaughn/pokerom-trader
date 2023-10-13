@@ -156,6 +156,7 @@ void swapPokemonAtIndexBetweenSaves(PokemonSave *player1_save, PokemonSave *play
     // TODO: Update DVs for both traded pokemon
 }
 
+// Extracts the trainer info from the save file and updates the trainer struct
 void create_trainer(PokemonSave *pokemon_save, struct TrainerInfo *trainer)
 {
     SaveGenerationType save_generation_type = pokemon_save->save_generation_type;
@@ -209,6 +210,7 @@ void create_trainer(PokemonSave *pokemon_save, struct TrainerInfo *trainer)
     }
 }
 
+// Concantenate the trainer's name and id into a string for Raylib to draw
 void createTrainerNameStr(struct TrainerInfo *trainer, char *trainer_name, bool showGender)
 {
     strcpy(trainer_name, "NAME/");
@@ -220,6 +222,7 @@ void createTrainerNameStr(struct TrainerInfo *trainer, char *trainer_name, bool 
     }
 }
 
+// Concantenate the trainer's id into a string for Raylib to draw
 void createTrainerIdStr(struct TrainerInfo *trainer, char *trainer_id)
 {
     char id_str[6];
@@ -228,10 +231,13 @@ void createTrainerIdStr(struct TrainerInfo *trainer, char *trainer_id)
     strcat(trainer_id, id_str);
 }
 
+// Checks if supplied Gen 1 pokemon is eligible for trade evolution returns 1 if true, 0 if false
 int check_trade_evolution_gen1(PokemonSave *pokemon_save, int pokemon_index)
 {
+    // Species index of pokemon being checked
     uint8_t species = pokemon_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_index];
 
+    // Pokemon species eligible for trade evolution in Gen 1
     EvolutionCondition gen1Evolutions[] = {
         {KADABRA, NULL},
         {MACHOKE, NULL},
@@ -257,10 +263,15 @@ int check_trade_evolution_gen1(PokemonSave *pokemon_save, int pokemon_index)
     return 0;
 }
 
+// Checks if supplied Gen 2 pokemon is eligible for trade evolution returns 1 if true, 0 if false, or 2 if eligible but required missing item
 int check_trade_evolution_gen2(PokemonSave *pokemon_save, int pokemon_index)
 {
+    // Species index of pokemon being checked
     int species = pokemon_save->save.gen2_save.pokemon_storage.p_party->species[pokemon_index];
+    // Item held index by pokemon being checked
     int item = pokemon_save->save.gen2_save.pokemon_storage.p_party->party[pokemon_index].pc_data.held_item;
+
+    // Pokemon species eligible for trade evolution in Gen 2 with required item
     EvolutionCondition gen2Evolutions[] = {
         {SCYTHER, METAL_COAT},
         {POLIWHIRL, KING_ROCK},
@@ -304,7 +315,7 @@ uint8_t calculateHP(uint8_t level, int baseHP, int dvHP, int statExp)
     return (int)hpCalc;
 }
 
-// Function to calculate other stats (Attack, Defense, Special, Speed)
+// Function to calculate stats (Attack, Defense, Special, Speed)
 // based on base stat, IV, Stat Exp, and level
 uint8_t calculateStat(uint8_t level, int baseStat, int dv, int statExp)
 {
@@ -365,15 +376,20 @@ void randomize_gen1_DVs(uint8_t *dv_array)
 // Randomize the DVs of a pokemon on trade
 void update_pkmn_DVs(PokemonSave *pokemon_save, int pokemon_index)
 {
+    // From settings menu to prevent changing DVs on trade
+    if (disable_random_DVs_on_trade)
+    {
+        printf("Random IVs on trade disabled\n");
+        return;
+    }
     // randomize the dvs on trade except for HP
     uint8_t traded_pkmn_rand_dvs[PKSAV_NUM_GB_IVS] = {0};
     randomize_gen1_DVs(traded_pkmn_rand_dvs);
 
     // set the ivs to pokemon at index
-    uint16_t *iv_data_ptr = &pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.iv_data;
     for (int i = PKSAV_GB_IV_ATTACK; i < PKSAV_NUM_GB_IVS; i++)
     {
-        pksav_set_gb_IV(i, traded_pkmn_rand_dvs[i], iv_data_ptr);
+        pksav_set_gb_IV(i, traded_pkmn_rand_dvs[i], &pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.iv_data);
     }
 }
 
@@ -416,9 +432,6 @@ void update_pkmn_stats(PokemonSave *pokemon_save, int pokemon_index, const struc
 // Convert party pokemon to evolution pokemon with updated stats and properties
 void generate_pkmn_evolution(PokemonSave *pokemon_save, int pokemon_index, struct pksav_gen1_party_pokemon pkmn_base, int species_index)
 {
-    // Generates and assigns random dvs
-    update_pkmn_DVs(pokemon_save, pokemon_index);
-
     // Calculates and updates stats
     update_pkmn_stats(pokemon_save, pokemon_index, &pkmn_base.party_data);
 
@@ -444,48 +457,79 @@ void generate_pkmn_evolution(PokemonSave *pokemon_save, int pokemon_index, struc
     // pokemon_save->save.gen1_save.pokemon_storage.p_party->party[pokemon_index].pc_data.moves;
 }
 
+// Execute evolution for party pokemon at index
 void evolve_party_pokemon_at_index(PokemonSave *pokemon_save, int pokemon_index)
 {
+    // Handle Generation 1 Evolutions
     if (pokemon_save->save_generation_type == SAVE_GENERATION_1)
     {
+        // Get the pokemon's species index
         int species = pokemon_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_index];
+
+        // Get the pokemon's nickname
         char pokemon_name[11];
         pksav_gen1_import_text(pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index], pokemon_name, 10);
 
         switch (species)
         {
+        // Kadabra -> Alakazam
         case KADABRA:
+            // Check if pokemon does not have custom nickname
+            // if the nickname is not custom, then update the pokemon nickname
+            // else do not modify the nickname
             if (strcmp(pokemon_name, "KADABRA") == 0)
             {
+                // Write default nickname for species to pokemon
                 pksav_gen1_export_text("ALAKAZAM", pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index], 10);
+                // Set the last character to 0x50 to terminate the string
                 pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index][strlen("ALAKAZAM")] = 0x50;
             }
+            // Update the pokemon's stats and properties
             generate_pkmn_evolution(pokemon_save, pokemon_index, alakazam_base_stats, ALAKAZAM);
             break;
+        // Machoke -> Machamp
         case MACHOKE:
+            // Check if pokemon does not have custom nickname
+            // if the nickname is not custom, then update the pokemon nickname
+            // else do not modify the nickname
             if (strcmp(pokemon_name, "MACHOKE") == 0)
             {
+                // Write default nickname for species to pokemon
                 pksav_gen1_export_text("MACHAMP", pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index], 10);
+                // Set the last character to 0x50 to terminate the string
                 pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index][strlen("MACHAMP")] = 0x50;
             }
+            // Update the pokemon's stats and properties
             generate_pkmn_evolution(pokemon_save, pokemon_index, machamp_base_stats, MACHAMP);
             break;
+        // Graveler -> Golem
         case GRAVELER:
+            // Check if pokemon does not have custom nickname
+            // if the nickname is not custom, then update the pokemon nickname
+            // else do not modify the nickname
             if (strcmp(pokemon_name, "GRAVELER") == 0)
             {
+                // Write default nickname for species to pokemon
                 pksav_gen1_export_text("GOLEM", pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index], 10);
+                // Set the last character to 0x50 to terminate the string
                 pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index][strlen("GOLEM")] = 0x50;
             }
+            // Update the pokemon's stats and properties
             generate_pkmn_evolution(pokemon_save, pokemon_index, golem_base_stats, GOLEM);
             break;
+        // Haunter -> Gengar
         case HAUNTER:
-            // Update species nickname if not named by player
+            // Check if pokemon does not have custom nickname
+            // if the nickname is not custom, then update the pokemon nickname
+            // else do not modify the nickname
             if (strcmp(pokemon_name, "HAUNTER") == 0)
             {
+                // Write default nickname for species to pokemon
                 pksav_gen1_export_text("GENGAR", pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index], 10);
+                // Set the last character to 0x50 to terminate the string
                 pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[pokemon_index][strlen("GENGAR")] = 0x50;
             }
-
+            // Update the pokemon's stats and properties
             generate_pkmn_evolution(pokemon_save, pokemon_index, gengar_base_stats, GENGAR);
             break;
         default:
@@ -557,4 +601,15 @@ void evolve_party_pokemon_at_index(PokemonSave *pokemon_save, int pokemon_index)
             break;
         }
     }
+}
+// Settings getter for random DVs on trade
+bool get_is_random_DVs_disabled(void)
+{
+    return disable_random_DVs_on_trade;
+}
+
+// Settings setter for random DVs on trade
+void set_is_random_DVs_disabled(bool is_disabled)
+{
+    disable_random_DVs_on_trade = is_disabled;
 }
