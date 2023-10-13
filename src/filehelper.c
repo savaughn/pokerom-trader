@@ -59,47 +59,73 @@ int get_save_files(struct SaveFileData *save_data)
 
 int write_key_to_config(const char *key, const char *value)
 {
-    // Open config.ini
-    FILE *fp;
+    // Get config.ini path
     char *config_path[MAX_FILE_PATH_CHAR];
     strcpy(config_path, getenv("HOME"));
     strcat(config_path, "/Library/PokeromTrader/config.ini");
 
-    fp = fopen(config_path, "w");
-    if (fp == NULL)
-    {
-        printf("Error opening file! %d\n", errno);
+    // Open the INI file for reading and writing.
+    FILE *file = fopen(config_path, "r+");
+    if (file == NULL) {
+        perror("Error opening INI file");
         return 1;
     }
 
-    // if key already exists, overwrite it
-    char *key_value = read_key_from_config(key);
-    if (key_value != NULL)
-    {
-        // If there's no change in value
-        if (strcmp(key_value, value) == 0)
-        {
-            printf("Key %s already exists with value %s, not overwriting...\n", key, value);
-            fclose(fp);
-            return 0;
+    // Create a temporary file to store the modified contents.
+    FILE *temp_file = tmpfile();
+    if (temp_file == NULL) {
+        perror("Error creating temporary file");
+        fclose(file);
+        return 1;
+    }
+
+    char line[1024];
+    int key_found = 0;
+
+    // Read the INI file line by line.
+    while (fgets(line, sizeof(line), file) != NULL) {
+        // Check if the line starts with the desired key.
+        if (strncmp(line, key, strlen(key)) == 0) {
+            // Key found, update the value.
+            fprintf(temp_file, "%s=%s\n", key, value);
+            key_found = 1;
+        } else {
+            // Copy the line as-is to the temporary file.
+            fprintf(temp_file, "%s", line);
         }
-
-        // Overwriting with new key value
-        printf("Key %s already exists, overwriting...\n", key);
-        fputs(key_value, fp);
-
-        fclose(fp);
     }
-    else
-    {
-        fprintf(fp, "%s=%s", key, value);
-        fclose(fp);
+
+    // If the key was not found, add it to the end of the file.
+    if (!key_found) {
+        fprintf(temp_file, "%s=%s\n", key, value);
     }
-    free(key_value);
+
+    // Close both files.
+    fclose(file);
+    rewind(temp_file);
+
+    // Reopen the INI file for writing and copy the contents from the temporary file.
+    file = fopen(config_path, "w");
+    if (file == NULL) {
+        perror("Error reopening INI file");
+        fclose(temp_file);
+        return 1;
+    }
+
+    while (fgets(line, sizeof(line), temp_file) != NULL) {
+        fprintf(file, "%s", line);
+    }
+
+    // Close the temporary file.
+    fclose(temp_file);
+
+    // Close the INI file.
+    fclose(file);
+
     return 0;
 }
 
-void create_config(void)
+void create_default_config(void)
 {
     FILE *fp;
     char cwd[MAX_FILE_PATH_CHAR];
@@ -130,7 +156,7 @@ void create_config(void)
 
     // create config.ini file in cwd
     strcat(cwd, "/config.ini");
-    fp = fopen(cwd, "a");
+    fp = fopen(cwd, "w+");
 
     if (fp == NULL)
     {
@@ -138,11 +164,15 @@ void create_config(void)
         exit(errno);
     }
 
-    // Write default key value to new config.ini
+    fputs("# This is a generated file. Only modify values not keys.\n", fp);
+
+    // Write default key values to new config.ini
     char *default_key[MAX_FILE_PATH_CHAR];
     strcpy(default_key, "SAVE_FILE_DIR=");
     strcat(default_key, saves_dir);
     fputs(default_key, fp);
+    fputs("\n", fp);
+    fputs("DISABLE_RANDOM_IVS_ON_TRADE=false", fp);
 
     fclose(fp);
 }
@@ -165,7 +195,7 @@ char *read_key_from_config(const char *key)
     if (fp == NULL)
     {
         fclose(fp);
-        create_config();
+        create_default_config();
 
         // open after creation
         fp = fopen(config_path, "r");

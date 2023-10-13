@@ -5,11 +5,29 @@
 
 ## Overview
 
-Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the PKSav C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon between different save files or Pokémon game versions.
-
+Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the PKSav C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon between different save files or Pokémon game versions. This is not another save file editor. This replicates the in-game trading experience resulting in legal pokémon.
 There is no backup system implemented yet. Make backup saves before using this on your own personal files, because this is still very early stage and has not been thoroughly tested. 
+### Features
+- Trade - Allows a user to trade Pokémon between save files (currently only within the same generation)
+  - Trade with NPCs - Allows a user to trade Pokémon with NPCs such as gym leaders or Red (future feature)
+- Evolve - A shortcut for evolving Pokémon that only evolve through trading
+  - This replicates a trade, the evolution, and a trade back to OT
+- Bill's PC - Allows a user to view and manage their Pokémon boxes and party (in progress)
 
-Perfect Crystal save files seem to work.
+### Settings 
+- Change save files folder with absolute path to folder
+  - Default is ~/Library/PokeromTrader/saves (MacOS)
+- Disable Random DVs on trade (default off) when on will retain the dvs of the Pokémon being traded or evolved.
+  - The in-game experience always randomizes DVs on trade. This is a bypass of the official experience.
+
+### Deep Dive
+- DV randomization
+  - Random function is 1:1 with the in-game Random call converted from assembly to C which generates an add byte
+  - The add byte is anded with 0xF to get the lower 4 bits of the random byte (i.e. 0 to 15)
+  - The DV for HP is calculated by taking the least significant bit of each DV (attack, defense, speed, special) and concatenating them together into a single byte
+- Stats calculations
+  - Calculated using formula from [bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Stats)
+  - Based off of the Pokémon's base stats, level, DVs (stored or generated), and EVs all of which are read from the save file sram
 
 ## What's working
 
@@ -22,6 +40,7 @@ Perfect Crystal save files seem to work.
 | Silver | ❌  | ❌   | ❌      | ✅  | ✅     | ✅      |
 | Crystal | ❌  | ❌   | ❌      | ✅  | ✅     | ✅      |
 
+*Perfect Crystal save files seem to work.
 
 ## What's not working
 - See [issues tab](https://github.com/savaughn/pokerom-trader/issues) for current bugs 
