@@ -428,15 +428,15 @@ $(PROJECT_NAME): $(OBJS)
 	@echo "Building $(PROJECT_NAME)..."
 	$(CC) -o build/$(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 	@echo "Build process completed successfully!"
-	@echo "Running cppcheck..."
-	cppcheck --std=c11 --enable=all --inconclusive --suppress=missingInclude --suppress=missingIncludeSystem --suppress=unusedFunction src/
-
 
 # Compile source files
 # NOTE: This pattern will compile every module defined on $(OBJS)
 $(OBJ)/%.o: $(SOURCE)/%.c
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM)
 
+check:
+	@echo Running cppcheck...
+	cppcheck --std=c11 --enable=all --inconclusive --suppress=missingInclude --suppress=missingIncludeSystem --suppress=unusedFunction src/
 
 # # Clean everything
 # clean:

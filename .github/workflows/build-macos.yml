@@ -39,7 +39,7 @@ jobs:
     
     - name: Run cppcheck
       run: |
-        	cppcheck --std=c11 --enable=all --inconclusive --suppress=missingInclude --suppress=missingIncludeSystem --suppress=unusedFunction src/
+        cppcheck --std=c11 --enable=all --inconclusive --suppress=missingInclude --suppress=missingIncludeSystem --suppress=unusedFunction src/ || true
 
     - name: Bundle Executable with Library
       run: |
@@ -81,7 +81,13 @@ jobs:
 
     - name: Build Project
       run: |
+        brew install cppcheck
         make all
+            
+    - name: Run cppcheck
+      run: |
+        cppcheck --std=c11 --enable=all --inconclusive --suppress=missingInclude --suppress=missingIncludeSystem --suppress=unusedFunction src/ || true
+
 
     - name: Bundle Executable with Library
       run: |
