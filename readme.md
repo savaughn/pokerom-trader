@@ -22,12 +22,12 @@ There is no backup system implemented yet. Make backup saves before using this o
 
 ### Deep Dive
 - DV randomization
-  - Random function is 1:1 with the in-game Random call converted from assembly to C which generates an add byte
-  - The add byte is anded with 0xF to get the lower 4 bits of the random byte (i.e. 0 to 15)
-  - The DV for HP is calculated by taking the least significant bit of each DV (attack, defense, speed, special) and concatenating them together into a single byte
+  - Random function is 1:1 with the in-game Random call converted from assembly to C which generates an add byte for both generations.
+  - The add byte is anded with 0xF to get the lower 4 bits of the random byte (i.e. 0 to 15).
+  - The DV for HP is calculated by taking the least significant bit of each DV (attack, defense, speed, special) and concatenating them together into a single byte.
 - Stats calculations
-  - Calculated using formula from [bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Stats)
-  - Based off of the Pokémon's base stats, level, DVs (stored or generated), and EVs all of which are read from the save file sram
+  - Calculated using formula from [bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Stats).
+  - Based off of the Pokémon's base stats, level, DVs (stored or generated), and EVs all of which are read from the save file sram.
 
 ## What's working
 
@@ -114,3 +114,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 - [PKSav](https://github.com/ncorgan/pksav): Thank you to the creators and maintainers of PKSav for providing the library that makes this project possible.
 - [Raylib](www.github.com/raysan5/raylib): Thank you to the creators and maintainers of Raylib for providing the library that makes this project possible.
+
+## Disclaimer
+Pokerom Trader is an unofficial application and is not affiliated with or endorsed by Nintendo, Game Freak, Creatures, The Pokémon Company, or any related entities. Pokémon and Pokémon character names are trademarks of Nintendo, Game Freak, Creatures, and The Pokémon Company. All trademarks, character names, and other intellectual property used in this application are used for identification and informational purposes only. The use of these names and marks is believed to qualify as fair use under trademark law. Pokerom Trader is not endorsed by or affiliated with any of the aforementioned entities. Pokerom Trader is provided "as is" without warranty of any kind, and the developers make no warranties, express or implied, regarding the accuracy or completeness of the content provided in this application.

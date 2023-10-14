@@ -9,7 +9,7 @@ const Color background_color = RAYWHITE;
 static bool should_close_window = false;
 static GameScreen current_screen = SCREEN_MAIN_MENU;
 static int no_dir_err = 0;
-static bool was_mouse_pressed = false;  // Prevents back navigating two screens with one mouse click
+static bool was_mouse_pressed = false; // Prevents back navigating two screens with one mouse click
 
 // Draws a button with the pokemon nickname with mouse-over and selected states
 void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname)
@@ -111,11 +111,52 @@ void draw_about(void)
     DrawText("Pokerom Trader uses the following libraries:", x, 300, 20, BLACK);
     DrawText("raylib - https://www.raylib.com/", x, 325, 20, BLACK);
     DrawText("pksav - https://github.com/ncorgan/pksav", x, 350, 20, BLACK);
+    DrawText("Legal >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, BLACK);
     DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
 
     EndDrawing();
 
-    // pressing this goes to main menu because the press is still down on next screen
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+        {
+            current_screen = SCREEN_LEGAL;
+            was_mouse_pressed = true;
+        }
+        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+        {
+            current_screen = SCREEN_SETTINGS;
+            was_mouse_pressed = true;
+        }
+    }
+}
+void draw_legal(void)
+{   
+    const char *disclaimer_lines[] = {
+        "Pokerom Trader is an unofficial application and is not", 
+        "affiliated with or endorsed by Nintendo, Game Freak, Creatures,", 
+        "The Pokémon Company, or any related entities. Pokémon and Pokémon", 
+        "character names are trademarks of Nintendo, Game Freak, Creatures,", 
+        "and The Pokémon Company. All trademarks, character names, and other", 
+        "intellectual property used in this application are used for",
+        "identification and informational purposes only. The use of",
+        "these names and marks is believed to qualify as fair use under",
+        "trademark law. Pokerom Trader is not endorsed by or affiliated with",
+        "any of the aforementioned entities. Pokerom Trader is provided \"as is\"",
+        "without warranty of any kind, and the developers make no warranties,",
+        "express or implied, regarding the accuracy or completeness of the",
+        "content provided in this application."
+    };
+    
+    BeginDrawing();
+    ClearBackground(background_color);
+    DrawText("Disclaimer", 50, 50, 20, BLACK);
+    for (int i = 0; i < 13; i++)
+    {
+        DrawText(disclaimer_lines[i], 50, 75 + (i * 25), 20, BLACK);
+    }
+
+    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
@@ -124,6 +165,7 @@ void draw_about(void)
             was_mouse_pressed = true;
         }
     }
+    EndDrawing();
 }
 void draw_change_dir(struct SaveFileData *save_file_data)
 {
@@ -271,14 +313,16 @@ void draw_settings(void)
     Rectangle checkbox_rec_off = (Rectangle){checkbox_rec_on.x + checkbox_rec_on.width + 5, 225, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_off, 2, BLACK);
     DrawText("OFF", checkbox_rec_off.x + checkbox_rec_off.width + 5, checkbox_rec_off.y, 20, BLACK);
-    
+
     bool _is_rand_disabled = get_is_random_DVs_disabled();
     if (_is_rand_disabled)
     {
         // Draw filled in square
         DrawRectangle(checkbox_rec_on.x + 3, checkbox_rec_on.y + 3, checkbox_rec_on.width - 6, checkbox_rec_on.height - 6, BLACK);
         DrawText("DVs will be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, BLACK);
-    } else {
+    }
+    else
+    {
         // Draw filled in square
         DrawRectangle(checkbox_rec_off.x + 3, checkbox_rec_off.y + 3, checkbox_rec_off.width - 6, checkbox_rec_off.height - 6, BLACK);
         DrawText("DVs will not be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, BLACK);
@@ -289,7 +333,7 @@ void draw_settings(void)
         {
             set_is_random_DVs_disabled(true);
             write_key_to_config("DISABLE_RANDOM_IVS_ON_TRADE", "true");
-        } 
+        }
         else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_off))
         {
             set_is_random_DVs_disabled(false);
@@ -310,7 +354,8 @@ void draw_settings(void)
         }
         else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
         {
-            if (!was_mouse_pressed) current_screen = SCREEN_MAIN_MENU;
+            if (!was_mouse_pressed)
+                current_screen = SCREEN_MAIN_MENU;
         }
     }
     EndDrawing();
@@ -864,6 +909,11 @@ void draw_raylib_screen_loop(
         case SCREEN_ABOUT:
         {
             draw_about();
+            break;
+        }
+        case SCREEN_LEGAL:
+        {
+            draw_legal();
             break;
         }
         default:
