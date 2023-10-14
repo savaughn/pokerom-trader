@@ -428,7 +428,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
                     {
                         // load selection to player1_save
-                        pokemon_save_player1 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[0]]);
+                        *pokemon_save_player1 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[0]]);
 
                         // save the selected path name
                         strcpy(player1_save_path, save_file_data->saves_file_path[selected_saves_index[0]]);
@@ -438,7 +438,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                         trainerSelection[0].trainer_id = trainer1->trainer_id;
 
                         // load selection to player2_save
-                        pokemon_save_player2 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[1]]);
+                        *pokemon_save_player2 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[1]]);
                         strcpy(player2_save_path, save_file_data->saves_file_path[selected_saves_index[1]]);
                         create_trainer(pokemon_save_player2, trainer2);
                         trainerSelection[1].trainer_id = trainer2->trainer_id;
@@ -593,7 +593,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
                     if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE)
                         current_screen = SCREEN_EVOLVE;
                     // load selection to player1_save
-                    save_player1 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index]);
+                    *save_player1 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index]);
                     // save the selected path name
                     strcpy(player1_save_path, save_file_data->saves_file_path[selected_saves_index]);
                     // generate trainer info from save
