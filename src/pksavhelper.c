@@ -447,7 +447,7 @@ void update_pkmn_DVs(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
 }
 
 // Calculate and update the pokemon's stats based on its level, base stats, IVs, and EVs
-void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index, const uint8_t evo_pkmn_species_index)
+void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index, const uint8_t evolution_index)
 {
     // Get the pokemon's DVs
     uint8_t pkmn_dvs[PKSAV_NUM_GB_IVS];
@@ -466,12 +466,12 @@ void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index, const u
 
         int8_t pkmn_stats[PKSAV_GEN1_STAT_COUNT] = {
             // Calculate the pokemon's stats
-            [PKSAV_GEN1_STAT_ATTACK] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evo_pkmn_species_index].atk, pkmn_dvs[PKSAV_GB_IV_ATTACK], pkmn_evs[PKSAV_GB_IV_ATTACK]),
-            [PKSAV_GEN1_STAT_DEFENSE] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evo_pkmn_species_index].def, pkmn_dvs[PKSAV_GB_IV_DEFENSE], pkmn_evs[PKSAV_GB_IV_DEFENSE]),
-            [PKSAV_GEN1_STAT_SPEED] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evo_pkmn_species_index].spd, pkmn_dvs[PKSAV_GB_IV_SPEED], pkmn_evs[PKSAV_GB_IV_SPEED]),
-            [PKSAV_GEN1_STAT_SPECIAL] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evo_pkmn_species_index].spcl, pkmn_dvs[PKSAV_GB_IV_SPECIAL], pkmn_evs[PKSAV_GB_IV_SPECIAL]),
+            [PKSAV_GEN1_STAT_ATTACK] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evolution_index].atk, pkmn_dvs[PKSAV_GB_IV_ATTACK], pkmn_evs[PKSAV_GB_IV_ATTACK]),
+            [PKSAV_GEN1_STAT_DEFENSE] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evolution_index].def, pkmn_dvs[PKSAV_GB_IV_DEFENSE], pkmn_evs[PKSAV_GB_IV_DEFENSE]),
+            [PKSAV_GEN1_STAT_SPEED] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evolution_index].spd, pkmn_dvs[PKSAV_GB_IV_SPEED], pkmn_evs[PKSAV_GB_IV_SPEED]),
+            [PKSAV_GEN1_STAT_SPECIAL] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evolution_index].spcl, pkmn_dvs[PKSAV_GB_IV_SPECIAL], pkmn_evs[PKSAV_GB_IV_SPECIAL]),
             // Calculate the pokemon's HP stat
-            [PKSAV_GEN1_STAT_HP] = calculate_hp(pkmn_ev_data.level, pkmn_base_stats[evo_pkmn_species_index].max_hp, pkmn_dvs[PKSAV_GB_IV_HP], pkmn_evs[PKSAV_GB_IV_HP])};
+            [PKSAV_GEN1_STAT_HP] = calculate_hp(pkmn_ev_data.level, pkmn_base_stats[evolution_index].max_hp, pkmn_dvs[PKSAV_GB_IV_HP], pkmn_evs[PKSAV_GB_IV_HP])};
 
         // Update the pokemon's stats
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.atk = pksav_bigendian16(pkmn_stats[PKSAV_GEN1_STAT_ATTACK]);
@@ -493,13 +493,13 @@ void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index, const u
 
         int8_t pkmn_stats[PKSAV_GEN2_STAT_COUNT] = {
             // Calculate the pokemon's stats
-            [PKSAV_GEN2_STAT_ATTACK] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evo_pkmn_species_index].atk, pkmn_dvs[PKSAV_GB_IV_ATTACK], pkmn_evs[PKSAV_GB_IV_ATTACK]),
-            [PKSAV_GEN2_STAT_DEFENSE] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evo_pkmn_species_index].def, pkmn_dvs[PKSAV_GB_IV_DEFENSE], pkmn_evs[PKSAV_GB_IV_DEFENSE]),
-            [PKSAV_GEN2_STAT_SPEED] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evo_pkmn_species_index].spd, pkmn_dvs[PKSAV_GB_IV_SPEED], pkmn_evs[PKSAV_GB_IV_SPEED]),
-            [PKSAV_GEN2_STAT_SPATK] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evo_pkmn_species_index].spatk, pkmn_dvs[PKSAV_GB_IV_SPECIAL], pkmn_evs[PKSAV_GB_IV_SPECIAL]),
-            [PKSAV_GEN2_STAT_SPDEF] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evo_pkmn_species_index].spdef, pkmn_dvs[PKSAV_GB_IV_SPECIAL], pkmn_evs[PKSAV_GB_IV_SPECIAL]),
+            [PKSAV_GEN2_STAT_ATTACK] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evolution_index].atk, pkmn_dvs[PKSAV_GB_IV_ATTACK], pkmn_evs[PKSAV_GB_IV_ATTACK]),
+            [PKSAV_GEN2_STAT_DEFENSE] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evolution_index].def, pkmn_dvs[PKSAV_GB_IV_DEFENSE], pkmn_evs[PKSAV_GB_IV_DEFENSE]),
+            [PKSAV_GEN2_STAT_SPEED] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evolution_index].spd, pkmn_dvs[PKSAV_GB_IV_SPEED], pkmn_evs[PKSAV_GB_IV_SPEED]),
+            [PKSAV_GEN2_STAT_SPATK] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evolution_index].spatk, pkmn_dvs[PKSAV_GB_IV_SPECIAL], pkmn_evs[PKSAV_GB_IV_SPECIAL]),
+            [PKSAV_GEN2_STAT_SPDEF] = calculate_stat(pkmn_ev_data.level, pkmn_base_stats[evolution_index].spdef, pkmn_dvs[PKSAV_GB_IV_SPECIAL], pkmn_evs[PKSAV_GB_IV_SPECIAL]),
             // Calculate the pokemon's HP stat
-            [PKSAV_GEN2_STAT_HP] = calculate_hp(pkmn_ev_data.level, pkmn_base_stats[evo_pkmn_species_index].max_hp, pkmn_dvs[PKSAV_GB_IV_HP], pkmn_evs[PKSAV_GB_IV_HP])};
+            [PKSAV_GEN2_STAT_HP] = calculate_hp(pkmn_ev_data.level, pkmn_base_stats[evolution_index].max_hp, pkmn_dvs[PKSAV_GB_IV_HP], pkmn_evs[PKSAV_GB_IV_HP])};
 
         // Update the pokemon's stats
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.atk = pksav_bigendian16(pkmn_stats[PKSAV_GEN2_STAT_ATTACK]);
@@ -510,22 +510,47 @@ void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index, const u
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.max_hp = pksav_bigendian16(pkmn_stats[PKSAV_GEN2_STAT_HP]);
     }
 }
-// Convert party pokemon to evolution pokemon with updated stats and properties
-void generate_pkmn_evolution(PokemonSave *pkmn_save, uint8_t pkmn_party_index, uint8_t evo_pkmn_species_index)
-{
-    // Calculates and updates stats
-    update_pkmn_stats(pkmn_save, pkmn_party_index, evo_pkmn_species_index);
 
+// Convert party pokemon to evolution pokemon with updated stats and properties
+void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
+{
     if (pkmn_save->save_generation_type == SAVE_GENERATION_1)
     {
+        // Get the species index of the pokemon being evolved
+        uint8_t pkmn_species_index = pkmn_save->save.gen1_save.pokemon_storage.p_party->species[pkmn_party_index];
+        // Get the data for the pokemon's evolution
+        char evolution_name[11];
+        strcpy(evolution_name, pkmn_evolution_pairs[pkmn_species_index].evolution_name);
+        char species_name[11];
+        strcpy(species_name, pkmn_evolution_pairs[pkmn_species_index].species_name);
+        uint8_t evolution_index = pkmn_evolution_pairs[pkmn_species_index].evolution_index;
+
+        // Calculates and updates stats
+        update_pkmn_stats(pkmn_save, pkmn_party_index, evolution_index); 
+
+        // Get the pokemon's nickname
+        char pkmn_save_nickname[11];
+        pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index], pkmn_save_nickname, 10);
+                
+        // Check if pokemon does not have custom nickname
+        // if the nickname is not custom, then update the pokemon nickname
+        // else do not modify the nickname
+        if (strcmp(pkmn_save_nickname, species_name) == 0)
+        {
+            // Write default nickname for species to pokemon
+            pksav_gen1_export_text(evolution_name, pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
+            // Set the last character to 0x50 to terminate the string
+            pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen(evolution_name)] = 0x50;
+        }
+
         // Update species index
-        pkmn_save->save.gen1_save.pokemon_storage.p_party->species[pkmn_party_index] = evo_pkmn_species_index;
-        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species = evo_pkmn_species_index;
+        pkmn_save->save.gen1_save.pokemon_storage.p_party->species[pkmn_party_index] = evolution_index;
+        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species = evolution_index;
         // Update types
-        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.types[0] = pkmn_base_stats[evo_pkmn_species_index].types[0];
-        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.types[1] = pkmn_base_stats[evo_pkmn_species_index].types[1];
+        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.types[0] = pkmn_base_stats[evolution_index].types[0];
+        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.types[1] = pkmn_base_stats[evolution_index].types[1];
         // Update catch rate
-        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.catch_rate = pkmn_base_stats[evo_pkmn_species_index].catch_rate;
+        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.catch_rate = pkmn_base_stats[evolution_index].catch_rate;
         // Update condition to none
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.condition = PKSAV_GB_CONDITION_NONE;
         // Update health to max hp
@@ -536,9 +561,36 @@ void generate_pkmn_evolution(PokemonSave *pkmn_save, uint8_t pkmn_party_index, u
     }
     else
     {
+        // Get the species index of the pokemon being evolved
+        uint8_t pkmn_species_index = pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index];
+        // Get the data for the pokemon's evolution
+        char evolution_name[11];
+        strcpy(evolution_name, pkmn_evolution_pairs[pkmn_species_index].evolution_name);
+        char species_name[11];
+        strcpy(species_name, pkmn_evolution_pairs[pkmn_species_index].species_name);
+        uint8_t evolution_index = pkmn_evolution_pairs[pkmn_species_index].evolution_index;
+
+        // Calculates and updates stats
+        update_pkmn_stats(pkmn_save, pkmn_party_index, evolution_index);
+
+        // Get the pokemon's nickname
+        char pkmn_save_nickname[11];
+        pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index], pkmn_save_nickname, 10);
+
+        // Check if pokemon does not have custom nickname
+        // if the nickname is not custom, then update the pokemon nickname
+        // else do not modify the nickname
+        if (strcmp(pkmn_save_nickname, species_name) == 0)
+        {
+            // Write default nickname for species to pokemon
+            pksav_gen2_export_text(evolution_name, pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
+            // Set the last character to 0x50 to terminate the string
+            pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen(evolution_name)] = 0x50;
+        }        
+        
         // Update species index
-        pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index] = evo_pkmn_species_index;
-        pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species = evo_pkmn_species_index;
+        pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index] = evolution_index;
+        pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species = evolution_index;
         // Update condition to none
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.condition = PKSAV_CONDITION_NONE;
         // Update health to max hp
@@ -549,155 +601,6 @@ void generate_pkmn_evolution(PokemonSave *pkmn_save, uint8_t pkmn_party_index, u
     }
 }
 
-// Execute evolution for party pokemon at index
-void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
-{
-    // Handle Generation 1 Evolutions
-    if (pkmn_save->save_generation_type == SAVE_GENERATION_1)
-    {
-        // Get the pokemon's species index before evolution
-        int species_index = pkmn_save->save.gen1_save.pokemon_storage.p_party->species[pkmn_party_index];
-
-        // Get the pokemon's nickname
-        char pokemon_name[11];
-        pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index], pokemon_name, 10);
-
-        switch (species_index)
-        {
-        // Kadabra -> Alakazam
-        case KADABRA:
-            // Check if pokemon does not have custom nickname
-            // if the nickname is not custom, then update the pokemon nickname
-            // else do not modify the nickname
-            if (strcmp(pokemon_name, "KADABRA") == 0)
-            {
-                // Write default nickname for species to pokemon
-                pksav_gen1_export_text("ALAKAZAM", pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
-                // Set the last character to 0x50 to terminate the string
-                pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen("ALAKAZAM")] = 0x50;
-            }
-            // Update the pokemon's stats and properties
-            generate_pkmn_evolution(pkmn_save, pkmn_party_index, ALAKAZAM);
-            break;
-        // Machoke -> Machamp
-        case MACHOKE:
-            // Check if pokemon does not have custom nickname
-            // if the nickname is not custom, then update the pokemon nickname
-            // else do not modify the nickname
-            if (strcmp(pokemon_name, "MACHOKE") == 0)
-            {
-                // Write default nickname for species to pokemon
-                pksav_gen1_export_text("MACHAMP", pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
-                // Set the last character to 0x50 to terminate the string
-                pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen("MACHAMP")] = 0x50;
-            }
-            // Update the pokemon's stats and properties
-            generate_pkmn_evolution(pkmn_save, pkmn_party_index, MACHAMP);
-            break;
-        // Graveler -> Golem
-        case GRAVELER:
-            // Check if pokemon does not have custom nickname
-            // if the nickname is not custom, then update the pokemon nickname
-            // else do not modify the nickname
-            if (strcmp(pokemon_name, "GRAVELER") == 0)
-            {
-                // Write default nickname for species to pokemon
-                pksav_gen1_export_text("GOLEM", pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
-                // Set the last character to 0x50 to terminate the string
-                pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen("GOLEM")] = 0x50;
-            }
-            // Update the pokemon's stats and properties
-            generate_pkmn_evolution(pkmn_save, pkmn_party_index, GOLEM);
-            break;
-        // Haunter -> Gengar
-        case HAUNTER:
-            // Check if pokemon does not have custom nickname
-            // if the nickname is not custom, then update the pokemon nickname
-            // else do not modify the nickname
-            if (strcmp(pokemon_name, "HAUNTER") == 0)
-            {
-                // Write default nickname for species to pokemon
-                pksav_gen1_export_text("GENGAR", pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
-                // Set the last character to 0x50 to terminate the string
-                pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen("GENGAR")] = 0x50;
-            }
-            // Update the pokemon's stats and properties
-            generate_pkmn_evolution(pkmn_save, pkmn_party_index, GENGAR);
-            break;
-        default:
-            break;
-        }
-    }
-    else
-    {
-        // Get the pokemon's species index before evolution
-        int species_index = pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index];
-        
-        // Get the pokemon's nickname
-        char pokemon_name[11];
-        pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index], pokemon_name, 10);
-
-        switch (species_index)
-        {
-        case SCYTHER:
-            pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index] = SCIZOR;
-            if (strcmp(pokemon_name, "SCYTHER") == 0)
-            {
-                pksav_gen2_export_text("SCIZOR", pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
-                pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen("SCIZOR")] = 0x50;
-            }
-            generate_pkmn_evolution(pkmn_save, pkmn_party_index, SCIZOR);
-            break;
-        case POLIWHIRL:
-            pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index] = POLITOED;
-            if (strcmp(pokemon_name, "POLIWHIRL") == 0)
-            {
-                pksav_gen2_export_text("POLITOED", pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
-                pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen("POLITOED")] = 0x50;
-            }
-            generate_pkmn_evolution(pkmn_save, pkmn_party_index, POLITOED);
-            break;
-        case SLOWPOKE:
-            pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index] = SLOWKING;
-            if (strcmp(pokemon_name, "SLOWPOKE") == 0)
-            {
-                pksav_gen2_export_text("SLOWKING", pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
-                pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen("SLOWKING")] = 0x50;
-            }
-            generate_pkmn_evolution(pkmn_save, pkmn_party_index, SLOWKING);
-            break;
-        case ONIX:
-            pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index] = STEELIX;
-            if (strcmp(pokemon_name, "ONIX") == 0)
-            {
-                pksav_gen2_export_text("STEELIX", pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
-                pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen("STEELIX")] = 0x50;
-            }
-            generate_pkmn_evolution(pkmn_save, pkmn_party_index, STEELIX);
-            break;
-        case PORYGON:
-            pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index] = PORYGON2;
-            if (strcmp(pokemon_name, "PORYGON") == 0)
-            {
-                pksav_gen2_export_text("PORYGON2", pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
-                pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen("PORYGON2")] = 0x50;
-            }
-            generate_pkmn_evolution(pkmn_save, pkmn_party_index, PORYGON2);
-            break;
-        case SEADRA:
-            pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index] = KINGDRA;
-            if (strcmp(pokemon_name, "SEADRA") == 0)
-            {
-                pksav_gen2_export_text("KINGDRA", pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
-                pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen("KINGDRA")] = 0x50;
-            }
-            generate_pkmn_evolution(pkmn_save, pkmn_party_index, KINGDRA);
-            break;
-        default:
-            break;
-        }
-    }
-}
 // Settings getter for random DVs on trade
 bool get_is_random_DVs_disabled(void)
 {
