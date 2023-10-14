@@ -90,19 +90,19 @@ PokemonSave load_savefile_from_path(const char *path)
 }
 /**
  * @brief saves the save buffer to a path
- * @param pokemon_save a pointer to a PokemonSave struct save buffer
+ * @param pkmn_save a pointer to a PokemonSave struct save buffer
  * @param path the path to the save file
 */
-void save_savefile_to_path(PokemonSave *pokemon_save, char *path)
+void save_savefile_to_path(PokemonSave *pkmn_save, char *path)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
-    if (pokemon_save->save_generation_type == SAVE_GENERATION_1)
+    if (pkmn_save->save_generation_type == SAVE_GENERATION_1)
     {
-        err = pksav_gen1_save_save(path, &pokemon_save->save.gen1_save);
+        err = pksav_gen1_save_save(path, &pkmn_save->save.gen1_save);
     }
     else
     {
-        err = pksav_gen2_save_save(path, &pokemon_save->save.gen2_save);
+        err = pksav_gen2_save_save(path, &pkmn_save->save.gen2_save);
     }
 
     if (err != PKSAV_ERROR_NONE)
