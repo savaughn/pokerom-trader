@@ -11,25 +11,9 @@ static GameScreen current_screen = SCREEN_MAIN_MENU;
 static int no_dir_err = 0;
 static bool was_mouse_pressed = false; // Prevents back navigating two screens with one mouse click
 
-// Draws a button with the pokemon nickname with mouse-over and selected states
-void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname)
+// Draws a button with the pokemon nickname
+void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname, bool selected)
 {
-    bool mouse_over = false;
-    bool selected = false;
-    if (CheckCollisionPointRec(GetMousePosition(), rect))
-    {
-        mouse_over = true;
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
-        {
-            selected = true;
-        }
-    }
-
-    if (mouse_over)
-    {
-        DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, selected ? LIGHTGRAY : DARKGRAY);
-    }
-
     DrawText(pokemon_nickname, rect.x + 10, rect.y + 6, 20, selected ? LIGHTGRAY : BLACK);
 }
 
@@ -73,10 +57,15 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
             pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[i], pokemon_nickname, 10);
         }
 
-        draw_pkmn_button((Rectangle){x - 10, y + 70 + (i * 30), 200, 30}, i, pokemon_nickname);
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x - 10, y + 70 + (i * 30), 200, 30}) && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+        draw_pkmn_button((Rectangle){x - 10, y + 70 + (i * 30), 200, 30}, i, pokemon_nickname, current_trainer_index != -1 && trainerSelection[current_trainer_index].pkmn_party_index == i);
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x - 10, y + 70 + (i * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            trainerSelection[current_trainer_index].pkmn_party_index = i;
+            if (trainerSelection[current_trainer_index].pkmn_party_index != i)
+            {
+                trainerSelection[current_trainer_index].pkmn_party_index = i;
+            } else {
+                trainerSelection[current_trainer_index].pkmn_party_index = -1;
+            }
         }
     }
 
@@ -131,13 +120,13 @@ void draw_about(void)
     }
 }
 void draw_legal(void)
-{   
+{
     const char *disclaimer_lines[] = {
-        "Pokerom Trader is an unofficial application and is not", 
-        "affiliated with or endorsed by Nintendo, Game Freak, Creatures,", 
-        "The Pokémon Company, or any related entities. Pokémon and Pokémon", 
-        "character names are trademarks of Nintendo, Game Freak, Creatures,", 
-        "and The Pokémon Company. All trademarks, character names, and other", 
+        "Pokerom Trader is an unofficial application and is not",
+        "affiliated with or endorsed by Nintendo, Game Freak, Creatures,",
+        "The Pokémon Company, or any related entities. Pokémon and Pokémon",
+        "character names are trademarks of Nintendo, Game Freak, Creatures,",
+        "and The Pokémon Company. All trademarks, character names, and other",
         "intellectual property used in this application are used for",
         "identification and informational purposes only. The use of",
         "these names and marks is believed to qualify as fair use under",
@@ -145,9 +134,8 @@ void draw_legal(void)
         "any of the aforementioned entities. Pokerom Trader is provided \"as is\"",
         "without warranty of any kind, and the developers make no warranties,",
         "express or implied, regarding the accuracy or completeness of the",
-        "content provided in this application."
-    };
-    
+        "content provided in this application."};
+
     BeginDrawing();
     ClearBackground(background_color);
     DrawText("Disclaimer", 50, 50, 20, BLACK);
@@ -681,7 +669,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
 void draw_evolve(PokemonSave *pkmn_save, char *save_path)
 {
     SaveGenerationType save_generation_type = pkmn_save->save_generation_type;
-    
+
     // Call rng
     generate_rand_num_step(save_generation_type);
 
@@ -711,23 +699,24 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path)
             {
                 eligible_pokemon_count++;
                 pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
-                draw_pkmn_button((Rectangle){50, 100 + (eligible_pokemon_count * 30), 200, 30}, i, pokemon_nickname);
+                draw_pkmn_button((Rectangle){50, 100 + (i * 30), 200, 30}, i, pokemon_nickname, selected_index == i);
             }
         }
         else if (save_generation_type == SAVE_GENERATION_2)
         {
             result = check_trade_evolution_gen2(pkmn_save, i);
-            if (result)
+            eligible_pokemon_count++;
+            pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
+            draw_pkmn_button((Rectangle){50, 100 + (i * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname, selected_index == i);
+            if (result == E_EVO_STATUS_MISSING_ITEM)
+                DrawText("Missing required item!", 75 + MeasureText(pokemon_nickname, 20), 100 + (i * 30), 20, RED);
+            if (result == E_EVO_STATUS_NOT_ELIGIBLE)
             {
-                eligible_pokemon_count++;
-                pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
-                draw_pkmn_button((Rectangle){50, 100 + (eligible_pokemon_count * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname);
-                if (result == 2)
-                    DrawText("Missing required item!", 75 + MeasureText(pokemon_nickname, 20), 100 + (eligible_pokemon_count * 30), 20, RED);
+                DrawText("Not eligible", 75 + MeasureText(pokemon_nickname, 20), 100 + (i * 30), 20, RED);
             }
         }
         // Selected pokemon button
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 100 + (eligible_pokemon_count * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 100 + (i * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && result == E_EVO_STATUS_ELIGIBLE)
         {
             if (selected_index == i)
             {
@@ -735,6 +724,8 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path)
             }
             else if (selected_index == -1)
             {
+                selected_index = i;
+            } else if (selected_index != i) {
                 selected_index = i;
             }
         }
@@ -761,7 +752,7 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path)
         DrawText(no_pkmn, text_center.x, text_center.y, 20, BLACK);
     }
     // Evolve button (next button)
-    DrawText("Evolve!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, selected_index != -1 && result == 1 ? BLACK : LIGHTGRAY);
+    DrawText("Evolve!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, selected_index != -1 && result == E_EVO_STATUS_ELIGIBLE ? BLACK : LIGHTGRAY);
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && eligible_pokemon_count)
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
@@ -776,6 +767,8 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path)
             update_pkmn_DVs(pkmn_save, selected_index);
             // Finalize pkmn data changes
             save_savefile_to_path(pkmn_save, save_path);
+
+            selected_index = -1;
         }
     }
 
@@ -838,7 +831,7 @@ void draw_bills_pc(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *
         {
             pksav_gen2_import_text(pokemon_box_gen2->nicknames[i], pokemon_nickname, 10);
         }
-        draw_pkmn_button((Rectangle){400, 200 + (i * 30), 200, 30}, i, pokemon_nickname);
+        draw_pkmn_button((Rectangle){400, 200 + (i * 30), 200, 30}, i, pokemon_nickname, trainerSelection->pkmn_party_index == i);
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){400, 200 + (i * 30), 200, 30}) && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
         {
             trainerSelection->pkmn_party_index = i;

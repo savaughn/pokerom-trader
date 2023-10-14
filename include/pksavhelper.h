@@ -29,15 +29,16 @@
 #define KINGDRA (uint8_t)230
 
 // Items required for evolution
-#define METAL_COAT 143   // 0x8F
-#define KING_ROCK 82     // 0x52
-#define DRAGON_SCALE 151 // 0x97
-#define UPGRADE 172      // 0xAC
+#define METAL_COAT (uint8_t)143   // 0x8F
+#define KING_ROCK (uint8_t)82     // 0x52
+#define DRAGON_SCALE (uint8_t)151 // 0x97
+#define UPGRADE (uint8_t)172      // 0xAC
 
-typedef struct {
-    uint8_t species;
-    int item;
-} EvolutionConditionGen2;
+#define NUM_GEN1_EVOLUTION_PAIRS (uint8_t)4
+#define NUM_GEN2_EVOLUTION_PAIRS (uint8_t)6
+#define MAX_SPECIES_INDEX (uint8_t)255
+
+#define GENDER_UNKNOWN (uint8_t)99
 
 // Pokémon Base Stats
 struct pkmn_base_stats
@@ -72,10 +73,18 @@ struct pkmn_evolution_pair_data
     char evolution_name[11];
     uint8_t species_index;
     uint8_t evolution_index;
+    uint8_t evolution_item;
+};
+
+enum eligible_evolution_status
+{
+    E_EVO_STATUS_NOT_ELIGIBLE,
+    E_EVO_STATUS_ELIGIBLE,
+    E_EVO_STATUS_MISSING_ITEM
 };
 
 // Pokémon Evolution Pair Lookup Table
-static const struct pkmn_evolution_pair_data pkmn_evolution_pairs[HAUNTER + 1] = {
+static const struct pkmn_evolution_pair_data pkmn_evolution_pairs[MAX_SPECIES_INDEX + 1] = {
     [KADABRA] = {
         .species_name = "KADABRA",
         .evolution_name = "ALAKAZAM",
@@ -100,32 +109,38 @@ static const struct pkmn_evolution_pair_data pkmn_evolution_pairs[HAUNTER + 1] =
         .species_name = "SCYTHER",
         .evolution_name = "SCIZOR",
         .species_index = SCYTHER,
-        .evolution_index = SCIZOR},
+        .evolution_index = SCIZOR,
+        .evolution_item = METAL_COAT},
     [POLIWHIRL] = {
         .species_name = "POLIWHIRL",
         .evolution_name = "POLITOED",
         .species_index = POLIWHIRL,
-        .evolution_index = POLITOED},
+        .evolution_index = POLITOED,
+        .evolution_item = KING_ROCK},
     [SLOWPOKE] = {
         .species_name = "SLOWPOKE",
         .evolution_name = "SLOWKING",
         .species_index = SLOWPOKE,
-        .evolution_index = SLOWKING},
+        .evolution_index = SLOWKING,
+        .evolution_item = KING_ROCK},
     [ONIX] = {
         .species_name = "ONIX",
         .evolution_name = "STEELIX",
         .species_index = ONIX,
-        .evolution_index = STEELIX},
+        .evolution_index = STEELIX,
+        .evolution_item = METAL_COAT},
     [PORYGON] = {
         .species_name = "PORYGON",
         .evolution_name = "PORYGON2",
         .species_index = PORYGON,
-        .evolution_index = PORYGON2},
+        .evolution_index = PORYGON2,
+        .evolution_item = UPGRADE},
     [SEADRA] = {
         .species_name = "SEADRA",
         .evolution_name = "KINGDRA",
         .species_index = SEADRA,
-        .evolution_index = KINGDRA}
+        .evolution_index = KINGDRA,
+        .evolution_item = DRAGON_SCALE}
 };
 
 static bool disable_random_DVs_on_trade = false;
@@ -138,7 +153,7 @@ void update_seen_owned_pkmn(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name, bool show_gender);
 void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id);
 int check_trade_evolution_gen1(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
-int check_trade_evolution_gen2(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
+enum eligible_evolution_status check_trade_evolution_gen2(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 void generate_random_number_step(void);
 void update_pkmn_DVs(PokemonSave *pkmn_save, uint8_t pkmn_party_index);

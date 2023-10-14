@@ -264,45 +264,31 @@ int check_trade_evolution_gen1(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
 }
 
 // Checks if supplied Gen 2 pokemon is eligible for trade evolution returns 1 if true, 0 if false, or 2 if eligible but required missing item
-int check_trade_evolution_gen2(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
+enum eligible_evolution_status check_trade_evolution_gen2(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
 {
     // Species index of pokemon being checked
     int species = pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index];
     // Item held index by pokemon being checked
     int item = pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.held_item;
 
-    // Pokemon species eligible for trade evolution in Gen 2 with required item
-    EvolutionConditionGen2 gen2_evolutions[] = {
-        {SCYTHER, METAL_COAT},
-        {POLIWHIRL, KING_ROCK},
-        {SLOWPOKE, KING_ROCK},
-        {ONIX, METAL_COAT},
-        {PORYGON, UPGRADE},
-        {SEADRA, DRAGON_SCALE}};
-
-    int i;
-    for (i = 0; i < (int)(sizeof(gen2_evolutions) - 1); i++)
+    struct pkmn_evolution_pair_data evo_pair = pkmn_evolution_pairs[species];
+    // If the pkmn species has an initialized evolution pair
+    if (species == evo_pair.species_index)
     {
         // Pokemon eligible for trade evolution but missing item
-        if (gen2_evolutions[i].species == species && gen2_evolutions[i].item != item)
+        if (evo_pair.evolution_item != 0 && evo_pair.evolution_item != item)
         {
-            return 2;
+            return E_EVO_STATUS_MISSING_ITEM;
         }
 
         // Pokemon eligible for trade evolution
-        if (gen2_evolutions[i].species == species && gen2_evolutions[i].item == item)
+        if (evo_pair.evolution_item == item)
         {
-            return 1;
-        }
-
-        // No pokemon eligible for trade evolution
-        if (i == sizeof(gen2_evolutions) - 1)
-        {
-            return 0;
+            return E_EVO_STATUS_ELIGIBLE;
         }
     }
 
-    return 0;
+    return E_EVO_STATUS_NOT_ELIGIBLE;
 }
 
 // Function to calculate HP based on base stat, IV, Stat Exp, and level
@@ -332,6 +318,9 @@ uint8_t r_div = 0;
 uint8_t carry_bit = 0;
 uint8_t add_byte = 0;
 uint8_t subtract_byte = 0;
+// Simulated hardware registers
+uint8_t h_random_add = 0; // h_random_add register
+uint8_t h_random_sub = 0; // h_random_sub register
 
 // Simulate one step of the random number generation process
 void generate_random_number_step(void)
@@ -350,15 +339,18 @@ void generate_random_number_step(void)
     subtract_byte = difference & 0xFF;
 }
 
-// Function to get a random byte
-uint8_t get_random_byte(void)
+// Get a random byte from the simulated random number generation process
+uint8_t get_random_byte(SaveGenerationType save_generation_type)
 {
-    return add_byte; // Return the add byte as the generated random number
+    if (save_generation_type == SAVE_GENERATION_1)
+    {
+        return add_byte; // Return the add byte as the generated random number
+    }
+    else
+    {
+        return h_random_add; // Return the simulated hRandomAdd register
+    }
 }
-
-// Simulated hardware registers
-uint8_t hRandomAdd = 0; // hRandomAdd register
-uint8_t hRandomSub = 0; // hRandomSub register
 
 // Gen 2 used hardware registers to generate random numbers
 // Perform the random number generation step
@@ -367,18 +359,12 @@ void generate_random_number_step_gen2(void)
     r_div++; // Increment rDiv (simulated as an 8-bit counter)
 
     // Simulate the addition step
-    uint16_t sum = r_div + hRandomAdd;
-    hRandomAdd = (uint8_t)sum;
+    uint16_t sum = r_div + h_random_add;
+    h_random_add = (uint8_t)sum;
 
     // Simulate the subtraction step
-    uint16_t diff = r_div - hRandomSub;
-    hRandomSub = (uint8_t)diff;
-}
-
-// Function to get a random byte
-uint8_t get_random_byte_gen2(void)
-{
-    return hRandomAdd; // Return the simulated hRandomAdd register
+    uint16_t diff = r_div - h_random_sub;
+    h_random_sub = (uint8_t)diff;
 }
 
 void generate_rand_num_step(SaveGenerationType save_generation_type)
@@ -393,29 +379,13 @@ void generate_rand_num_step(SaveGenerationType save_generation_type)
     }
 }
 
-void randomize_gen1_DVs(uint8_t *dv_array)
+void randomize_dvs(uint8_t *dv_array, SaveGenerationType save_generation_type)
 {
     for (int i = 0; i < PKSAV_NUM_GB_IVS - 1; i++)
     {
         // random int between 0 and 15
-        dv_array[i] = (uint8_t)(get_random_byte() & 0xF);
-        generate_random_number_step();
-    }
-
-    // Generate HP dv from other dvs (string LSBs together)
-    dv_array[PKSAV_GB_IV_HP] = (((dv_array[PKSAV_GB_IV_ATTACK] & 0x01) << 3) |
-                                ((dv_array[PKSAV_GB_IV_DEFENSE] & 0x01) << 2) |
-                                ((dv_array[PKSAV_GB_IV_SPEED] & 0x01) << 1) |
-                                (dv_array[PKSAV_GB_IV_SPECIAL] & 0x01));
-}
-
-void randomize_gen2_DVs(uint8_t *dv_array)
-{
-    for (int i = 0; i < PKSAV_NUM_GB_IVS - 1; i++)
-    {
-        // random int between 0 and 15
-        dv_array[i] = (uint8_t)(get_random_byte_gen2() & 0xF);
-        generate_random_number_step_gen2();
+        dv_array[i] = (uint8_t)(get_random_byte(save_generation_type) & 0xF);
+        generate_rand_num_step(save_generation_type);
     }
 
     // Generate HP dv from other dvs (string LSBs together)
@@ -437,7 +407,7 @@ void update_pkmn_DVs(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
     }
     // randomize the dvs on trade except for HP
     uint8_t traded_pkmn_rand_dvs[PKSAV_NUM_GB_IVS] = {0};
-    randomize_gen1_DVs(traded_pkmn_rand_dvs);
+    randomize_dvs(traded_pkmn_rand_dvs, pkmn_save->save_generation_type);
 
     // set the ivs to pokemon at index
     for (int i = PKSAV_GB_IV_ATTACK; i < PKSAV_NUM_GB_IVS; i++)
@@ -526,12 +496,12 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
         uint8_t evolution_index = pkmn_evolution_pairs[pkmn_species_index].evolution_index;
 
         // Calculates and updates stats
-        update_pkmn_stats(pkmn_save, pkmn_party_index, evolution_index); 
+        update_pkmn_stats(pkmn_save, pkmn_party_index, evolution_index);
 
         // Get the pokemon's nickname
         char pkmn_save_nickname[11];
         pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index], pkmn_save_nickname, 10);
-                
+
         // Check if pokemon does not have custom nickname
         // if the nickname is not custom, then update the pokemon nickname
         // else do not modify the nickname
@@ -586,8 +556,8 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
             pksav_gen2_export_text(evolution_name, pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index], 10);
             // Set the last character to 0x50 to terminate the string
             pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index][strlen(evolution_name)] = 0x50;
-        }        
-        
+        }
+
         // Update species index
         pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index] = evolution_index;
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species = evolution_index;
