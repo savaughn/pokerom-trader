@@ -61,10 +61,10 @@ static const struct pkmn_base_stats pkmn_base_stats[PORYGON2 + 1] = {
     [GOLEM] = {.max_hp = 80, .atk = 110, .def = 130, .spd = 45, .spcl = 55, .catch_rate = 45, .types = {PKSAV_GEN1_TYPE_ROCK, PKSAV_GEN1_TYPE_GROUND}},
     [GENGAR] = {.max_hp = 60, .atk = 65, .def = 60, .spd = 110, .spcl = 130, .catch_rate = 45, .types = {PKSAV_GEN1_TYPE_GHOST, PKSAV_GEN1_TYPE_POISON}},
     [SCIZOR] = {.max_hp = 70, .atk = 130, .def = 100, .spd = 55, .spatk = 80, .spdef = 65},
-    [STEELIX] = {.max_hp = 75, .atk = 85, .def = 200, .spd = 30, .spatk = 65, .spdef = 55},
-    [POLITOED] = {.max_hp = 90, .atk = 75, .def = 75, .spd = 70, .spatk = 100, .spdef = 90},
-    [SLOWKING] = {.max_hp = 95, .atk = 75, .def = 80, .spd = 30, .spatk = 110, .spdef = 100},
-    [PORYGON2] = {.max_hp = 85, .atk = 80, .def = 90, .spd = 60, .spatk = 95, .spdef = 105},
+    [STEELIX] = {.max_hp = 75, .atk = 85, .def = 200, .spd = 30, .spatk = 55, .spdef = 65},
+    [POLITOED] = {.max_hp = 90, .atk = 75, .def = 75, .spd = 70, .spatk = 90, .spdef = 100},
+    [SLOWKING] = {.max_hp = 95, .atk = 75, .def = 80, .spd = 30, .spatk = 100, .spdef = 110},
+    [PORYGON2] = {.max_hp = 85, .atk = 80, .def = 90, .spd = 60, .spatk = 105, .spdef = 95},
     [KINGDRA] = {.max_hp = 75, .atk = 95, .def = 95, .spd = 85, .spatk = 95, .spdef = 95}};
 
 struct pkmn_evolution_pair_data
