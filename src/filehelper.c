@@ -7,8 +7,8 @@
 #include <sys/types.h>
 #endif
 
-char *resolvedPath = NULL;
-char *absolutePath = NULL;
+char *resolved_path = NULL;
+char *absolute_path = NULL;
 #ifdef _WIN32
 void get_save_files(struct SaveFileData *save_data)
 {
@@ -20,16 +20,16 @@ int get_save_files(struct SaveFileData *save_data)
 {
     DIR *dir;
     struct dirent *entry;
-    char saveDir[MAX_FILE_PATH_CHAR];
-    strcpy(saveDir, (char *)save_data->saveDir);
-    int numSaves = 0;
+    char save_dir[MAX_FILE_PATH_CHAR];
+    strcpy(save_dir, (char *)save_data->save_dir);
+    int num_saves = 0;
 
-    dir = opendir(saveDir);
+    dir = opendir(save_dir);
     if (dir == NULL)
     {
         perror("Error opening directory: ");
-        printf("Path: %s\n", saveDir);
-        save_data->numSaves = 0;
+        printf("Path: %s\n", save_dir);
+        save_data->num_saves = 0;
         return 1;
     }
 
@@ -39,28 +39,28 @@ int get_save_files(struct SaveFileData *save_data)
         if (entry->d_type == DT_REG && strstr(entry->d_name, ".sav"))
         {
             // Combine the base path and file name
-            char fullPath[strlen(saveDir) + 1 + strlen(entry->d_name) + 1];
-            sprintf(fullPath, "%s/%s", saveDir, entry->d_name);
+            char full_path[strlen(save_dir) + 1 + strlen(entry->d_name) + 1];
+            sprintf(full_path, "%s/%s", save_dir, entry->d_name);
 
             // Get the absolute path
-            absolutePath = realpath(fullPath, NULL);
-            if (absolutePath)
+            absolute_path = realpath(full_path, NULL);
+            if (absolute_path)
             {
-                save_data->saves_file_path[numSaves] = absolutePath;
-                numSaves++;
+                save_data->saves_file_path[num_saves] = absolute_path;
+                num_saves++;
             }
         }
     }
 
     closedir(dir);
-    save_data->numSaves = numSaves;
+    save_data->num_saves = num_saves;
     return 0;
 }
 
 int write_key_to_config(const char *key, const char *value)
 {
     // Get config.ini path
-    char *config_path[MAX_FILE_PATH_CHAR];
+    char config_path[MAX_FILE_PATH_CHAR];
     strcpy(config_path, getenv("HOME"));
     strcat(config_path, "/Library/PokeromTrader/config.ini");
 
@@ -167,7 +167,7 @@ void create_default_config(void)
     fputs("# This is a generated file. Only modify values not keys.\n", fp);
 
     // Write default key values to new config.ini
-    char *default_key[MAX_FILE_PATH_CHAR];
+    char default_key[MAX_FILE_PATH_CHAR];
     strcpy(default_key, "SAVE_FILE_DIR=");
     strcat(default_key, saves_dir);
     fputs(default_key, fp);
@@ -182,7 +182,6 @@ char *read_key_from_config(const char *key)
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
-    ssize_t read;
     char *value = NULL;
 
     char config_path[MAX_FILE_PATH_CHAR];
@@ -194,14 +193,13 @@ char *read_key_from_config(const char *key)
     // If missing, then create
     if (fp == NULL)
     {
-        fclose(fp);
         create_default_config();
 
         // open after creation
         fp = fopen(config_path, "r");
     }
 
-    while ((read = getline(&line, &len, fp)) != -1)
+    while (getline(&line, &len, fp) != -1)
     {
         // if the line starts with a # or newline, skip it
         if (line[0] == '#' || line[0] == '\n')
@@ -233,6 +231,6 @@ char *read_key_from_config(const char *key)
 
 void free_filehelper_pointers(void)
 {
-    free(resolvedPath);
-    free(absolutePath);
+    free(resolved_path);
+    free(absolute_path);
 }

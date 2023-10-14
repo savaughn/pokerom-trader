@@ -12,7 +12,7 @@ static int no_dir_err = 0;
 static bool was_mouse_pressed = false;  // Prevents back navigating two screens with one mouse click
 
 // Draws a button with the pokemon nickname with mouse-over and selected states
-void PokemonButton(Rectangle rect, int index, char *pokemon_nickname)
+void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname)
 {
     bool mouse_over = false;
     bool selected = false;
@@ -41,9 +41,9 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
 
     // Create the trainer name and id strings for Raylib drawing
     char trainer_name[15];
-    createTrainerNameStr(trainer, trainer_name, showGender);
+    create_trainer_name_str(trainer, trainer_name, showGender);
     char trainer_id[11];
-    createTrainerIdStr(trainer, trainer_id);
+    create_trainer_id_str(trainer, trainer_id);
     int current_trainer_index = trainerSelection[0].trainer_id == trainer->trainer_id ? 0 : trainerSelection[1].trainer_id == trainer->trainer_id ? 1
                                                                                                                                                   : -1;
     // Get the party count for drawing the pokemon buttons
@@ -56,9 +56,6 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
     {
         party_count = trainer->pokemon_party.gen2_pokemon_party.count;
     }
-    
-    // Name of the pokemon selected from list
-    static char selected_pokemon_nickname[11];
 
     DrawText(trainer_name, x, y, 20, BLACK);
     DrawText(trainer_id, x, y + 30, 20, BLACK);
@@ -76,7 +73,7 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
             pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[i], pokemon_nickname, 10);
         }
 
-        PokemonButton((Rectangle){x - 10, y + 70 + (i * 30), 200, 30}, i, pokemon_nickname);
+        draw_pkmn_button((Rectangle){x - 10, y + 70 + (i * 30), 200, 30}, i, pokemon_nickname);
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x - 10, y + 70 + (i * 30), 200, 30}) && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
         {
             trainerSelection[current_trainer_index].pokemon_index = i;
@@ -86,6 +83,8 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
     // Draw the selected pokemon nickname
     if (current_trainer_index != -1 && trainerSelection[current_trainer_index].pokemon_index != -1)
     {
+        // Name of the pokemon selected from list
+        static char selected_pokemon_nickname[11];
         if (trainer_generation == SAVE_GENERATION_1)
         {
             pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[trainerSelection[current_trainer_index].pokemon_index], selected_pokemon_nickname, 10);
@@ -98,7 +97,7 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
     }
 }
 
-void DrawAboutScreen(void)
+void draw_about(void)
 {
     int x = 50;
 
@@ -126,23 +125,23 @@ void DrawAboutScreen(void)
         }
     }
 }
-void DrawFileEditScreen(struct SaveFileData *save_file_data)
+void draw_change_dir(struct SaveFileData *save_file_data)
 {
     static bool editingText = false;
-    static char inputText[MAX_INPUT_CHARS] = "\0";
+    static char inputText[MAX_FILE_PATH_CHAR] = "\0";
     static int textSize = 0;
     static bool hasShownPlaceholder = false;
     static bool hasPressedClear = false;
     static int err = 0;
-    char *input_text_backup[MAX_INPUT_CHARS];
+    char input_text_backup[MAX_FILE_PATH_CHAR];
 
     textSize = strlen(inputText);
-    strcpy(input_text_backup, (char *)save_file_data->saveDir);
+    strcpy(input_text_backup, (char *)save_file_data->save_dir);
 
     // Placeholder Text
     if (!editingText && textSize == 0 && !hasShownPlaceholder)
     {
-        strcpy(inputText, (char *)save_file_data->saveDir);
+        strcpy(inputText, (char *)save_file_data->save_dir);
         textSize = strlen(inputText);
     }
 
@@ -164,7 +163,7 @@ void DrawFileEditScreen(struct SaveFileData *save_file_data)
         hasShownPlaceholder = true;
         int key = GetCharPressed();
         int backspace = GetKeyPressed();
-        if (key >= 32 && key <= 125 && textSize < MAX_INPUT_CHARS)
+        if (key >= 32 && key <= 125 && textSize < MAX_FILE_PATH_CHAR)
         {
             // Append character to inputText
             inputText[textSize] = (char)key;
@@ -230,8 +229,8 @@ void DrawFileEditScreen(struct SaveFileData *save_file_data)
             err = write_key_to_config("SAVE_FILE_DIR", inputText);
             if (err == 0)
             {
-                strcpy((char *)save_file_data->saveDir, inputText);
-                save_file_data->numSaves = 0;
+                strcpy((char *)save_file_data->save_dir, inputText);
+                save_file_data->num_saves = 0;
                 *save_file_data->saves_file_path = NULL;
                 current_screen = SCREEN_SETTINGS;
             }
@@ -257,7 +256,7 @@ void DrawFileEditScreen(struct SaveFileData *save_file_data)
     }
     EndDrawing();
 }
-void DrawSettingsScreen(void)
+void draw_settings(void)
 {
     BeginDrawing();
     ClearBackground(background_color);
@@ -317,7 +316,7 @@ void DrawSettingsScreen(void)
     EndDrawing();
     was_mouse_pressed = false;
 }
-void DrawMainMenuScreen(struct SaveFileData *save_file_data)
+void draw_main_menu(struct SaveFileData *save_file_data)
 {
     BeginDrawing();
     ClearBackground(background_color);
@@ -357,14 +356,14 @@ void DrawMainMenuScreen(struct SaveFileData *save_file_data)
     }
     EndDrawing();
 }
-void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_save_path, char *player2_save_path, struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, struct TrainerSelection trainerSelection[2], PokemonSave *pokemon_save_player1, PokemonSave *pokemon_save_player2)
+void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_path, char *player2_save_path, struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, struct TrainerSelection trainerSelection[2], PokemonSave *pokemon_save_player1, PokemonSave *pokemon_save_player2)
 {
     static int selected_saves_index[2] = {-1, -1};
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    if (save_file_data->numSaves == 0)
+    if (save_file_data->num_saves == 0)
     {
         if (no_dir_err)
         {
@@ -375,7 +374,7 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
         {
             DrawText("No save files found in save folder", 190, 200, 20, BLACK);
         }
-        char *save_dir = save_file_data->saveDir;
+        char *save_dir = save_file_data->save_dir;
         DrawText(TextFormat("%s", save_dir), SCREEN_CENTER(save_dir, 20).x, 275, 20, BLACK);
     }
     else
@@ -384,7 +383,7 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
         static bool isSameGeneration = true;
 
         DrawText("Select two save files of the same generation to trade between", SCREEN_WIDTH / 2 - MeasureText("Select two save files of the same generation to trade between", 20) / 2, 25, 20, BLACK);
-        for (int i = 0; i < save_file_data->numSaves; i++)
+        for (int i = 0; i < save_file_data->num_saves; i++)
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
@@ -429,7 +428,7 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
                     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
                     {
                         // load selection to player1_save
-                        *pokemon_save_player1 = loadSaveFromFile(save_file_data->saves_file_path[selected_saves_index[0]]);
+                        pokemon_save_player1 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[0]]);
 
                         // save the selected path name
                         strcpy(player1_save_path, save_file_data->saves_file_path[selected_saves_index[0]]);
@@ -439,7 +438,7 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
                         trainerSelection[0].trainer_id = trainer1->trainer_id;
 
                         // load selection to player2_save
-                        *pokemon_save_player2 = loadSaveFromFile(save_file_data->saves_file_path[selected_saves_index[1]]);
+                        pokemon_save_player2 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[1]]);
                         strcpy(player2_save_path, save_file_data->saves_file_path[selected_saves_index[1]]);
                         create_trainer(pokemon_save_player2, trainer2);
                         trainerSelection[1].trainer_id = trainer2->trainer_id;
@@ -468,8 +467,6 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
             selected_saves_index[1] = -1;
             trainer1->trainer_id = 0;
             trainer2->trainer_id = 0;
-            pokemon_save_player1 = NULL;
-            pokemon_save_player2 = NULL;
         }
     }
 
@@ -485,14 +482,12 @@ void DrawFileSelectScreen(struct SaveFileData *save_file_data, char *player1_sav
             selected_saves_index[1] = -1;
             trainer1->trainer_id = 0;
             trainer2->trainer_id = 0;
-            pokemon_save_player1 = NULL;
-            pokemon_save_player2 = NULL;
         }
     }
 
     EndDrawing();
 }
-void DrawTradeScreen(PokemonSave *save_player1, PokemonSave *save_player2, char *player1_save_path, char *player2_save_path, struct TrainerSelection trainerSelection[2], struct TrainerInfo *trainer1, struct TrainerInfo *trainer2)
+void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *player1_save_path, char *player2_save_path, struct TrainerSelection trainerSelection[2], struct TrainerInfo *trainer1, struct TrainerInfo *trainer2)
 {
     // Update
     int selected_index_trainer1 = trainerSelection[0].pokemon_index;
@@ -513,11 +508,11 @@ void DrawTradeScreen(PokemonSave *save_player1, PokemonSave *save_player2, char 
             trainerSelection[0].pokemon_index = -1;
             trainerSelection[1].pokemon_index = -1;
 
-            swapPokemonAtIndexBetweenSaves(save_player1, save_player2, selected_index_trainer1, selected_index_trainer2);
-            updateSeenOwnedPokemon(save_player1, selected_index_trainer1);
-            updateSeenOwnedPokemon(save_player2, selected_index_trainer2);
-            saveToFile(save_player1, player1_save_path);
-            saveToFile(save_player2, player2_save_path);
+            swap_pkmn_at_index_between_saves(save_player1, save_player2, selected_index_trainer1, selected_index_trainer2);
+            update_seen_owned_pkmn(save_player1, selected_index_trainer1);
+            update_seen_owned_pkmn(save_player2, selected_index_trainer2);
+            save_savefile_to_path(save_player1, player1_save_path);
+            save_savefile_to_path(save_player2, player2_save_path);
 
             // Recreate trainer info with updated saves
             create_trainer(save_player1, trainer1);
@@ -541,7 +536,7 @@ void DrawTradeScreen(PokemonSave *save_player1, PokemonSave *save_player2, char 
     EndDrawing();
 }
 // Draw Bill's PC for moving PC pokemon to party or between boxes
-void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, PokemonSave *save_player1, char *player1_save_path, struct TrainerInfo *trainer1, struct TrainerSelection *trainerSelection, enum single_player_menu_types menu_type)
+void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *save_player1, char *player1_save_path, struct TrainerInfo *trainer1, struct TrainerSelection *trainerSelection, enum single_player_menu_types menu_type)
 {
 
     BeginDrawing();
@@ -551,10 +546,10 @@ void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, Pokem
     static int selected_saves_index = -1;
     bool hasSelectedSave = selected_saves_index != -1;
 
-    if (save_file_data->numSaves == 0)
+    if (save_file_data->num_saves == 0)
     {
         get_save_files(save_file_data);
-        char *save_dir = save_file_data->saveDir;
+        char *save_dir = save_file_data->save_dir;
         DrawText("No save files found in save folder", SCREEN_WIDTH_TEXT_CENTER("No save files found in save folder", 20), 200, 20, BLACK);
         DrawText(TextFormat("%s/", save_dir), SCREEN_WIDTH_TEXT_CENTER(save_dir, 20), 250, 20, BLACK);
     }
@@ -562,7 +557,7 @@ void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, Pokem
         DrawText("Select a save file to access Bill's PC", 190, 25, 20, BLACK);
     if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE)
         DrawText("Select a save file to access your party", 190, 25, 20, BLACK);
-    for (int i = 0; i < save_file_data->numSaves; i++)
+    for (int i = 0; i < save_file_data->num_saves; i++)
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -598,7 +593,7 @@ void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, Pokem
                     if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE)
                         current_screen = SCREEN_EVOLVE;
                     // load selection to player1_save
-                    *save_player1 = loadSaveFromFile(save_file_data->saves_file_path[selected_saves_index]);
+                    save_player1 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index]);
                     // save the selected path name
                     strcpy(player1_save_path, save_file_data->saves_file_path[selected_saves_index]);
                     // generate trainer info from save
@@ -638,10 +633,10 @@ void DrawSinglePlayerFileSelectScreen(struct SaveFileData *save_file_data, Pokem
 
     EndDrawing();
 }
-void DrawEvolveScreen(PokemonSave *pokemon_save, char *save_path)
+void draw_evolve(PokemonSave *pokemon_save, char *save_path)
 {
     // Call rng
-    generateRandomNumberStep();
+    generate_random_number_step();
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
@@ -670,7 +665,7 @@ void DrawEvolveScreen(PokemonSave *pokemon_save, char *save_path)
             {
                 eligible_pokemon_count++;
                 pksav_gen1_import_text(pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
-                PokemonButton((Rectangle){50, 100 + (eligible_pokemon_count * 30), 200, 30}, i, pokemon_nickname);
+                draw_pkmn_button((Rectangle){50, 100 + (eligible_pokemon_count * 30), 200, 30}, i, pokemon_nickname);
             }
         }
         else if (save_generation == SAVE_GENERATION_2)
@@ -680,7 +675,7 @@ void DrawEvolveScreen(PokemonSave *pokemon_save, char *save_path)
             {
                 eligible_pokemon_count++;
                 pksav_gen2_import_text(pokemon_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
-                PokemonButton((Rectangle){50, 100 + (eligible_pokemon_count * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname);
+                draw_pkmn_button((Rectangle){50, 100 + (eligible_pokemon_count * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname);
                 if (result == 2)
                     DrawText("Missing required item!", 75 + MeasureText(pokemon_nickname, 20), 100 + (eligible_pokemon_count * 30), 20, RED);
             }
@@ -730,11 +725,11 @@ void DrawEvolveScreen(PokemonSave *pokemon_save, char *save_path)
             // Evolve pokemon with the simulated new trainer
             evolve_party_pokemon_at_index(pokemon_save, selected_index);
             // Update pokedex
-            updateSeenOwnedPokemon(pokemon_save, selected_index);
+            update_seen_owned_pkmn(pokemon_save, selected_index);
             // Generates and assigns random dvs on simulated trade back to OT
             update_pkmn_DVs(pokemon_save, selected_index);
             // Finalize pkmn data changes
-            saveToFile(pokemon_save, save_path);
+            save_savefile_to_path(pokemon_save, save_path);
         }
     }
 
@@ -750,7 +745,7 @@ void DrawEvolveScreen(PokemonSave *pokemon_save, char *save_path)
 
     EndDrawing();
 }
-void DrawBillsPCScreen(PokemonSave *pokemon_save, char *save_path, struct TrainerInfo *trainer, struct TrainerSelection *trainerSelection)
+void draw_bills_pc(PokemonSave *pokemon_save, char *save_path, struct TrainerInfo *trainer, struct TrainerSelection *trainerSelection)
 {
     // Update
     int save_generation = pokemon_save->save_generation_type;
@@ -785,7 +780,7 @@ void DrawBillsPCScreen(PokemonSave *pokemon_save, char *save_path, struct Traine
         box_pokemon_count = pokemon_box_gen2->count;
     }
 
-    // list pokemon in the box using PokemonButton
+    // list pokemon in the box using draw_pkmn_button
     for (int i = 0; i < box_pokemon_count; i++)
     {
         char pokemon_nickname[11];
@@ -797,7 +792,7 @@ void DrawBillsPCScreen(PokemonSave *pokemon_save, char *save_path, struct Traine
         {
             pksav_gen2_import_text(pokemon_box_gen2->nicknames[i], pokemon_nickname, 10);
         }
-        PokemonButton((Rectangle){400, 200 + (i * 30), 200, 30}, i, pokemon_nickname);
+        draw_pkmn_button((Rectangle){400, 200 + (i * 30), 200, 30}, i, pokemon_nickname);
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){400, 200 + (i * 30), 200, 30}) && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
         {
             trainerSelection->pokemon_index = i;
@@ -817,7 +812,7 @@ void DrawBillsPCScreen(PokemonSave *pokemon_save, char *save_path, struct Traine
 
     EndDrawing();
 }
-void DrawRaylibScreenLoop(
+void draw_raylib_screen_loop(
     struct SaveFileData *save_file_data,
     struct TrainerInfo *trainer1,
     struct TrainerInfo *trainer2,
@@ -840,35 +835,35 @@ void DrawRaylibScreenLoop(
         switch (current_screen)
         {
         case SCREEN_FILE_SELECT:
-            DrawFileSelectScreen(save_file_data, player1_save_path, player2_save_path, trainer1, trainer2, trainerSelection, pokemon_save_player1, pokemon_save_player2);
+            draw_file_select(save_file_data, player1_save_path, player2_save_path, trainer1, trainer2, trainerSelection, pokemon_save_player1, pokemon_save_player2);
             break;
         case SCREEN_TRADE:
-            DrawTradeScreen(pokemon_save_player1, pokemon_save_player2, player1_save_path, player2_save_path, trainerSelection, trainer1, trainer2);
+            draw_trade(pokemon_save_player1, pokemon_save_player2, player1_save_path, player2_save_path, trainerSelection, trainer1, trainer2);
             break;
         case SCREEN_MAIN_MENU:
-            DrawMainMenuScreen(save_file_data);
+            draw_main_menu(save_file_data);
             break;
         case SCREEN_SETTINGS:
-            DrawSettingsScreen();
+            draw_settings();
             break;
         case SCREEN_FILE_EDIT:
-            DrawFileEditScreen(save_file_data);
+            draw_change_dir(save_file_data);
             break;
         case SCREEN_BILLS_PC_FILE_SELECT:
-            DrawSinglePlayerFileSelectScreen(save_file_data, pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_BILLS_PC);
+            draw_file_select_single(save_file_data, pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_BILLS_PC);
             break;
         case SCREEN_BILLS_PC:
-            DrawBillsPCScreen(pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0]);
+            draw_bills_pc(pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0]);
             break;
         case SCREEN_EVOLVE_FILE_SELECT:
-            DrawSinglePlayerFileSelectScreen(save_file_data, pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_EVOLVE);
+            draw_file_select_single(save_file_data, pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_EVOLVE);
             break;
         case SCREEN_EVOLVE:
-            DrawEvolveScreen(pokemon_save_player1, player1_save_path);
+            draw_evolve(pokemon_save_player1, player1_save_path);
             break;
         case SCREEN_ABOUT:
         {
-            DrawAboutScreen();
+            draw_about();
             break;
         }
         default:

@@ -1,6 +1,12 @@
 #include "pksavfilehelper.h"
 
-enum pksav_error detectSaveFileGeneration(const char *path, SaveGenerationType *save_generation_type)
+/**
+ * @brief detects the save file generation of a save file
+ * @param path the path to the save file
+ * @param save_generation_type a pointer to a SaveGenerationType to store the save generation type
+ * @return an enum pksav_error
+*/
+enum pksav_error detect_savefile_generation(const char *path, SaveGenerationType *save_generation_type)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
 
@@ -21,20 +27,24 @@ enum pksav_error detectSaveFileGeneration(const char *path, SaveGenerationType *
 
     return err;
 }
-
-PokemonSave loadSaveFromFile(const char *path)
+/**
+ * @brief loads a save file from a path in the buffer
+ * @param path the path to the save file
+ * @return a PokemonSave struct
+*/
+PokemonSave *load_savefile_from_path(const char *path)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
-    PokemonSave pokemon_save;
+    PokemonSave *pokemon_save = (PokemonSave *)malloc(sizeof(PokemonSave));
     SaveGenerationType save_generation_type = SAVE_GENERATION_NONE;
 
-    err = detectSaveFileGeneration(path, &save_generation_type);
+    err = detect_savefile_generation(path, &save_generation_type);
     if (err != PKSAV_ERROR_NONE)
     {
         error_handler(err, "Error detecting save file generation");
     }
 
-    pokemon_save.save_generation_type = save_generation_type;
+    pokemon_save->save_generation_type = save_generation_type;
 
     switch (save_generation_type)
     {
@@ -52,7 +62,7 @@ PokemonSave loadSaveFromFile(const char *path)
         {
             error_handler(err, "Error loading save");
         }
-        pokemon_save.save.gen1_save = save;
+        pokemon_save->save.gen1_save = save;
         break;
     }
     case SAVE_GENERATION_2:
@@ -69,7 +79,7 @@ PokemonSave loadSaveFromFile(const char *path)
         {
             error_handler(err, "Error loading save");
         }
-        pokemon_save.save.gen2_save = save;
+        pokemon_save->save.gen2_save = save;
         break;
     }
     default:
@@ -78,7 +88,12 @@ PokemonSave loadSaveFromFile(const char *path)
     }
     return pokemon_save;
 }
-void saveToFile(PokemonSave *pokemon_save, char *path)
+/**
+ * @brief saves the save buffer to a path
+ * @param pokemon_save a pointer to a PokemonSave struct save buffer
+ * @param path the path to the save file
+*/
+void save_savefile_to_path(PokemonSave *pokemon_save, char *path)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
     if (pokemon_save->save_generation_type == SAVE_GENERATION_1)
