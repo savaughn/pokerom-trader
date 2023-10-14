@@ -54,7 +54,8 @@ typedef enum {
     SCREEN_BILLS_PC_FILE_SELECT,
     SCREEN_BILLS_PC,
     SCREEN_EVOLVE_FILE_SELECT,
-    SCREEN_EVOLVE
+    SCREEN_EVOLVE,
+    SCREEN_LEGAL
 } GameScreen;
 
 struct SaveFileData {
