@@ -244,8 +244,7 @@ int check_trade_evolution_gen1(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
         (uint8_t)GRAVELER,
         (uint8_t)HAUNTER};
 
-    int i;
-    for (i = 0; i < (int)(sizeof(gen1_evolutions) / sizeof(gen1_evolutions[0])); i++)
+    for (int i = 0; i < (int)(sizeof(gen1_evolutions) / sizeof(gen1_evolutions[0])); i++)
     {
         // Pokemon eligible for trade evolution
         if (gen1_evolutions[i] == species)
