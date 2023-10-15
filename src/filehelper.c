@@ -173,6 +173,8 @@ void create_default_config(void)
     fputs(default_key, fp);
     fputs("\n", fp);
     fputs("DISABLE_RANDOM_IVS_ON_TRADE=false", fp);
+    fputs("\n", fp);
+    fputs("ITEM_REQUIRED_EVOLUTIONS=true", fp);
 
     fclose(fp);
 }

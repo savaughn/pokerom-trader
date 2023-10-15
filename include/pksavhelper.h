@@ -144,6 +144,7 @@ static const struct pkmn_evolution_pair_data pkmn_evolution_pairs[MAX_SPECIES_IN
 };
 
 static bool disable_random_DVs_on_trade = false;
+static bool item_required_evolutions = true;
 
 int error_handler(enum pksav_error error, const char *message);
 void swap_party_pkmn_at_indices(struct pksav_gen2_save *pkmn_save, uint8_t pkmn_index1, uint8_t pkmn_index2); // TODO: Update for cross-generation
@@ -152,13 +153,15 @@ void create_trainer(PokemonSave *pkmn_save, struct TrainerInfo *trainer);
 void update_seen_owned_pkmn(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name, bool show_gender);
 void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id);
-int check_trade_evolution_gen1(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
+enum eligible_evolution_status check_trade_evolution_gen1(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 enum eligible_evolution_status check_trade_evolution_gen2(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 void generate_random_number_step(void);
 void update_pkmn_DVs(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 bool get_is_random_DVs_disabled(void);
 void set_is_random_DVs_disabled(bool is_disabled);
+bool get_is_item_required(void);
+void set_is_item_required(bool is_required);
 void generate_rand_num_step(SaveGenerationType save_generation_type);
 
 #endif /* PKSAVHELPER_H */

@@ -231,38 +231,18 @@ void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id)
     strcat(trainer_id, id_str);
 }
 
-// Checks if supplied Gen 1 pokemon is eligible for trade evolution returns 1 if true, 0 if false
-int check_trade_evolution_gen1(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
+// Checks if supplied Gen 1 pokemon is eligible for trade evolution
+enum eligible_evolution_status check_trade_evolution_gen1(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
 {
     // Species index of pokemon being checked
     uint8_t species = pkmn_save->save.gen1_save.pokemon_storage.p_party->species[pkmn_party_index];
+    struct pkmn_evolution_pair_data evo_pair = pkmn_evolution_pairs[species];
 
-    // Pokemon species eligible for trade evolution in Gen 1
-    uint8_t gen1_evolutions[4] = {
-        (uint8_t)KADABRA,
-        (uint8_t)MACHOKE,
-        (uint8_t)GRAVELER,
-        (uint8_t)HAUNTER};
-
-    for (int i = 0; i < (int)(sizeof(gen1_evolutions) / sizeof(gen1_evolutions[0])); i++)
-    {
-        // Pokemon eligible for trade evolution
-        if (gen1_evolutions[i] == species)
-        {
-            return 1;
-        }
-
-        // No pokemon eligible for trade evolution
-        if (i == (int)(sizeof(gen1_evolutions) / sizeof(gen1_evolutions[0])))
-        {
-            return 0;
-        }
-    }
-
-    return 0;
+    // Check if the pokemon has an initialized evolution pair
+    return species == evo_pair.species_index;
 }
 
-// Checks if supplied Gen 2 pokemon is eligible for trade evolution returns 1 if true, 0 if false, or 2 if eligible but required missing item
+// Checks if supplied Gen 2 pokemon is eligible for trade evolution
 enum eligible_evolution_status check_trade_evolution_gen2(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
 {
     // Species index of pokemon being checked
@@ -275,13 +255,13 @@ enum eligible_evolution_status check_trade_evolution_gen2(PokemonSave *pkmn_save
     if (species == evo_pair.species_index)
     {
         // Pokemon eligible for trade evolution but missing item
-        if (evo_pair.evolution_item != 0 && evo_pair.evolution_item != item)
+        if (evo_pair.evolution_item != item && get_is_item_required())
         {
             return E_EVO_STATUS_MISSING_ITEM;
         }
 
         // Pokemon eligible for trade evolution
-        if (evo_pair.evolution_item == item)
+        if (evo_pair.evolution_item == item || !get_is_item_required())
         {
             return E_EVO_STATUS_ELIGIBLE;
         }
@@ -580,4 +560,16 @@ bool get_is_random_DVs_disabled(void)
 void set_is_random_DVs_disabled(bool is_disabled)
 {
     disable_random_DVs_on_trade = is_disabled;
+}
+
+// Settings getter disable item required for trade
+bool get_is_item_required(void)
+{
+    return item_required_evolutions;
+}
+
+// Settings setter disable item required for trade
+void set_is_item_required(bool is_required)
+{
+    item_required_evolutions = is_required;
 }

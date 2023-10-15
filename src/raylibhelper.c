@@ -303,6 +303,15 @@ void draw_settings(void)
     Rectangle checkbox_rec_off = (Rectangle){checkbox_rec_on.x + checkbox_rec_on.width + 5, 225, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_off, 2, BLACK);
     DrawText("OFF", checkbox_rec_off.x + checkbox_rec_off.width + 5, checkbox_rec_off.y, 20, BLACK);
+    // Toggle for item override evolutions
+    DrawText("Item required for evolution", 50, 250, 20, BLACK);
+    // Checkbox for item override evolutions
+    DrawText("ON", 385, 250, 20, BLACK);
+    Rectangle checkbox_rec_on_item = (Rectangle){385 + MeasureText("ON", 20) + 5, 250, 20, 20};
+    DrawRectangleLinesEx(checkbox_rec_on_item, 2, BLACK);
+    Rectangle checkbox_rec_off_item = (Rectangle){checkbox_rec_on_item.x + checkbox_rec_on_item.width + 5, 250, 20, 20};
+    DrawRectangleLinesEx(checkbox_rec_off_item, 2, BLACK);
+    DrawText("OFF", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 5, checkbox_rec_off_item.y, 20, BLACK);
 
     bool _is_rand_disabled = get_is_random_DVs_disabled();
     if (_is_rand_disabled)
@@ -315,7 +324,21 @@ void draw_settings(void)
     {
         // Draw filled in square
         DrawRectangle(checkbox_rec_off.x + 3, checkbox_rec_off.y + 3, checkbox_rec_off.width - 6, checkbox_rec_off.height - 6, BLACK);
-        DrawText("DVs will not be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, BLACK);
+        DrawText("DVs will not be retained (default)", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, BLACK);
+    }
+
+    bool _is_item_required = get_is_item_required();
+    if (_is_item_required)
+    {
+        // Draw filled in square
+        DrawRectangle(checkbox_rec_on_item.x + 3, checkbox_rec_on_item.y + 3, checkbox_rec_on_item.width - 6, checkbox_rec_on_item.height - 6, BLACK);
+        DrawText("Items will be required (default)", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, 250, 16, BLACK);
+    }
+    else
+    {
+        // Draw filled in square
+        DrawRectangle(checkbox_rec_off_item.x + 3, checkbox_rec_off_item.y + 3, checkbox_rec_off_item.width - 6, checkbox_rec_off_item.height - 6, BLACK);
+        DrawText("Items will not be required", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, 250, 16, BLACK);
     }
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
@@ -328,6 +351,15 @@ void draw_settings(void)
         {
             set_is_random_DVs_disabled(false);
             write_key_to_config("DISABLE_RANDOM_IVS_ON_TRADE", "false");
+        } 
+        else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_on_item))
+        {
+            set_is_item_required(true);
+            write_key_to_config("ITEM_REQUIRED_EVOLUTIONS", "true");
+        } else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_off_item))
+        {
+            set_is_item_required(false);
+            write_key_to_config("ITEM_REQUIRED_EVOLUTIONS", "false");
         }
     }
     DrawText("About Pokerom Trader", 50, 325, 20, BLACK);
@@ -422,7 +454,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
-                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 75 + 25 * i, SCREEN_WIDTH / 2, 25}))
+                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){100, 75 + 25 * i, SCREEN_WIDTH / 2, 25}))
                 {
                     if (selected_saves_index[0] == i)
                     {
@@ -444,7 +476,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
             }
             char *save_name = strrchr(save_file_data->saves_file_path[i], '/');
             save_name++;
-            DrawText(save_name, 190, 75 + 25 * i, 20, (selected_saves_index[0] == i || selected_saves_index[1] == i) ? LIGHTGRAY : BLACK);
+            DrawText(save_name, 100, 75 + 25 * i, 20, (selected_saves_index[0] == i || selected_saves_index[1] == i) ? LIGHTGRAY : BLACK);
 
             // Reset generation check
             if (!isSameGeneration)
@@ -596,7 +628,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 75 + 25 * i, SCREEN_WIDTH / 2, 25}))
+            if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){100, 75 + 25 * i, SCREEN_WIDTH / 2, 25}))
             {
                 if (selected_saves_index == i)
                 {
@@ -613,7 +645,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
         char *save_name = strrchr(save_file_data->saves_file_path[i], '/');
         save_name++;
 
-        DrawText(save_name, 190, 75 + 25 * i, 20, (selected_saves_index == i) ? LIGHTGRAY : BLACK);
+        DrawText(save_name, 100, 75 + 25 * i, 20, (selected_saves_index == i) ? LIGHTGRAY : BLACK);
         if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC)
             DrawText("Open Bill's PC >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, hasSelectedSave ? BLACK : LIGHTGRAY);
         if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE)
@@ -723,7 +755,7 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *tr
             pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
             draw_pkmn_button((Rectangle){TRAINER_NAME_X, TRAINER_NAME_Y + 75 + (i * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname, selected_index == i || result == E_EVO_STATUS_NOT_ELIGIBLE);
             if (result == E_EVO_STATUS_MISSING_ITEM)
-                DrawText("Missing required item!", 75 + MeasureText(pokemon_nickname, 20), 100 + (i * 30), 20, RED);
+                DrawText("Missing required item!", 75 + MeasureText(pokemon_nickname, 20), TRAINER_NAME_Y + 75 + (i * 30), 20, RED);
         }
         // Selected pokemon button
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){TRAINER_NAME_X, TRAINER_NAME_Y + 75 + (i * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && result == E_EVO_STATUS_ELIGIBLE)
