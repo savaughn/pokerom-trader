@@ -63,7 +63,9 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
             if (trainerSelection[current_trainer_index].pkmn_party_index != i)
             {
                 trainerSelection[current_trainer_index].pkmn_party_index = i;
-            } else {
+            }
+            else
+            {
                 trainerSelection[current_trainer_index].pkmn_party_index = -1;
             }
         }
@@ -301,6 +303,15 @@ void draw_settings(void)
     Rectangle checkbox_rec_off = (Rectangle){checkbox_rec_on.x + checkbox_rec_on.width + 5, 225, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_off, 2, BLACK);
     DrawText("OFF", checkbox_rec_off.x + checkbox_rec_off.width + 5, checkbox_rec_off.y, 20, BLACK);
+    // Toggle for item override evolutions
+    DrawText("Item required for evolution", 50, 250, 20, BLACK);
+    // Checkbox for item override evolutions
+    DrawText("ON", 385, 250, 20, BLACK);
+    Rectangle checkbox_rec_on_item = (Rectangle){385 + MeasureText("ON", 20) + 5, 250, 20, 20};
+    DrawRectangleLinesEx(checkbox_rec_on_item, 2, BLACK);
+    Rectangle checkbox_rec_off_item = (Rectangle){checkbox_rec_on_item.x + checkbox_rec_on_item.width + 5, 250, 20, 20};
+    DrawRectangleLinesEx(checkbox_rec_off_item, 2, BLACK);
+    DrawText("OFF", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 5, checkbox_rec_off_item.y, 20, BLACK);
 
     bool _is_rand_disabled = get_is_random_DVs_disabled();
     if (_is_rand_disabled)
@@ -313,7 +324,21 @@ void draw_settings(void)
     {
         // Draw filled in square
         DrawRectangle(checkbox_rec_off.x + 3, checkbox_rec_off.y + 3, checkbox_rec_off.width - 6, checkbox_rec_off.height - 6, BLACK);
-        DrawText("DVs will not be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, BLACK);
+        DrawText("DVs will not be retained (default)", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, BLACK);
+    }
+
+    bool _is_item_required = get_is_item_required();
+    if (_is_item_required)
+    {
+        // Draw filled in square
+        DrawRectangle(checkbox_rec_on_item.x + 3, checkbox_rec_on_item.y + 3, checkbox_rec_on_item.width - 6, checkbox_rec_on_item.height - 6, BLACK);
+        DrawText("Items will be required (default)", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, 250, 16, BLACK);
+    }
+    else
+    {
+        // Draw filled in square
+        DrawRectangle(checkbox_rec_off_item.x + 3, checkbox_rec_off_item.y + 3, checkbox_rec_off_item.width - 6, checkbox_rec_off_item.height - 6, BLACK);
+        DrawText("Items will not be required", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, 250, 16, BLACK);
     }
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
@@ -326,6 +351,15 @@ void draw_settings(void)
         {
             set_is_random_DVs_disabled(false);
             write_key_to_config("DISABLE_RANDOM_IVS_ON_TRADE", "false");
+        } 
+        else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_on_item))
+        {
+            set_is_item_required(true);
+            write_key_to_config("ITEM_REQUIRED_EVOLUTIONS", "true");
+        } else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_off_item))
+        {
+            set_is_item_required(false);
+            write_key_to_config("ITEM_REQUIRED_EVOLUTIONS", "false");
         }
     }
     DrawText("About Pokerom Trader", 50, 325, 20, BLACK);
@@ -420,7 +454,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
-                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 75 + 25 * i, SCREEN_WIDTH / 2, 25}))
+                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){100, 75 + 25 * i, SCREEN_WIDTH / 2, 25}))
                 {
                     if (selected_saves_index[0] == i)
                     {
@@ -442,7 +476,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
             }
             char *save_name = strrchr(save_file_data->saves_file_path[i], '/');
             save_name++;
-            DrawText(save_name, 190, 75 + 25 * i, 20, (selected_saves_index[0] == i || selected_saves_index[1] == i) ? LIGHTGRAY : BLACK);
+            DrawText(save_name, 100, 75 + 25 * i, 20, (selected_saves_index[0] == i || selected_saves_index[1] == i) ? LIGHTGRAY : BLACK);
 
             // Reset generation check
             if (!isSameGeneration)
@@ -451,7 +485,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
             }
 
             DrawText("Trade >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, hasSelectedTwoSaves && isSameGeneration ? BLACK : LIGHTGRAY);
-            if (!isSameGeneration)
+            if (!isSameGeneration && hasSelectedTwoSaves)
                 DrawText("Cross-gen trades are not yet supported", NEXT_BUTTON_X - 125, NEXT_BUTTON_Y + 25, 15, RED);
 
             if (hasSelectedTwoSaves && isSameGeneration)
@@ -594,7 +628,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 75 + 25 * i, SCREEN_WIDTH / 2, 25}))
+            if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){100, 75 + 25 * i, SCREEN_WIDTH / 2, 25}))
             {
                 if (selected_saves_index == i)
                 {
@@ -603,18 +637,21 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
                 else if (selected_saves_index == -1)
                 {
                     selected_saves_index = i;
+                } else if (selected_saves_index != i) {
+                    selected_saves_index = i;
                 }
             }
         }
         char *save_name = strrchr(save_file_data->saves_file_path[i], '/');
         save_name++;
 
-        DrawText(save_name, 190, 75 + 25 * i, 20, (selected_saves_index == i) ? LIGHTGRAY : BLACK);
+        DrawText(save_name, 100, 75 + 25 * i, 20, (selected_saves_index == i) ? LIGHTGRAY : BLACK);
         if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC)
             DrawText("Open Bill's PC >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, hasSelectedSave ? BLACK : LIGHTGRAY);
         if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE)
             DrawText("Open Party >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, hasSelectedSave ? BLACK : LIGHTGRAY);
 
+        // On selected file next button press
         if (hasSelectedSave)
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
@@ -648,6 +685,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             current_screen = SCREEN_MAIN_MENU;
+            selected_saves_index = -1;
         }
     }
 
@@ -665,8 +703,10 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
     }
 
     EndDrawing();
+    if (current_screen != SCREEN_EVOLVE_FILE_SELECT && current_screen != SCREEN_BILLS_PC_FILE_SELECT)
+        selected_saves_index = -1;
 }
-void draw_evolve(PokemonSave *pkmn_save, char *save_path)
+void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *trainer)
 {
     SaveGenerationType save_generation_type = pkmn_save->save_generation_type;
 
@@ -682,11 +722,21 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path)
     static int result = 0;
     char pokemon_nickname[11];
     int eligible_pokemon_count = 0;
+    const int TRAINER_NAME_X = 50;
+    const int TRAINER_NAME_Y = 100;
 
     if (save_generation_type == SAVE_GENERATION_1)
         party_count = pkmn_save->save.gen1_save.pokemon_storage.p_party->count;
     else if (save_generation_type == SAVE_GENERATION_2)
         party_count = pkmn_save->save.gen2_save.pokemon_storage.p_party->count;
+
+    // Create the trainer name and id strings for Raylib drawing
+    char trainer_name[15];
+    create_trainer_name_str(trainer, trainer_name, false);
+    char trainer_id[11];
+    create_trainer_id_str(trainer, trainer_id);
+    DrawText(trainer_name, TRAINER_NAME_X, TRAINER_NAME_Y, 20, BLACK);
+    DrawText(trainer_id, TRAINER_NAME_X, TRAINER_NAME_Y + 25, 20, BLACK);
 
     // Search party for pkmn eligible for trade evolution
     for (int i = 0; i < party_count; i++)
@@ -694,38 +744,35 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path)
         if (save_generation_type == SAVE_GENERATION_1)
         {
             result = check_trade_evolution_gen1(pkmn_save, i);
-            // if eligible, draw pkmn button
-            if (result)
-            {
-                eligible_pokemon_count++;
-                pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
-                draw_pkmn_button((Rectangle){50, 100 + (i * 30), 200, 30}, i, pokemon_nickname, selected_index == i);
-            }
+            eligible_pokemon_count++;
+            pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
+            draw_pkmn_button((Rectangle){TRAINER_NAME_X, TRAINER_NAME_Y + 75 + (i * 30), 200, 30}, i, pokemon_nickname, selected_index == i || result == E_EVO_STATUS_NOT_ELIGIBLE);
         }
         else if (save_generation_type == SAVE_GENERATION_2)
         {
             result = check_trade_evolution_gen2(pkmn_save, i);
             eligible_pokemon_count++;
             pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
-            draw_pkmn_button((Rectangle){50, 100 + (i * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname, selected_index == i);
+            draw_pkmn_button((Rectangle){TRAINER_NAME_X, TRAINER_NAME_Y + 75 + (i * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname, selected_index == i || result == E_EVO_STATUS_NOT_ELIGIBLE);
             if (result == E_EVO_STATUS_MISSING_ITEM)
-                DrawText("Missing required item!", 75 + MeasureText(pokemon_nickname, 20), 100 + (i * 30), 20, RED);
-            if (result == E_EVO_STATUS_NOT_ELIGIBLE)
-            {
-                DrawText("Not eligible", 75 + MeasureText(pokemon_nickname, 20), 100 + (i * 30), 20, RED);
-            }
+                DrawText("Missing required item!", 75 + MeasureText(pokemon_nickname, 20), TRAINER_NAME_Y + 75 + (i * 30), 20, RED);
         }
         // Selected pokemon button
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 100 + (i * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && result == E_EVO_STATUS_ELIGIBLE)
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){TRAINER_NAME_X, TRAINER_NAME_Y + 75 + (i * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && result == E_EVO_STATUS_ELIGIBLE)
         {
+            // Unselect if already selected
             if (selected_index == i)
             {
                 selected_index = -1;
             }
+            // Select if not already selected
             else if (selected_index == -1)
             {
                 selected_index = i;
-            } else if (selected_index != i) {
+            }
+            // Select a different index
+            else if (selected_index != i)
+            {
                 selected_index = i;
             }
         }
@@ -752,8 +799,8 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path)
         DrawText(no_pkmn, text_center.x, text_center.y, 20, BLACK);
     }
     // Evolve button (next button)
-    DrawText("Evolve!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, selected_index != -1 && result == E_EVO_STATUS_ELIGIBLE ? BLACK : LIGHTGRAY);
-    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && eligible_pokemon_count)
+    DrawText("Evolve!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, selected_index != -1 ? BLACK : LIGHTGRAY);
+    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && selected_index != -1)
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -898,7 +945,7 @@ void draw_raylib_screen_loop(
             draw_file_select_single(save_file_data, pkmn_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_EVOLVE);
             break;
         case SCREEN_EVOLVE:
-            draw_evolve(pkmn_save_player1, player1_save_path);
+            draw_evolve(pkmn_save_player1, player1_save_path, trainer1);
             break;
         case SCREEN_ABOUT:
         {
