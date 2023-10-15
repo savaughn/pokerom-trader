@@ -40,7 +40,7 @@ typedef enum
 struct TrainerSelection
 {
     int trainer_id;
-    int pokemon_index;
+    int pkmn_party_index;
     int trainer_index;
 };
 

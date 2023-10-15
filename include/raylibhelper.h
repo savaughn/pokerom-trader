@@ -11,11 +11,11 @@ void draw_about(void);
 void draw_change_dir(struct SaveFileData *save_file_data);
 void draw_settings(void);
 void draw_main_menu(struct SaveFileData *save_file_data);
-void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_path, char *player2_save_path, struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, struct TrainerSelection trainer_selection[2], PokemonSave *pokemon_save_player1, PokemonSave *pokemon_save_player2);
+void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_path, char *player2_save_path, struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, struct TrainerSelection trainer_selection[2], PokemonSave *pkmn_save_player1, PokemonSave *pkmn_save_player2);
 void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *player1_save_path, char *player2_save_path, struct TrainerSelection trainer_selection[2], struct TrainerInfo *trainer1, struct TrainerInfo *trainer2);
 void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *save_player1, char *player1_save_path, struct TrainerInfo *trainer1, struct TrainerSelection *trainer_selection, enum single_player_menu_types menu_type);
-void draw_bills_pc(PokemonSave *pokemon_save, char *save_path, struct TrainerInfo *trainer, struct TrainerSelection *trainer_selection);
-void draw_evolve(PokemonSave *pokemon_save, char *save_path);
+void draw_bills_pc(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *trainer, struct TrainerSelection *trainer_selection);
+void draw_evolve(PokemonSave *pkmn_save, char *save_path);
 void draw_raylib_screen_loop(
     struct SaveFileData *save_file_data,
     struct TrainerInfo *trainer1,
@@ -23,6 +23,6 @@ void draw_raylib_screen_loop(
     struct TrainerSelection trainer_selection[2],
     char *player1_save_path,
     char *player2_save_path,
-    PokemonSave *pokemon_save_player1,
-    PokemonSave *pokemon_save_player2
+    PokemonSave *pkmn_save_player1,
+    PokemonSave *pkmn_save_player2
 );

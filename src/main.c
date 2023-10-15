@@ -9,8 +9,8 @@ int main(int argc, char *argv[])
 {
     char player1_save_path[MAX_FILE_PATH_CHAR];
     char player2_save_path[MAX_FILE_PATH_CHAR];
-    PokemonSave pokemon_save_player1;
-    PokemonSave pokemon_save_player2;
+    PokemonSave pkmn_save_player1;
+    PokemonSave pkmn_save_player2;
     struct SaveFileData save_file_data;
     // Read and save the saves file directory from config.ini
     char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
@@ -36,8 +36,8 @@ int main(int argc, char *argv[])
     };
     // A struct to hold the trainer selection data
     struct TrainerSelection trainer_selection[2] = {
-        [0] = {.trainer_id = trainer_1.trainer_id, .pokemon_index = -1, .trainer_index = 0},
-        [1] = {.trainer_id = trainer_2.trainer_id, .pokemon_index = -1, .trainer_index = 1}};
+        [0] = {.trainer_id = trainer_1.trainer_id, .pkmn_party_index = -1, .trainer_index = 0},
+        [1] = {.trainer_id = trainer_2.trainer_id, .pkmn_party_index = -1, .trainer_index = 1}};
 
     // Draw
     draw_raylib_screen_loop(
@@ -47,8 +47,8 @@ int main(int argc, char *argv[])
         trainer_selection,
         player1_save_path,
         player2_save_path,
-        &pokemon_save_player1,
-        &pokemon_save_player2);
+        &pkmn_save_player1,
+        &pkmn_save_player2);
 
     free_filehelper_pointers();
 

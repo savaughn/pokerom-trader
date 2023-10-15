@@ -11,25 +11,9 @@ static GameScreen current_screen = SCREEN_MAIN_MENU;
 static int no_dir_err = 0;
 static bool was_mouse_pressed = false; // Prevents back navigating two screens with one mouse click
 
-// Draws a button with the pokemon nickname with mouse-over and selected states
-void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname)
+// Draws a button with the pokemon nickname
+void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname, bool selected)
 {
-    bool mouse_over = false;
-    bool selected = false;
-    if (CheckCollisionPointRec(GetMousePosition(), rect))
-    {
-        mouse_over = true;
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
-        {
-            selected = true;
-        }
-    }
-
-    if (mouse_over)
-    {
-        DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, selected ? LIGHTGRAY : DARKGRAY);
-    }
-
     DrawText(pokemon_nickname, rect.x + 10, rect.y + 6, 20, selected ? LIGHTGRAY : BLACK);
 }
 
@@ -73,25 +57,30 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
             pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[i], pokemon_nickname, 10);
         }
 
-        draw_pkmn_button((Rectangle){x - 10, y + 70 + (i * 30), 200, 30}, i, pokemon_nickname);
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x - 10, y + 70 + (i * 30), 200, 30}) && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+        draw_pkmn_button((Rectangle){x - 10, y + 70 + (i * 30), 200, 30}, i, pokemon_nickname, current_trainer_index != -1 && trainerSelection[current_trainer_index].pkmn_party_index == i);
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x - 10, y + 70 + (i * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            trainerSelection[current_trainer_index].pokemon_index = i;
+            if (trainerSelection[current_trainer_index].pkmn_party_index != i)
+            {
+                trainerSelection[current_trainer_index].pkmn_party_index = i;
+            } else {
+                trainerSelection[current_trainer_index].pkmn_party_index = -1;
+            }
         }
     }
 
     // Draw the selected pokemon nickname
-    if (current_trainer_index != -1 && trainerSelection[current_trainer_index].pokemon_index != -1)
+    if (current_trainer_index != -1 && trainerSelection[current_trainer_index].pkmn_party_index != -1)
     {
         // Name of the pokemon selected from list
         static char selected_pokemon_nickname[11];
         if (trainer_generation == SAVE_GENERATION_1)
         {
-            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[trainerSelection[current_trainer_index].pokemon_index], selected_pokemon_nickname, 10);
+            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[trainerSelection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, 10);
         }
         else if (trainer_generation == SAVE_GENERATION_2)
         {
-            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[trainerSelection[current_trainer_index].pokemon_index], selected_pokemon_nickname, 10);
+            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[trainerSelection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, 10);
         }
         DrawText(selected_pokemon_nickname, trainerSelection[current_trainer_index].trainer_index ? (GetScreenWidth() / 2) + 50 : x, y + 300, 20, BLACK);
     }
@@ -131,13 +120,13 @@ void draw_about(void)
     }
 }
 void draw_legal(void)
-{   
+{
     const char *disclaimer_lines[] = {
-        "Pokerom Trader is an unofficial application and is not", 
-        "affiliated with or endorsed by Nintendo, Game Freak, Creatures,", 
-        "The Pokémon Company, or any related entities. Pokémon and Pokémon", 
-        "character names are trademarks of Nintendo, Game Freak, Creatures,", 
-        "and The Pokémon Company. All trademarks, character names, and other", 
+        "Pokerom Trader is an unofficial application and is not",
+        "affiliated with or endorsed by Nintendo, Game Freak, Creatures,",
+        "The Pokémon Company, or any related entities. Pokémon and Pokémon",
+        "character names are trademarks of Nintendo, Game Freak, Creatures,",
+        "and The Pokémon Company. All trademarks, character names, and other",
         "intellectual property used in this application are used for",
         "identification and informational purposes only. The use of",
         "these names and marks is believed to qualify as fair use under",
@@ -145,9 +134,8 @@ void draw_legal(void)
         "any of the aforementioned entities. Pokerom Trader is provided \"as is\"",
         "without warranty of any kind, and the developers make no warranties,",
         "express or implied, regarding the accuracy or completeness of the",
-        "content provided in this application."
-    };
-    
+        "content provided in this application."};
+
     BeginDrawing();
     ClearBackground(background_color);
     DrawText("Disclaimer", 50, 50, 20, BLACK);
@@ -401,7 +389,7 @@ void draw_main_menu(struct SaveFileData *save_file_data)
     }
     EndDrawing();
 }
-void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_path, char *player2_save_path, struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, struct TrainerSelection trainerSelection[2], PokemonSave *pokemon_save_player1, PokemonSave *pokemon_save_player2)
+void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_path, char *player2_save_path, struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, struct TrainerSelection trainerSelection[2], PokemonSave *pkmn_save_player1, PokemonSave *pkmn_save_player2)
 {
     static int selected_saves_index[2] = {-1, -1};
 
@@ -473,22 +461,22 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
                     {
                         // load selection to player1_save
-                        *pokemon_save_player1 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[0]]);
+                        *pkmn_save_player1 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[0]]);
 
                         // save the selected path name
                         strcpy(player1_save_path, save_file_data->saves_file_path[selected_saves_index[0]]);
                         // generate trainer info from save
-                        create_trainer(pokemon_save_player1, trainer1);
+                        create_trainer(pkmn_save_player1, trainer1);
                         // save trainer id to trainerSelection
                         trainerSelection[0].trainer_id = trainer1->trainer_id;
 
                         // load selection to player2_save
-                        *pokemon_save_player2 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[1]]);
+                        *pkmn_save_player2 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[1]]);
                         strcpy(player2_save_path, save_file_data->saves_file_path[selected_saves_index[1]]);
-                        create_trainer(pokemon_save_player2, trainer2);
+                        create_trainer(pkmn_save_player2, trainer2);
                         trainerSelection[1].trainer_id = trainer2->trainer_id;
 
-                        if (pokemon_save_player1->save_generation_type != pokemon_save_player2->save_generation_type)
+                        if (pkmn_save_player1->save_generation_type != pkmn_save_player2->save_generation_type)
                         {
                             isSameGeneration = false;
                         }
@@ -535,23 +523,23 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
 void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *player1_save_path, char *player2_save_path, struct TrainerSelection trainerSelection[2], struct TrainerInfo *trainer1, struct TrainerInfo *trainer2)
 {
     // Update
-    int selected_index_trainer1 = trainerSelection[0].pokemon_index;
-    int selected_index_trainer2 = trainerSelection[1].pokemon_index;
+    int selected_index_trainer1 = trainerSelection[0].pkmn_party_index;
+    int selected_index_trainer2 = trainerSelection[1].pkmn_party_index;
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
     DrawTrainerInfo(trainer1, 50, 50, trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
     DrawTrainerInfo(trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection, save_player2->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
-    uint8_t canSubmitTrade = trainerSelection[0].pokemon_index != -1 && trainerSelection[1].pokemon_index != -1;
+    uint8_t canSubmitTrade = trainerSelection[0].pkmn_party_index != -1 && trainerSelection[1].pkmn_party_index != -1;
     DrawText("Trade!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, canSubmitTrade ? BLACK : LIGHTGRAY);
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && canSubmitTrade)
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             // Reset Trading state
-            trainerSelection[0].pokemon_index = -1;
-            trainerSelection[1].pokemon_index = -1;
+            trainerSelection[0].pkmn_party_index = -1;
+            trainerSelection[1].pkmn_party_index = -1;
 
             swap_pkmn_at_index_between_saves(save_player1, save_player2, selected_index_trainer1, selected_index_trainer2);
             update_seen_owned_pkmn(save_player1, selected_index_trainer1);
@@ -572,8 +560,8 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
         {
             trainer1->trainer_id = 0;
             trainer2->trainer_id = 0;
-            trainerSelection[0].pokemon_index = -1;
-            trainerSelection[1].pokemon_index = -1;
+            trainerSelection[0].pkmn_party_index = -1;
+            trainerSelection[1].pkmn_party_index = -1;
             current_screen = SCREEN_FILE_SELECT;
         }
     }
@@ -671,62 +659,64 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             trainer1->trainer_id = 0;
-            trainerSelection->pokemon_index = -1;
+            trainerSelection->pkmn_party_index = -1;
             current_screen = SCREEN_FILE_EDIT;
         }
     }
 
     EndDrawing();
 }
-void draw_evolve(PokemonSave *pokemon_save, char *save_path)
+void draw_evolve(PokemonSave *pkmn_save, char *save_path)
 {
+    SaveGenerationType save_generation_type = pkmn_save->save_generation_type;
+
     // Call rng
-    generate_random_number_step();
+    generate_rand_num_step(save_generation_type);
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
     DrawText("Trade Evolve", 50, 50, 20, BLACK);
 
-    SaveGenerationType save_generation = pokemon_save->save_generation_type;
     int party_count = 0;
     static int selected_index = -1;
     static int result = 0;
     char pokemon_nickname[11];
     int eligible_pokemon_count = 0;
 
-    if (save_generation == SAVE_GENERATION_1)
-        party_count = pokemon_save->save.gen1_save.pokemon_storage.p_party->count;
-    else if (save_generation == SAVE_GENERATION_2)
-        party_count = pokemon_save->save.gen2_save.pokemon_storage.p_party->count;
+    if (save_generation_type == SAVE_GENERATION_1)
+        party_count = pkmn_save->save.gen1_save.pokemon_storage.p_party->count;
+    else if (save_generation_type == SAVE_GENERATION_2)
+        party_count = pkmn_save->save.gen2_save.pokemon_storage.p_party->count;
 
     // Search party for pkmn eligible for trade evolution
     for (int i = 0; i < party_count; i++)
     {
-        if (save_generation == SAVE_GENERATION_1)
+        if (save_generation_type == SAVE_GENERATION_1)
         {
-            result = check_trade_evolution_gen1(pokemon_save, i);
+            result = check_trade_evolution_gen1(pkmn_save, i);
             // if eligible, draw pkmn button
             if (result)
             {
                 eligible_pokemon_count++;
-                pksav_gen1_import_text(pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
-                draw_pkmn_button((Rectangle){50, 100 + (eligible_pokemon_count * 30), 200, 30}, i, pokemon_nickname);
+                pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
+                draw_pkmn_button((Rectangle){50, 100 + (i * 30), 200, 30}, i, pokemon_nickname, selected_index == i);
             }
         }
-        else if (save_generation == SAVE_GENERATION_2)
+        else if (save_generation_type == SAVE_GENERATION_2)
         {
-            result = check_trade_evolution_gen2(pokemon_save, i);
-            if (result)
+            result = check_trade_evolution_gen2(pkmn_save, i);
+            eligible_pokemon_count++;
+            pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
+            draw_pkmn_button((Rectangle){50, 100 + (i * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname, selected_index == i);
+            if (result == E_EVO_STATUS_MISSING_ITEM)
+                DrawText("Missing required item!", 75 + MeasureText(pokemon_nickname, 20), 100 + (i * 30), 20, RED);
+            if (result == E_EVO_STATUS_NOT_ELIGIBLE)
             {
-                eligible_pokemon_count++;
-                pksav_gen2_import_text(pokemon_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, 10);
-                draw_pkmn_button((Rectangle){50, 100 + (eligible_pokemon_count * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname);
-                if (result == 2)
-                    DrawText("Missing required item!", 75 + MeasureText(pokemon_nickname, 20), 100 + (eligible_pokemon_count * 30), 20, RED);
+                DrawText("Not eligible", 75 + MeasureText(pokemon_nickname, 20), 100 + (i * 30), 20, RED);
             }
         }
         // Selected pokemon button
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 100 + (eligible_pokemon_count * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 100 + (i * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && result == E_EVO_STATUS_ELIGIBLE)
         {
             if (selected_index == i)
             {
@@ -735,19 +725,21 @@ void draw_evolve(PokemonSave *pokemon_save, char *save_path)
             else if (selected_index == -1)
             {
                 selected_index = i;
+            } else if (selected_index != i) {
+                selected_index = i;
             }
         }
     }
 
     // Draw selected nickname to the right of the screen
     char selected_nickname[11];
-    if (save_generation == SAVE_GENERATION_1 && selected_index != -1)
+    if (save_generation_type == SAVE_GENERATION_1 && selected_index != -1)
     {
-        pksav_gen1_import_text(pokemon_save->save.gen1_save.pokemon_storage.p_party->nicknames[selected_index], selected_nickname, 10);
+        pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[selected_index], selected_nickname, 10);
     }
-    else if (save_generation == SAVE_GENERATION_2 && selected_index != -1)
+    else if (save_generation_type == SAVE_GENERATION_2 && selected_index != -1)
     {
-        pksav_gen2_import_text(pokemon_save->save.gen2_save.pokemon_storage.p_party->nicknames[selected_index], selected_nickname, 10);
+        pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[selected_index], selected_nickname, 10);
     }
     if (selected_index != -1)
         DrawText(selected_nickname, NEXT_BUTTON_X, SCREEN_HEIGHT_TEXT_CENTER(20), 20, BLACK);
@@ -760,21 +752,23 @@ void draw_evolve(PokemonSave *pokemon_save, char *save_path)
         DrawText(no_pkmn, text_center.x, text_center.y, 20, BLACK);
     }
     // Evolve button (next button)
-    DrawText("Evolve!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, selected_index != -1 && result == 1 ? BLACK : LIGHTGRAY);
+    DrawText("Evolve!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, selected_index != -1 && result == E_EVO_STATUS_ELIGIBLE ? BLACK : LIGHTGRAY);
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && eligible_pokemon_count)
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             // Generates and assigns random dvs for simulated trade to new trainer
-            update_pkmn_DVs(pokemon_save, selected_index);
+            update_pkmn_DVs(pkmn_save, selected_index);
             // Evolve pokemon with the simulated new trainer
-            evolve_party_pokemon_at_index(pokemon_save, selected_index);
+            evolve_party_pokemon_at_index(pkmn_save, selected_index);
             // Update pokedex
-            update_seen_owned_pkmn(pokemon_save, selected_index);
+            update_seen_owned_pkmn(pkmn_save, selected_index);
             // Generates and assigns random dvs on simulated trade back to OT
-            update_pkmn_DVs(pokemon_save, selected_index);
+            update_pkmn_DVs(pkmn_save, selected_index);
             // Finalize pkmn data changes
-            save_savefile_to_path(pokemon_save, save_path);
+            save_savefile_to_path(pkmn_save, save_path);
+
+            selected_index = -1;
         }
     }
 
@@ -790,16 +784,16 @@ void draw_evolve(PokemonSave *pokemon_save, char *save_path)
 
     EndDrawing();
 }
-void draw_bills_pc(PokemonSave *pokemon_save, char *save_path, struct TrainerInfo *trainer, struct TrainerSelection *trainerSelection)
+void draw_bills_pc(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *trainer, struct TrainerSelection *trainerSelection)
 {
     // Update
-    int save_generation = pokemon_save->save_generation_type;
+    int save_generation = pkmn_save->save_generation_type;
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
     DrawText("Bill's PC", 50, 50, 20, BLACK);
 
-    DrawTrainerInfo(trainer, 50, 100, trainerSelection, pokemon_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+    DrawTrainerInfo(trainer, 50, 100, trainerSelection, pkmn_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
 
     // Draw a veritcal box to the right of the trainer info
     // labeled box n where n is the box number
@@ -816,12 +810,12 @@ void draw_bills_pc(PokemonSave *pokemon_save, char *save_path, struct TrainerInf
     int box_pokemon_count = 0;
     if (save_generation == SAVE_GENERATION_1)
     {
-        pokemon_box_gen1 = pokemon_save->save.gen1_save.pokemon_storage.p_current_box;
+        pokemon_box_gen1 = pkmn_save->save.gen1_save.pokemon_storage.p_current_box;
         box_pokemon_count = pokemon_box_gen1->count;
     }
     else
     {
-        pokemon_box_gen2 = pokemon_save->save.gen2_save.pokemon_storage.p_current_box;
+        pokemon_box_gen2 = pkmn_save->save.gen2_save.pokemon_storage.p_current_box;
         box_pokemon_count = pokemon_box_gen2->count;
     }
 
@@ -837,10 +831,10 @@ void draw_bills_pc(PokemonSave *pokemon_save, char *save_path, struct TrainerInf
         {
             pksav_gen2_import_text(pokemon_box_gen2->nicknames[i], pokemon_nickname, 10);
         }
-        draw_pkmn_button((Rectangle){400, 200 + (i * 30), 200, 30}, i, pokemon_nickname);
+        draw_pkmn_button((Rectangle){400, 200 + (i * 30), 200, 30}, i, pokemon_nickname, trainerSelection->pkmn_party_index == i);
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){400, 200 + (i * 30), 200, 30}) && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
         {
-            trainerSelection->pokemon_index = i;
+            trainerSelection->pkmn_party_index = i;
         }
     }
 
@@ -850,7 +844,7 @@ void draw_bills_pc(PokemonSave *pokemon_save, char *save_path, struct TrainerInf
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             trainer->trainer_id = 0;
-            trainerSelection->pokemon_index = -1;
+            trainerSelection->pkmn_party_index = -1;
             current_screen = SCREEN_MAIN_MENU;
         }
     }
@@ -864,8 +858,8 @@ void draw_raylib_screen_loop(
     struct TrainerSelection trainerSelection[2],
     char *player1_save_path,
     char *player2_save_path,
-    PokemonSave *pokemon_save_player1,
-    PokemonSave *pokemon_save_player2)
+    PokemonSave *pkmn_save_player1,
+    PokemonSave *pkmn_save_player2)
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pokerom Trader");
 
@@ -880,10 +874,10 @@ void draw_raylib_screen_loop(
         switch (current_screen)
         {
         case SCREEN_FILE_SELECT:
-            draw_file_select(save_file_data, player1_save_path, player2_save_path, trainer1, trainer2, trainerSelection, pokemon_save_player1, pokemon_save_player2);
+            draw_file_select(save_file_data, player1_save_path, player2_save_path, trainer1, trainer2, trainerSelection, pkmn_save_player1, pkmn_save_player2);
             break;
         case SCREEN_TRADE:
-            draw_trade(pokemon_save_player1, pokemon_save_player2, player1_save_path, player2_save_path, trainerSelection, trainer1, trainer2);
+            draw_trade(pkmn_save_player1, pkmn_save_player2, player1_save_path, player2_save_path, trainerSelection, trainer1, trainer2);
             break;
         case SCREEN_MAIN_MENU:
             draw_main_menu(save_file_data);
@@ -895,16 +889,16 @@ void draw_raylib_screen_loop(
             draw_change_dir(save_file_data);
             break;
         case SCREEN_BILLS_PC_FILE_SELECT:
-            draw_file_select_single(save_file_data, pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_BILLS_PC);
+            draw_file_select_single(save_file_data, pkmn_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_BILLS_PC);
             break;
         case SCREEN_BILLS_PC:
-            draw_bills_pc(pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0]);
+            draw_bills_pc(pkmn_save_player1, player1_save_path, trainer1, &trainerSelection[0]);
             break;
         case SCREEN_EVOLVE_FILE_SELECT:
-            draw_file_select_single(save_file_data, pokemon_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_EVOLVE);
+            draw_file_select_single(save_file_data, pkmn_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_EVOLVE);
             break;
         case SCREEN_EVOLVE:
-            draw_evolve(pokemon_save_player1, player1_save_path);
+            draw_evolve(pkmn_save_player1, player1_save_path);
             break;
         case SCREEN_ABOUT:
         {
