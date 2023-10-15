@@ -634,10 +634,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
                 {
                     selected_saves_index = -1;
                 }
-                else if (selected_saves_index == -1)
-                {
-                    selected_saves_index = i;
-                } else if (selected_saves_index != i) {
+                else {
                     selected_saves_index = i;
                 }
             }
@@ -765,13 +762,8 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *tr
             {
                 selected_index = -1;
             }
-            // Select if not already selected
-            else if (selected_index == -1)
-            {
-                selected_index = i;
-            }
             // Select a different index
-            else if (selected_index != i)
+            else
             {
                 selected_index = i;
             }
