@@ -1,3 +1,6 @@
+#ifndef PKSAVFILEHELPER_H
+#define PKSAVFILEHELPER_H
+
 #include <stdio.h>
 #include "common.h"
 #include "pksavhelper.h"
@@ -5,3 +8,5 @@
 enum pksav_error detect_savefile_generation(const char *path, SaveGenerationType *save_generation_type);
 PokemonSave load_savefile_from_path(const char *path);
 void save_savefile_to_path(PokemonSave *pkmn_save, char *path);
+
+#endif // PKSAVFILEHELPER_H

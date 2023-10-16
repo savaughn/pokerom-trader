@@ -1,3 +1,6 @@
+#ifndef RAYLIBHELPER_H
+#define RAYLIBHELPER_H
+
 #include <string.h>
 #include "raylib.h"
 #include "common.h"
@@ -26,3 +29,5 @@ void draw_raylib_screen_loop(
     PokemonSave *pkmn_save_player1,
     PokemonSave *pkmn_save_player2
 );
+
+#endif // RAYLIBHELPER_H

@@ -95,15 +95,15 @@ void draw_about(void)
     BeginDrawing();
     ClearBackground(background_color);
 
-    DrawText("About Pokerom Trader", x, 100, 20, BLACK);
-    DrawText("Pokerom Trader is a tool for trading Pokemon between two save files", x, 200, 20, BLACK);
-    DrawText("written by github.com/savaughn 2023", x, 225, 20, BLACK);
-    DrawText("Pokerom Trader is open source and licensed under the MIT license", x, 250, 20, BLACK);
-    DrawText("Pokerom Trader uses the following libraries:", x, 300, 20, BLACK);
-    DrawText("raylib - https://www.raylib.com/", x, 325, 20, BLACK);
-    DrawText("pksav - https://github.com/ncorgan/pksav", x, 350, 20, BLACK);
-    DrawText("Legal >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, BLACK);
-    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
+    DrawText(t(ABOUT_POKEROM_TRADER_TEXT), x, 100, 20, BLACK);
+    DrawText(t(ABOUT_TEXT1), x, 200, 20, BLACK);
+    DrawText(t(ABOUT_TEXT2), x, 225, 20, BLACK);
+    DrawText(t(ABOUT_TEXT3), x, 250, 20, BLACK);
+    DrawText(t(ABOUT_TEXT4), x, 300, 20, BLACK);
+    DrawText(t(ABOUT_TEXT5), x, 325, 20, BLACK);
+    DrawText(t(ABOUT_TEXT6), x, 350, 20, BLACK);
+    DrawText(t(LEGAL_BTN_TEXT), NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, BLACK);
+    DrawText(t(BACK_BTN_TEXT), BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
 
     EndDrawing();
 
@@ -146,7 +146,7 @@ void draw_legal(void)
         DrawText(disclaimer_lines[i], 50, 75 + (i * 25), 20, BLACK);
     }
 
-    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
+    DrawText(t(BACK_BTN_TEXT), BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
@@ -217,7 +217,7 @@ void draw_change_dir(struct SaveFileData *save_file_data)
 
     BeginDrawing();
     ClearBackground(background_color);
-    DrawText("Specify folder name containing saves", 50, SCREEN_HEIGHT / 2 - 75, 20, BLACK);
+    DrawText(t(FILE_EDIT_TEXT1), 50, SCREEN_HEIGHT / 2 - 75, 20, BLACK);
 
     // Draw the input box
     DrawRectangleRec(input_box_rec, WHITE);
@@ -226,9 +226,9 @@ void draw_change_dir(struct SaveFileData *save_file_data)
     // Draw the text inside the input box
     DrawText(inputText, input_box_rec.x + 10, input_box_rec.y + 10, 20, BLACK);
 
-    Rectangle clear_button_rec = (Rectangle){SCREEN_WIDTH - MeasureText("Clear input", 20) + 10 - 70, input_box_rec.y + 25 + input_box_rec.height - 5, MeasureText("Clear input", 20) + 10, 30};
+    Rectangle clear_button_rec = (Rectangle){SCREEN_WIDTH - MeasureText(t(CLEAR_INPUT_BTN_TEXT), 20) + 10 - 70, input_box_rec.y + 25 + input_box_rec.height - 5, MeasureText("Clear input", 20) + 10, 30};
     DrawRectangleRec(clear_button_rec, RED);
-    DrawText("Clear input", clear_button_rec.x + 5, clear_button_rec.y + 5, 20, WHITE);
+    DrawText(t(CLEAR_INPUT_BTN_TEXT), clear_button_rec.x + 5, clear_button_rec.y + 5, 20, WHITE);
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
@@ -253,7 +253,7 @@ void draw_change_dir(struct SaveFileData *save_file_data)
     }
 
     // Draw the save button
-    DrawText("Save!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, textSize ? BLACK : LIGHTGRAY);
+    DrawText(t(SAVE_BTN_TEXT), NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, textSize ? BLACK : LIGHTGRAY);
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && textSize > 0)
@@ -273,7 +273,7 @@ void draw_change_dir(struct SaveFileData *save_file_data)
         DrawText(TextFormat("error writing config %d", errno), 50, 50, 20, BLACK);
 
     // add a back button
-    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
+    DrawText(t(BACK_BTN_TEXT), BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
@@ -292,26 +292,80 @@ void draw_settings(void)
 {
     BeginDrawing();
     ClearBackground(background_color);
-    DrawText("Settings", 50, 50, 20, BLACK);
-    DrawText("Change Save Directory", 50, 200, 20, BLACK);
+    DrawText(t(SETTINGS_BTN_TEXT), 50, 50, 20, BLACK);
+    DrawText(t(SETTINGS_CHANGE_DIR_BTN_TEXT), 50, 200, 20, BLACK);
     // Toggle for random ivs on trade boolean
-    DrawText("Disable random DVs on trade", 50, 225, 20, BLACK);
+    DrawText(t(SETTINGS_DISABLE_RANDOM_DVS_BTN_TEXT), 50, 225, 20, BLACK);
     // Checkbox for random ivs on trade
-    DrawText("ON", 385, 225, 20, BLACK);
-    Rectangle checkbox_rec_on = (Rectangle){385 + MeasureText("ON", 20) + 5, 225, 20, 20};
+    DrawText(t(BTN_ON_TEXT), 385, 225, 20, BLACK);
+    Rectangle checkbox_rec_on = (Rectangle){385 + MeasureText(t(BTN_ON_TEXT), 20) + 5, 225, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_on, 2, BLACK);
     Rectangle checkbox_rec_off = (Rectangle){checkbox_rec_on.x + checkbox_rec_on.width + 5, 225, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_off, 2, BLACK);
-    DrawText("OFF", checkbox_rec_off.x + checkbox_rec_off.width + 5, checkbox_rec_off.y, 20, BLACK);
+    DrawText(t(BTN_OFF_TEXT), checkbox_rec_off.x + checkbox_rec_off.width + 5, checkbox_rec_off.y, 20, BLACK);
     // Toggle for item override evolutions
-    DrawText("Item required for evolution", 50, 250, 20, BLACK);
+    DrawText(t(ITEM_REQUIRED_FOR_EVOLUTION_TEXT), 50, 250, 20, BLACK);
     // Checkbox for item override evolutions
-    DrawText("ON", 385, 250, 20, BLACK);
-    Rectangle checkbox_rec_on_item = (Rectangle){385 + MeasureText("ON", 20) + 5, 250, 20, 20};
+    DrawText(t(BTN_ON_TEXT), 385, 250, 20, BLACK);
+    Rectangle checkbox_rec_on_item = (Rectangle){385 + MeasureText(t(BTN_ON_TEXT), 20) + 5, 250, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_on_item, 2, BLACK);
     Rectangle checkbox_rec_off_item = (Rectangle){checkbox_rec_on_item.x + checkbox_rec_on_item.width + 5, 250, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_off_item, 2, BLACK);
-    DrawText("OFF", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 5, checkbox_rec_off_item.y, 20, BLACK);
+    DrawText(t(BTN_OFF_TEXT), checkbox_rec_off_item.x + checkbox_rec_off_item.width + 5, checkbox_rec_off_item.y, 20, BLACK);
+    // Language selection
+    enum E_LANG lang = get_language();
+    DrawText(t(LANGUAGE_TEXT), 50, 275, 20, BLACK);
+    DrawText("En ", 385, 275, 20, LIGHTGRAY);
+    Rectangle checkbox_rec_en_lang = (Rectangle){385 - 5, 275, MeasureText("En ", 20) + 10, 20};
+    DrawText("Fr ", checkbox_rec_en_lang.x + checkbox_rec_en_lang.width + 5, checkbox_rec_en_lang.y, 20, LIGHTGRAY);
+    Rectangle checkbox_rec_fr_lang = (Rectangle){checkbox_rec_en_lang.x + checkbox_rec_en_lang.width + 5, 275, 20, 20};
+    DrawText("De ", checkbox_rec_fr_lang.x + checkbox_rec_fr_lang.width + 5, checkbox_rec_fr_lang.y, 20, LIGHTGRAY);
+    Rectangle checkbox_rec_de_lang = (Rectangle){checkbox_rec_fr_lang.x + checkbox_rec_fr_lang.width + 5, 275, 20, 20};
+    DrawText("It ", checkbox_rec_de_lang.x + checkbox_rec_de_lang.width + 5, checkbox_rec_de_lang.y, 20, LIGHTGRAY);
+    Rectangle checkbox_rec_it_lang = (Rectangle){checkbox_rec_de_lang.x + checkbox_rec_de_lang.width + 5, 275, 20, 20};
+    DrawText("Es ", checkbox_rec_it_lang.x + checkbox_rec_it_lang.width + 5, checkbox_rec_it_lang.y, 20, LIGHTGRAY);
+    Rectangle checkbox_rec_es_lang = (Rectangle){checkbox_rec_it_lang.x + checkbox_rec_it_lang.width + 5, 275, 20, 20};
+    // DrawText("Ja", checkbox_rec_es_lang.x + checkbox_rec_es_lang.width + 5, checkbox_rec_es_lang.y, 20, LIGHTGRAY);
+    // Rectangle checkbox_rec_ja_lang = (Rectangle){checkbox_rec_es_lang.x + checkbox_rec_es_lang.width + 5, 275, 20, 20};
+    // DrawText("Ko", checkbox_rec_ja_lang.x + checkbox_rec_ja_lang.width + 5, checkbox_rec_ja_lang.y, 20, LIGHTGRAY);
+    // Rectangle checkbox_rec_ko_lang = (Rectangle){checkbox_rec_ja_lang.x + checkbox_rec_ja_lang.width + 5, 275, 20, 20};
+    // DrawText("Zh", checkbox_rec_ko_lang.x + checkbox_rec_ko_lang.width + 5, checkbox_rec_ko_lang.y, 20, LIGHTGRAY);
+    // Rectangle checkbox_rec_zh_lang = (Rectangle){checkbox_rec_ko_lang.x + checkbox_rec_ko_lang.width + 5, 275, 20, 20};
+    // DrawText("Zh_TW", checkbox_rec_zh_lang.x + checkbox_rec_zh_lang.width + 5, checkbox_rec_zh_lang.y, 20, LIGHTGRAY);
+    // Rectangle checkbox_rec_zh_tw_lang = (Rectangle){checkbox_rec_zh_lang.x + checkbox_rec_zh_lang.width + 5, 275, 20, 20};
+    
+    switch (lang)
+    {
+    case EN:
+        DrawText("En ", 385, 275, 20, BLACK);
+        break;
+    case FR:
+        DrawText("Fr ", checkbox_rec_en_lang.x + checkbox_rec_en_lang.width + 5, checkbox_rec_en_lang.y, 20, BLACK);
+        break;
+    case DE:
+        DrawText("De ", checkbox_rec_fr_lang.x + checkbox_rec_fr_lang.width + 5, checkbox_rec_fr_lang.y, 20, BLACK);
+        break;
+    case IT:
+        DrawText("It ", checkbox_rec_de_lang.x + checkbox_rec_de_lang.width + 5, checkbox_rec_de_lang.y, 20, BLACK);
+        break;
+    case ES:
+        DrawText("Es ", checkbox_rec_it_lang.x + checkbox_rec_it_lang.width + 5, checkbox_rec_it_lang.y, 20, BLACK);
+        break;
+    case JA:
+        DrawText("Ja ", checkbox_rec_es_lang.x + checkbox_rec_es_lang.width + 5, checkbox_rec_es_lang.y, 20, BLACK);
+        break;
+    // case KO:
+    //     DrawText("Ko", checkbox_rec_ja_lang.x + checkbox_rec_ja_lang.width + 5, checkbox_rec_ja_lang.y, 20, BLACK);
+    //     break;
+    // case ZH:
+    //     DrawText("Zh", checkbox_rec_ko_lang.x + checkbox_rec_ko_lang.width + 5, checkbox_rec_ko_lang.y, 20, BLACK);
+    //     break;
+    // case ZH_TW:
+    //     DrawText("Zh_TW", checkbox_rec_zh_lang.x + checkbox_rec_zh_lang.width + 5, checkbox_rec_zh_lang.y, 20, BLACK);
+    //     break;
+    default:
+        break;
+    }
 
     bool _is_rand_disabled = get_is_random_DVs_disabled();
     if (_is_rand_disabled)
@@ -340,6 +394,7 @@ void draw_settings(void)
         DrawRectangle(checkbox_rec_off_item.x + 3, checkbox_rec_off_item.y + 3, checkbox_rec_off_item.width - 6, checkbox_rec_off_item.height - 6, BLACK);
         DrawText("Items will not be required", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, 250, 16, BLACK);
     }
+    
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_on))
@@ -360,10 +415,58 @@ void draw_settings(void)
         {
             set_is_item_required(false);
             write_key_to_config("ITEM_REQUIRED_EVOLUTIONS", "false");
+        } else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_en_lang))
+        {
+            set_language(EN);
+            write_key_to_config("LANGUAGE", "EN");
+        }
+        else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_fr_lang))
+        {
+            set_language(FR);
+            write_key_to_config("LANGUAGE", "FR");
+        }
+        else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_de_lang))
+        {
+            set_language(DE);
+            write_key_to_config("LANGUAGE", "DE");
+        }
+        else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_it_lang))
+        {
+            set_language(IT);
+            write_key_to_config("LANGUAGE", "IT");
+        }
+        else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_es_lang))
+        {
+            set_language(ES);
+            write_key_to_config("LANGUAGE", "ES");
+        }
+        // else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_ja_lang))
+        // {
+        //     set_language(JA);
+        //     write_key_to_config("LANGUAGE", "JA");
+        // }
+        // else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_ko_lang))
+        // {
+        //     set_language(KO);
+        //     write_key_to_config("LANGUAGE", "KO");
+        // }
+        // else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_zh_lang))
+        // {
+        //     set_language(ZH);
+        //     write_key_to_config("LANGUAGE", "ZH");
+        // }
+        // else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_zh_tw_lang))
+        // {
+        //     set_language(ZH_TW);
+        //     write_key_to_config("LANGUAGE", "ZH_TW");
+        // }
+        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 200, 200, 20}))
+        {
+            current_screen = SCREEN_FILE_EDIT;
         }
     }
-    DrawText("About Pokerom Trader", 50, 325, 20, BLACK);
-    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
+    DrawText(t(ABOUT_POKEROM_TRADER_TEXT), 50, 325, 20, BLACK);
+    DrawText(t(BACK_BTN_TEXT), BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 200, 200, 20}))
@@ -387,13 +490,13 @@ void draw_main_menu(struct SaveFileData *save_file_data)
 {
     BeginDrawing();
     ClearBackground(background_color);
-    DrawText("Main Menu", 190, 100, 20, BLACK);
-    DrawText("Trade", 190, 200, 20, BLACK);
+    DrawText(t(MAIN_MENU_TEXT), 190, 100, 20, BLACK);
+    DrawText(t(MAIN_MENU_TRADE_TEXT), 190, 200, 20, BLACK);
     if (SHOW_BILLS_PC)
-        DrawText("Bill's PC", 190, 300, 20, BLACK);
-    DrawText("Evolve", 190, 225, 20, BLACK);
-    DrawText("Settings", 190, 250, 20, BLACK);
-    DrawText("Quit", 190, 275, 20, BLACK);
+        DrawText(t(MAIN_MENU_BILLS_PC_TEXT), 190, 300, 20, BLACK);
+    DrawText(t(MAIN_MENU_EVOLVE_TEXT), 190, 225, 20, BLACK);
+    DrawText(t(SETTINGS_BTN_TEXT), 190, 250, 20, BLACK);
+    DrawText(t(MAIN_MENU_QUIT_TEXT), 190, 275, 20, BLACK);
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 200, 200, 20}))

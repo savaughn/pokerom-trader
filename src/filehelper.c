@@ -66,14 +66,16 @@ int write_key_to_config(const char *key, const char *value)
 
     // Open the INI file for reading and writing.
     FILE *file = fopen(config_path, "r+");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         perror("Error opening INI file");
         return 1;
     }
 
     // Create a temporary file to store the modified contents.
     FILE *temp_file = tmpfile();
-    if (temp_file == NULL) {
+    if (temp_file == NULL)
+    {
         perror("Error creating temporary file");
         fclose(file);
         return 1;
@@ -83,20 +85,25 @@ int write_key_to_config(const char *key, const char *value)
     int key_found = 0;
 
     // Read the INI file line by line.
-    while (fgets(line, sizeof(line), file) != NULL) {
+    while (fgets(line, sizeof(line), file) != NULL)
+    {
         // Check if the line starts with the desired key.
-        if (strncmp(line, key, strlen(key)) == 0) {
+        if (strncmp(line, key, strlen(key)) == 0)
+        {
             // Key found, update the value.
             fprintf(temp_file, "%s=%s\n", key, value);
             key_found = 1;
-        } else {
+        }
+        else
+        {
             // Copy the line as-is to the temporary file.
             fprintf(temp_file, "%s", line);
         }
     }
 
     // If the key was not found, add it to the end of the file.
-    if (!key_found) {
+    if (!key_found)
+    {
         fprintf(temp_file, "%s=%s\n", key, value);
     }
 
@@ -106,13 +113,15 @@ int write_key_to_config(const char *key, const char *value)
 
     // Reopen the INI file for writing and copy the contents from the temporary file.
     file = fopen(config_path, "w");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         perror("Error reopening INI file");
         fclose(temp_file);
         return 1;
     }
 
-    while (fgets(line, sizeof(line), temp_file) != NULL) {
+    while (fgets(line, sizeof(line), temp_file) != NULL)
+    {
         fprintf(file, "%s", line);
     }
 
@@ -140,7 +149,8 @@ void create_default_config(void)
     if (status == -1)
     {
         printf("Error %d creating directory!\n", errno);
-        if (errno != 17) exit(errno);
+        if (errno != 17)
+            exit(errno);
     }
 
     // create saves folder
@@ -151,7 +161,8 @@ void create_default_config(void)
     if (status == -1)
     {
         puts("Error creating saves directory");
-        if (errno != 17) exit(errno);
+        if (errno != 17)
+            exit(errno);
     }
 
     // create config.ini file in cwd
@@ -175,6 +186,9 @@ void create_default_config(void)
     fputs("DISABLE_RANDOM_IVS_ON_TRADE=false", fp);
     fputs("\n", fp);
     fputs("ITEM_REQUIRED_EVOLUTIONS=true", fp);
+    fputs("\n", fp);
+    fputs("LANGUAGE=EN", fp);
+    fputs("\n", fp);
 
     fclose(fp);
 }
@@ -235,4 +249,50 @@ void free_filehelper_pointers(void)
 {
     free(resolved_path);
     free(absolute_path);
+}
+
+char *t(uint16_t key)
+{
+    switch (LANG)
+    {
+    case EN:
+        return english_strings[key];
+        break;
+    case DE:
+        return german_strings[key];
+        break;
+    case FR:
+        return french_strings[key];
+        break;
+    case IT:
+        return italian_strings[key];
+        break;
+    case ES:
+        return spanish_strings[key];
+        break;
+    case JA:
+        return japanese_strings[key];
+        break;
+    case KO:
+        return korean_strings[key];
+        break;
+    case ZH:
+        return chinese_strings[key];
+        break;
+    case ZH_TW:
+        return chinese_tw_strings[key];
+        break;
+    default:
+        return english_strings[key];
+    }
+}
+
+void set_language(uint8_t lang)
+{
+    LANG = lang;
+}
+
+enum E_LANG get_language(void)
+{
+    return LANG;
 }
