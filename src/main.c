@@ -26,8 +26,7 @@ int main(int argc, char *argv[])
     // Read and save the item required evolutions setting from config.ini
     set_is_item_required(strcmp(read_key_from_config("ITEM_REQUIRED_EVOLUTIONS"), "false"));
     // Read and save the language setting from config.ini
-    char *lang = read_key_from_config("LANGUAGE");
-    printf("lang: %s\n", lang);
+    const char *lang = read_key_from_config("LANGUAGE");
     if (lang != NULL)
     {
         if (strcmp(lang, "EN") == 0)

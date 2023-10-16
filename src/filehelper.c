@@ -251,7 +251,7 @@ void free_filehelper_pointers(void)
     free(absolute_path);
 }
 
-char *t(uint16_t key)
+const char *t(uint16_t key)
 {
     switch (LANG)
     {

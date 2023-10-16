@@ -355,7 +355,7 @@ int get_save_files(struct SaveFileData *save_data);
 void free_filehelper_pointers(void);
 int write_key_to_config(const char *key, const char *value);
 char *read_key_from_config(const char *key);
-char* t(uint16_t key);
+const char* t(uint16_t key);
 void set_language(uint8_t lang);
 enum E_LANG get_language(void);
 
