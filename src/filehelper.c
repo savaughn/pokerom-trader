@@ -14,6 +14,28 @@ void get_save_files(struct SaveFileData *save_data)
 {
 }
 
+#elif __GNUC__
+
+int get_save_files(struct SaveFileData *save_data)
+{
+    return 0;
+}
+
+char *read_key_from_config(const char *key)
+{
+    return NULL;
+}
+
+int write_key_to_config(const char *key, const char *value)
+{
+    return 1;
+}
+
+void create_default_config(void)
+{
+    return;
+}
+
 #else
 
 int get_save_files(struct SaveFileData *save_data)
