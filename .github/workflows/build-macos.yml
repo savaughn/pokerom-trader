@@ -93,9 +93,13 @@ jobs:
       run: |
         # Copy libpksav.dylib to the same directory as the executable
         cp deps/pksav/build/lib/libpksav.dylib build/
+        cp deps/raylib/src/libraylib.a build/
 
         # Update the library path in the executable
         install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/pksav/build/lib/libpksav.dylib @rpath/libpksav.dylib build/pokeromtrader
+        install_name_tool -add_rpath @executable_path/../Frameworks build/pokeromtrader
+
+        install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/raylib/src/libraylib.a @rpath/libraylib.a build/pokeromtrader
         install_name_tool -add_rpath @executable_path/../Frameworks build/pokeromtrader
 
     - name: Publish Build Artifacts
@@ -136,6 +140,7 @@ jobs:
         # Copy the executable to the .app bundle
         cp "${{ github.workspace }}/pokeromtrader" "${MACOS_DESTINATION}/pokeromtrader"
         cp "${{ github.workspace }}/libpksav.dylib" "${MACOS_FRAMEWORKS_DESTINATION}/libpksav.dylib"
+        cp "${{ github.workspace }}/libraylib.a" "${MACOS_FRAMEWORKS_DESTINATION}/libraylib.a"
         
         # Create Info.plist file
         echo '<?xml version="1.0" encoding="UTF-8"?>' > "${INFO_PLIST}"
