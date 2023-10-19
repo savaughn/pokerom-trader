@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build_x64:
-    if: false  # This workflow is disabled
+  build_linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,8 +19,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake make
-        # Add any other dependencies you need here
+        sudo apt-get install -y cmake make build-essential libxcursor-dev libxinerama-dev libxrandr-dev libxi-dev libgl1-mesa-dev
 
     - name: Build pksav
       run: |
@@ -32,18 +33,17 @@ jobs:
       run: |
         cd deps/raylib/src/
         make PLATFORM=PLATFORM_DESKTOP
+        sudo make install
 
     - name: Build Project
       run: |
-        make all
+        make
 
     - name: Bundle Executable with Library
       run: |
         # Copy libpksav.so to the same directory as the executable
-        cp deps/pksav/build/lib/libpksav.so build/
-
-        # Update the library path in the executable
-        patchelf --set-rpath '$ORIGIN/../lib' build/pokeromtrader
+        mkdir -p build/lib
+        cp deps/pksav/build/lib/libpksav.so build/lib/
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v2

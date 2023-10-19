@@ -1,10 +1,16 @@
 #include "filehelper.h"
 #ifdef _WIN32
 #else
-#include <unistd.h>
-#include <sys/errno.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+    #include <unistd.h>
+    #include <sys/errno.h>
+    #include <sys/stat.h>
+    #include <sys/types.h>
+
+    #ifdef __GNUC__
+        #define USR_DATA_DIR "/.pokeromtrader"
+    #else
+        #define USR_DATA_DIR "/Library/PokeromTrader"
+    #endif
 #endif
 
 char *resolved_path = NULL;
@@ -12,6 +18,19 @@ char *absolute_path = NULL;
 #ifdef _WIN32
 void get_save_files(struct SaveFileData *save_data)
 {
+    return 0;
+}
+int write_key_to_config(const char *key, const char *value)
+{
+    return 0;
+}
+void create_default_config(void)
+{
+    return;
+}
+char *read_key_from_config(const char *key)
+{
+    return NULL;
 }
 
 #else
@@ -62,8 +81,8 @@ int write_key_to_config(const char *key, const char *value)
     // Get config.ini path
     char config_path[MAX_FILE_PATH_CHAR];
     strcpy(config_path, getenv("HOME"));
-    strcat(config_path, "/Library/PokeromTrader/config.ini");
-
+    strcat(config_path, USR_DATA_DIR);
+    strcat(config_path, "/config.ini");
     // Open the INI file for reading and writing.
     FILE *file = fopen(config_path, "r+");
     if (file == NULL) {
@@ -134,7 +153,7 @@ void create_default_config(void)
     strcpy(cwd, getenv("HOME"));
 
     // create directory PokeromTrader
-    const char *dir_path = "/Library/PokeromTrader";
+    const char *dir_path = USR_DATA_DIR;
     strcat(cwd, dir_path);
     int status = mkdir(cwd, 0777);
     if (status == -1)
@@ -188,7 +207,8 @@ char *read_key_from_config(const char *key)
 
     char config_path[MAX_FILE_PATH_CHAR];
     strcpy(config_path, getenv("HOME"));
-    strcat(config_path, "/Library/PokeromTrader/config.ini");
+    strcat(config_path, USR_DATA_DIR);
+    strcat(config_path, "/config.ini");
 
     fp = fopen(config_path, "r");
 

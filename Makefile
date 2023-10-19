@@ -221,6 +221,7 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
             # Explicitly enable runtime link to libraylib.so
             CFLAGS += -Wl,-rpath,$(RAYLIB_RELEASE_PATH)
         endif
+        CFLAGS += -Wl,-rpath,lib
     endif
 endif
 ifeq ($(PLATFORM),PLATFORM_RPI)
