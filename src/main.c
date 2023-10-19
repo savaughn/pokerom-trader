@@ -23,11 +23,9 @@ int main(int argc, char *argv[])
     }
 
     // Read and save the disable random setting from config.ini
-    // set_is_random_DVs_disabled(strcmp(read_key_from_config("DISABLE_RANDOM_IVS_ON_TRADE"), "false"));
-    set_is_random_DVs_disabled(0);
+    set_is_random_DVs_disabled(strcmp(read_key_from_config("DISABLE_RANDOM_IVS_ON_TRADE"), "false"));
     // Read and save the item required evolutions setting from config.ini
-    // set_is_item_required(strcmp(read_key_from_config("ITEM_REQUIRED_EVOLUTIONS"), "false"));
-    set_is_item_required(1);
+    set_is_item_required(strcmp(read_key_from_config("ITEM_REQUIRED_EVOLUTIONS"), "false"));
 
     // malloc'd from read_key_from_config
     free(config_save_path);
