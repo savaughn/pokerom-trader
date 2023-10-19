@@ -9,8 +9,7 @@ on:
       - main
 
 jobs:
-  build_x64:
-    # if: false  # This workflow is disabled
+  build_linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -43,10 +42,7 @@ jobs:
     - name: Bundle Executable with Library
       run: |
         # Copy libpksav.so to the same directory as the executable
-        cp deps/pksav/build/lib/libpksav.so build/
-
-        # Update the library path in the executable
-        patchelf --set-rpath '$ORIGIN/../lib' build/pokeromtrader
+        cp deps/pksav/build/lib/libpksav.so build/lib/
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v2

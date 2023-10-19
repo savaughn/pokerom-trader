@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
     PokemonSave pkmn_save_player2;
     struct SaveFileData save_file_data;
     // Read and save the saves file directory from config.ini
-    // char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
-    char *config_save_path = NULL;
+    char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
+    
     if (config_save_path != NULL)
     {
         strcpy((char *)save_file_data.save_dir, config_save_path);
