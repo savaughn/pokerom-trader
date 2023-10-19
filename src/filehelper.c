@@ -6,9 +6,9 @@
     #include <sys/stat.h>
     #include <sys/types.h>
 
-    #ifdef __GNUC__
+    #ifdef linux
         #define USR_DATA_DIR "/.pokeromtrader"
-    #else
+    #elif __APPLE__
         #define USR_DATA_DIR "/Library/PokeromTrader"
     #endif
 #endif
