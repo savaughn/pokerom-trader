@@ -102,9 +102,6 @@ jobs:
         install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/raylib/src/libraylib.a @rpath/libraylib.a build/pokeromtrader
         install_name_tool -add_rpath @executable_path/../Frameworks build/pokeromtrader
 
-        install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/raylib/src/libraylib.a @rpath/libraylib.a build/pokeromtrader
-        install_name_tool -add_rpath @executable_path/../Frameworks build/pokeromtrader
-
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v3
       with:
