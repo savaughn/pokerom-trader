@@ -6,6 +6,7 @@
 #include <string.h>
 #include <dirent.h>
 #include "common.h"
+#include "pksavhelper.h"
 
 // Global pointers for resolved_path and absolute_path
 extern char *resolved_path;
@@ -19,5 +20,7 @@ void free_filehelper_pointers(void);
 int write_key_to_config(const char *key, const char *value);
 char *read_key_from_config(const char *key);
 int delete_app_data(void);
+void create_default_config(bool overwrite);
+void init_settings_from_config(struct SaveFileData *save_file_data);
 
 #endif /* FILEHELPER_H */

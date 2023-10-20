@@ -26,7 +26,7 @@ void on_delete_modal_submit(void)
     was_data_deleted = true;
 }
 
-void _draw_confirmation_modal(const char *header_text, const char *body_text, void (*_onsubmit)(void), void (*_oncancel)(void))
+void _draw_confirmation_modal(const char *header_text, const char *body_text, void (*_onsubmit)(void), void (*_oncancel)(void), enum E_MODAL_TYPES modal_type)
 {
     const Color scrim = (Color){0, 0, 0, 30};
     // Background scrim
@@ -43,34 +43,42 @@ void _draw_confirmation_modal(const char *header_text, const char *body_text, vo
     DrawRectangleRec(confirm_modal_rec, WHITE);
     DrawRectangleLinesEx(confirm_modal_rec, 2, LIGHTGRAY);
 
-    // Draw Triangle lines
-    DrawTriangle(
-        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 - 50, confirm_modal_rec.y + 110}, 
-        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 + 50, confirm_modal_rec.y + 110}, 
-        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 25}, 
-        RED
-    );
-    // Draw smaller white triangle to cover the red triangle lines
-    DrawTriangle(
-        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 - 40, confirm_modal_rec.y + 104.5}, 
-        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 + 40, confirm_modal_rec.y + 104.5}, 
-        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 35}, 
-        WHITE
-    );
-    // Draw exclamation point in triangle
-    DrawRectangleRounded((Rectangle){ confirm_modal_rec.x + confirm_modal_rec.width / 2 - 3.5, confirm_modal_rec.y + 47, 7, 37}, 1, 5, RED);
-    DrawCircle(confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 95, 5, RED);
+    if (modal_type == E_MODAL_WARN)
+    {
+        // Draw Triangle lines
+        DrawTriangle(
+            (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 - 50, confirm_modal_rec.y + 110},
+            (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 + 50, confirm_modal_rec.y + 110},
+            (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 25},
+            RED);
+        // Draw smaller white triangle to cover the red triangle lines
+        DrawTriangle(
+            (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 - 40, confirm_modal_rec.y + 104.5},
+            (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 + 40, confirm_modal_rec.y + 104.5},
+            (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 35},
+            WHITE);
+    }
 
-    // Delete Modal Text
+    if (modal_type == E_MODAL_INFO)
+    {
+        DrawCircle(confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 75, 45, LIGHTGRAY);
+        DrawCircle(confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 75, 35, WHITE);
+    }
+
+    // Draw exclamation point in triangle
+    DrawRectangleRounded((Rectangle){confirm_modal_rec.x + confirm_modal_rec.width / 2 - 3.5, confirm_modal_rec.y + 47, 7, 37}, 1, 5, modal_type == E_MODAL_WARN ? RED : LIGHTGRAY);
+    DrawCircle(confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 95, 5, modal_type == E_MODAL_WARN ? RED : LIGHTGRAY);
+
+    // Modal Text
     DrawText(header_text, confirm_modal_rec.x + confirm_modal_rec.width / 2 - MeasureText(header_text, 22) / 2, confirm_modal_rec.y + 135, 22, BLACK);
     DrawText(body_text, confirm_modal_rec.x + confirm_modal_rec.width / 2 - MeasureText(body_text, 19) / 2, confirm_modal_rec.y + 185, 19, BLACK);
 
     // Draw Submit Button
     Rectangle submit_button_rec = (Rectangle){confirm_modal_rec.x + confirm_modal_rec.width - 200, confirm_modal_rec.y + confirm_modal_rec.height - 65, MeasureText("Confirm", 20) + 10, 30};
-    DrawRectangleRec(submit_button_rec, RED);
+    DrawRectangleRec(submit_button_rec, modal_type == E_MODAL_WARN ? RED : COLOR_PKMN_GREEN);
     // Button shadow
-    DrawLine(submit_button_rec.x+ submit_button_rec.width + 1, submit_button_rec.y + 1, submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + submit_button_rec.height, BLACK);
-    DrawLine(submit_button_rec.x + 1, submit_button_rec.y + submit_button_rec.height + 1, submit_button_rec.x + submit_button_rec.width+1, submit_button_rec.y + submit_button_rec.height + 1, BLACK);
+    DrawLine(submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + 1, submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + submit_button_rec.height, BLACK);
+    DrawLine(submit_button_rec.x + 1, submit_button_rec.y + submit_button_rec.height + 1, submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + submit_button_rec.height + 1, BLACK);
 
     // Draw Cancel Button
     Rectangle cancel_button_rec = (Rectangle){confirm_modal_rec.x + 100, submit_button_rec.y, MeasureText("Cancel", 20) + 10, 30};
@@ -259,22 +267,24 @@ void draw_legal(void)
 }
 void draw_change_dir(struct SaveFileData *save_file_data)
 {
-    static bool editingText = false;
-    static char inputText[MAX_FILE_PATH_CHAR] = "\0";
-    static int textSize = 0;
-    static bool hasShownPlaceholder = false;
-    static bool hasPressedClear = false;
+    static bool editing_text = false;
+    static char input_text[MAX_FILE_PATH_CHAR];
+    static int text_size = 0;
+    static bool has_shown_placeholder = false;
+    static bool has_pressed_clear = false;
     static int err = 0;
     char input_text_backup[MAX_FILE_PATH_CHAR];
 
-    textSize = strlen(inputText);
+    text_size = strlen(input_text);
     strcpy(input_text_backup, (char *)save_file_data->save_dir);
 
     // Placeholder Text
-    if (!editingText && textSize == 0 && !hasShownPlaceholder)
+    if (!editing_text && !has_shown_placeholder)
     {
-        strcpy(inputText, (char *)save_file_data->save_dir);
-        textSize = strlen(inputText);
+        printf("placeholder\n");
+        strcpy(input_text, (char *)save_file_data->save_dir);
+        text_size = strlen(input_text);
+        has_shown_placeholder = true;
     }
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
@@ -282,36 +292,36 @@ void draw_change_dir(struct SaveFileData *save_file_data)
         // Check if the mouse is clicked within the input box
         if (CheckCollisionPointRec(GetMousePosition(), input_box_rec))
         {
-            editingText = true;
+            editing_text = true;
         }
         else
         {
-            editingText = false;
+            editing_text = false;
         }
     }
 
-    if (editingText)
+    if (editing_text)
     {
-        hasShownPlaceholder = true;
+        has_shown_placeholder = true;
         int key = GetCharPressed();
         int backspace = GetKeyPressed();
-        if (key >= 32 && key <= 125 && textSize < MAX_FILE_PATH_CHAR)
+        if (key >= 32 && key <= 125 && text_size < MAX_FILE_PATH_CHAR)
         {
-            // Append character to inputText
-            inputText[textSize] = (char)key;
-            textSize++;
+            // Append character to input_text
+            input_text[text_size] = (char)key;
+            text_size++;
         }
-        else if ((key == KEY_BACKSPACE || backspace == KEY_BACKSPACE) && textSize > 0)
+        else if ((key == KEY_BACKSPACE || backspace == KEY_BACKSPACE) && text_size > 0)
         {
             // Remove last character
-            textSize--;
-            inputText[textSize] = '\0';
+            text_size--;
+            input_text[text_size] = '\0';
         }
 
         // Finish editing by pressing Enter
         if (IsKeyPressed(KEY_ENTER))
         {
-            editingText = false;
+            editing_text = false;
         }
     }
 
@@ -321,10 +331,10 @@ void draw_change_dir(struct SaveFileData *save_file_data)
 
     // Draw the input box
     DrawRectangleRec(input_box_rec, WHITE);
-    DrawRectangleLinesEx(input_box_rec, 2, editingText ? BLACK : DARKGRAY);
+    DrawRectangleLinesEx(input_box_rec, 2, editing_text ? BLACK : DARKGRAY);
 
     // Draw the text inside the input box
-    DrawText(inputText, input_box_rec.x + 10, input_box_rec.y + 10, 20, BLACK);
+    DrawText(input_text, input_box_rec.x + 10, input_box_rec.y + 10, 20, BLACK);
 
     Rectangle clear_button_rec = (Rectangle){SCREEN_WIDTH - MeasureText("Clear input", 20) + 10 - 70, input_box_rec.y + 25 + input_box_rec.height - 5, MeasureText("Clear input", 20) + 10, 30};
     DrawRectangleRec(clear_button_rec, RED);
@@ -332,39 +342,40 @@ void draw_change_dir(struct SaveFileData *save_file_data)
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        if (CheckCollisionPointRec(GetMousePosition(), clear_button_rec) && textSize > 0)
+        if (CheckCollisionPointRec(GetMousePosition(), clear_button_rec) && text_size > 0)
         {
             // Clear the input text
-            memset(inputText, 0, sizeof(inputText));
+            memset(input_text, 0, sizeof(input_text));
 
-            textSize = 0;
-            editingText = true;
-            hasShownPlaceholder = true;
+            text_size = 0;
+            editing_text = true;
+            has_shown_placeholder = true;
             err = 0;
-            hasPressedClear = true;
+            has_pressed_clear = true;
         }
     }
 
     // Draw the blinking cursor
-    if (editingText)
+    if (editing_text)
     {
-        DrawLine(input_box_rec.x + 8 + MeasureText(inputText, 20), input_box_rec.y + 15,
-                 input_box_rec.x + 8 + MeasureText(inputText, 20), input_box_rec.y + 25, BLACK);
+        DrawLine(input_box_rec.x + 8 + MeasureText(input_text, 20), input_box_rec.y + 15,
+                 input_box_rec.x + 8 + MeasureText(input_text, 20), input_box_rec.y + 25, BLACK);
     }
 
     // Draw the save button
-    DrawText("Save!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, textSize ? BLACK : LIGHTGRAY);
+    DrawText("Save!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, text_size ? BLACK : LIGHTGRAY);
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && textSize > 0)
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && text_size > 0)
         {
-            err = write_key_to_config("SAVE_FILE_DIR", inputText);
+            err = write_key_to_config("SAVE_FILE_DIR", input_text);
             if (err == 0)
             {
-                strcpy((char *)save_file_data->save_dir, inputText);
+                strcpy((char *)save_file_data->save_dir, input_text);
                 save_file_data->num_saves = 0;
                 *save_file_data->saves_file_path = NULL;
                 current_screen = SCREEN_SETTINGS;
+                has_shown_placeholder = false;
             }
         }
     }
@@ -378,19 +389,21 @@ void draw_change_dir(struct SaveFileData *save_file_data)
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (hasPressedClear)
+            if (has_pressed_clear)
             {
-                strcpy(inputText, input_text_backup);
+                strcpy(input_text, input_text_backup);
             }
-            hasPressedClear = false;
+            has_pressed_clear = false;
             current_screen = SCREEN_SETTINGS;
+            has_shown_placeholder = false;
         }
     }
     EndDrawing();
 }
-void draw_settings(void)
+void draw_settings(struct SaveFileData *save_file_data)
 {
     const Color settings_text_color = BLACK;
+    const Color settings_text_color_selected = LIGHTGRAY;
 
     BeginDrawing();
     ClearBackground(background_color);
@@ -466,14 +479,21 @@ void draw_settings(void)
             write_key_to_config("ITEM_REQUIRED_EVOLUTIONS", "false");
         }
     }
-    DrawText("About Pokerom Trader", 50, 325, 20, settings_text_color);
+
+    // Draw reset default config button
+    const char *reset_config_text = "Reset to defaults";
+    Rectangle reset_config_rec = (Rectangle){50, 275, MeasureText(reset_config_text, 20) + 10, 30};
+    DrawText(reset_config_text, reset_config_rec.x, reset_config_rec.y, 20, settings_text_color);
+
+    const Rectangle about_button_rec = (Rectangle){SCREEN_WIDTH_TEXT_CENTER("About Pokerom Trader", 20), NEXT_BUTTON_Y, MeasureText("About Pokerom Trader", 20) + 10, 30};
+    DrawText("About Pokerom Trader", about_button_rec.x + 5, about_button_rec.y + 5, 20, settings_text_color);
 
     // Delete app data button
     Rectangle delete_app_data_rec = (Rectangle){SCREEN_WIDTH - MeasureText("Delete app data", 20) + 10 - 75, NEXT_BUTTON_Y - 5, MeasureText("Delete app data", 20) + 10, 30};
     DrawRectangleRec(delete_app_data_rec, show_delete_modal || was_data_deleted ? LIGHTGRAY : RED);
     DrawText("Delete app data", delete_app_data_rec.x + 5, NEXT_BUTTON_Y, 20, WHITE);
-    DrawLine(delete_app_data_rec.x+ delete_app_data_rec.width + 1, delete_app_data_rec.y + 1, delete_app_data_rec.x + delete_app_data_rec.width + 1, delete_app_data_rec.y + delete_app_data_rec.height, show_delete_modal || was_data_deleted ? LIGHTGRAY : BLACK);
-    DrawLine(delete_app_data_rec.x + 1, delete_app_data_rec.y + delete_app_data_rec.height + 1, delete_app_data_rec.x + delete_app_data_rec.width+1, delete_app_data_rec.y + delete_app_data_rec.height + 1, show_delete_modal || was_data_deleted ? LIGHTGRAY : BLACK);
+    DrawLine(delete_app_data_rec.x + delete_app_data_rec.width + 1, delete_app_data_rec.y + 1, delete_app_data_rec.x + delete_app_data_rec.width + 1, delete_app_data_rec.y + delete_app_data_rec.height, show_delete_modal || was_data_deleted ? LIGHTGRAY : BLACK);
+    DrawLine(delete_app_data_rec.x + 1, delete_app_data_rec.y + delete_app_data_rec.height + 1, delete_app_data_rec.x + delete_app_data_rec.width + 1, delete_app_data_rec.y + delete_app_data_rec.height + 1, show_delete_modal || was_data_deleted ? LIGHTGRAY : BLACK);
 
     DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, settings_text_color);
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !show_delete_modal)
@@ -482,7 +502,7 @@ void draw_settings(void)
         {
             current_screen = SCREEN_FILE_EDIT;
         }
-        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 325, 200, 20}))
+        else if (CheckCollisionPointRec(GetMousePosition(), about_button_rec))
         {
             current_screen = SCREEN_ABOUT;
         }
@@ -495,6 +515,11 @@ void draw_settings(void)
         {
             show_delete_modal = true;
         }
+        else if (CheckCollisionPointRec(GetMousePosition(), reset_config_rec))
+        {
+            create_default_config(true);
+            init_settings_from_config(save_file_data);
+        }
     }
 
     // Draw a delete modal to confirm deleting app data on center screen box with shadow. confirm button cancel button
@@ -503,7 +528,7 @@ void draw_settings(void)
         const char *delete_modal_text = "Are you sure you want to delete all app data?";
         const char *details_text = "This will delete all save files and settings in app directory.";
 
-        _draw_confirmation_modal(delete_modal_text, details_text, on_delete_modal_submit, on_delete_modal_cancel);
+        _draw_confirmation_modal(delete_modal_text, details_text, on_delete_modal_submit, on_delete_modal_cancel, E_MODAL_WARN);
     }
 
     EndDrawing();
@@ -1049,7 +1074,7 @@ void draw_raylib_screen_loop(
             draw_main_menu(save_file_data);
             break;
         case SCREEN_SETTINGS:
-            draw_settings();
+            draw_settings(save_file_data);
             break;
         case SCREEN_FILE_EDIT:
             draw_change_dir(save_file_data);

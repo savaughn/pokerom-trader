@@ -3,7 +3,6 @@
 #include "common.h"
 #include "filehelper.h"
 #include "raylibhelper.h"
-#include "pksavhelper.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,23 +11,8 @@ int main(int argc, char *argv[])
     PokemonSave pkmn_save_player1;
     PokemonSave pkmn_save_player2;
     struct SaveFileData save_file_data;
-    // Read and save the saves file directory from config.ini
-    char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
-    
-    if (config_save_path != NULL)
-    {
-        strcpy((char *)save_file_data.save_dir, config_save_path);
-    } else {
-        strcpy((char *)save_file_data.save_dir, "DIR_NOT_SET");
-    }
 
-    // Read and save the disable random setting from config.ini
-    set_is_random_DVs_disabled(strcmp(read_key_from_config("DISABLE_RANDOM_IVS_ON_TRADE"), "false"));
-    // Read and save the item required evolutions setting from config.ini
-    set_is_item_required(strcmp(read_key_from_config("ITEM_REQUIRED_EVOLUTIONS"), "false"));
-
-    // malloc'd from read_key_from_config
-    free(config_save_path);
+    init_settings_from_config(&save_file_data);
 
     // create trainers
     struct TrainerInfo trainer_1 = {
