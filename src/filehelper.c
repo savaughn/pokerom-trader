@@ -1,16 +1,16 @@
 #include "filehelper.h"
 #ifdef _WIN32
 #else
-    #include <unistd.h>
-    #include <sys/errno.h>
-    #include <sys/stat.h>
-    #include <sys/types.h>
+#include <unistd.h>
+#include <sys/errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-    #ifdef __APPLE__
-        #define USR_DATA_DIR "/Library/PokeromTrader"
-    #else
-        #define USR_DATA_DIR "/.pokeromtrader"
-    #endif
+#ifdef __APPLE__
+#define USR_DATA_DIR "/Library/PokeromTrader"
+#else
+#define USR_DATA_DIR "/.pokeromtrader"
+#endif
 #endif
 
 char *resolved_path = NULL;
@@ -85,14 +85,16 @@ int write_key_to_config(const char *key, const char *value)
     strcat(config_path, "/config.ini");
     // Open the INI file for reading and writing.
     FILE *file = fopen(config_path, "r+");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         perror("Error opening INI file");
         return 1;
     }
 
     // Create a temporary file to store the modified contents.
     FILE *temp_file = tmpfile();
-    if (temp_file == NULL) {
+    if (temp_file == NULL)
+    {
         perror("Error creating temporary file");
         fclose(file);
         return 1;
@@ -102,20 +104,25 @@ int write_key_to_config(const char *key, const char *value)
     int key_found = 0;
 
     // Read the INI file line by line.
-    while (fgets(line, sizeof(line), file) != NULL) {
+    while (fgets(line, sizeof(line), file) != NULL)
+    {
         // Check if the line starts with the desired key.
-        if (strncmp(line, key, strlen(key)) == 0) {
+        if (strncmp(line, key, strlen(key)) == 0)
+        {
             // Key found, update the value.
             fprintf(temp_file, "%s=%s\n", key, value);
             key_found = 1;
-        } else {
+        }
+        else
+        {
             // Copy the line as-is to the temporary file.
             fprintf(temp_file, "%s", line);
         }
     }
 
     // If the key was not found, add it to the end of the file.
-    if (!key_found) {
+    if (!key_found)
+    {
         fprintf(temp_file, "%s=%s\n", key, value);
     }
 
@@ -125,13 +132,15 @@ int write_key_to_config(const char *key, const char *value)
 
     // Reopen the INI file for writing and copy the contents from the temporary file.
     file = fopen(config_path, "w");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         perror("Error reopening INI file");
         fclose(temp_file);
         return 1;
     }
 
-    while (fgets(line, sizeof(line), temp_file) != NULL) {
+    while (fgets(line, sizeof(line), temp_file) != NULL)
+    {
         fprintf(file, "%s", line);
     }
 
@@ -159,7 +168,8 @@ void create_default_config(void)
     if (status == -1)
     {
         printf("Error %d creating directory!\n", errno);
-        if (errno != 17) exit(errno);
+        if (errno != 17)
+            exit(errno);
     }
 
     // create saves folder
@@ -170,7 +180,8 @@ void create_default_config(void)
     if (status == -1)
     {
         puts("Error creating saves directory");
-        if (errno != 17) exit(errno);
+        if (errno != 17)
+            exit(errno);
     }
 
     // create config.ini file in cwd
@@ -247,6 +258,70 @@ char *read_key_from_config(const char *key)
         free(line);
     }
     return value;
+}
+
+int delete_app_data(void)
+{
+    char config_path[MAX_FILE_PATH_CHAR];
+    strcpy(config_path, getenv("HOME"));
+    strcat(config_path, USR_DATA_DIR);
+
+    DIR *dir;
+    struct dirent *entry;
+
+    // Delete config.ini
+    char config_file[MAX_FILE_PATH_CHAR];
+    strcpy(config_file, config_path);
+    strcat(config_file, "/config.ini");
+    remove(config_file);
+
+    // Delete all .sav files in saves/
+    char saves_dir[MAX_FILE_PATH_CHAR];
+    strcpy(saves_dir, config_path);
+    strcat(saves_dir, "/saves");
+
+    dir = opendir(saves_dir);
+    if (dir == NULL)
+    {
+        perror("Error opening directory: ");
+        printf("Path: %s\n", saves_dir);
+        return 1;
+    }
+
+    while ((entry = readdir(dir)) != NULL)
+    {
+        // Check if the entry is a regular file with a .sav extension
+        if (entry->d_type == DT_REG && strstr(entry->d_name, ".sav"))
+        {
+            // Combine the base path and file name
+            char full_path[strlen(saves_dir) + 1 + strlen(entry->d_name) + 1];
+            sprintf(full_path, "%s/%s", saves_dir, entry->d_name);
+
+            // Delete file
+            remove(full_path);
+            unlink(full_path);
+        }
+    }
+
+    closedir(dir);
+
+    // Delete saves/ directory
+    int status = rmdir(saves_dir);
+    if (status == -1)
+    {
+        perror("Error deleting saves directory: ");
+        printf("Path: %s\n", saves_dir);
+    }
+
+    // Delete PokeromTrader/ directory
+    status = rmdir(config_path);
+    if (status == -1)
+    {
+        perror("Error deleting PokeromTrader directory: ");
+        printf("Path: %s\n", config_path);
+    }
+
+    return 0;
 }
 
 #endif

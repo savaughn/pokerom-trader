@@ -132,27 +132,6 @@ void create_trainer(PokemonSave *pkmn_save, struct TrainerInfo *trainer)
     }
 }
 
-// Concantenate the trainer's name and id into a string for Raylib to draw
-void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name, bool show_gender)
-{
-    strcpy(trainer_name, "NAME/");
-    strcat(trainer_name, trainer->trainer_name);
-    if (trainer->trainer_generation == SAVE_GENERATION_2 && show_gender)
-    {
-        strcat(trainer_name, " ");
-        strcat(trainer_name, trainer->trainer_gender == PKSAV_GEN2_GENDER_FEMALE ? "F" : "M");
-    }
-}
-
-// Concantenate the trainer's id into a string for Raylib to draw
-void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id)
-{
-    char id_str[6];
-    strcpy(trainer_id, "IDNo ");
-    snprintf(id_str, sizeof(id_str), "%u", trainer->trainer_id); // "IDNo %u" loses 3 chars even with enough space?
-    strcat(trainer_id, id_str);
-}
-
 // Checks if supplied Gen 1 pokemon is eligible for trade evolution
 enum eligible_evolution_status check_trade_evolution_gen1(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
 {

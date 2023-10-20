@@ -10,6 +10,86 @@ static bool should_close_window = false;
 static GameScreen current_screen = SCREEN_MAIN_MENU;
 static int no_dir_err = 0;
 static bool was_mouse_pressed = false; // Prevents back navigating two screens with one mouse click
+static bool show_delete_modal = false;
+static bool was_data_deleted = false;
+
+void on_delete_modal_cancel(void)
+{
+    show_delete_modal = false;
+    was_data_deleted = false;
+}
+
+void on_delete_modal_submit(void)
+{
+    delete_app_data();
+    show_delete_modal = false;
+    was_data_deleted = true;
+}
+
+void _draw_confirmation_modal(const char *header_text, const char *body_text, void (*_onsubmit)(void), void (*_oncancel)(void))
+{
+    const Color scrim = (Color){0, 0, 0, 30};
+    // Background scrim
+    DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, scrim);
+
+    // Modal Rectangle
+    Rectangle confirm_modal_rec = (Rectangle){SCREEN_WIDTH / 2 - MeasureText(header_text, 20) / 2 - 50, SCREEN_HEIGHT / 2 - 150, MeasureText(header_text, 20) + 100, 300};
+    // Bottom Shadow
+    DrawRectangleGradientV(confirm_modal_rec.x + 4, confirm_modal_rec.y + confirm_modal_rec.height - 2, confirm_modal_rec.width - 5, 6, LIGHTGRAY, (Color){0, 0, 0, 0});
+    // Right Shadow
+    DrawRectangleGradientH(confirm_modal_rec.x + confirm_modal_rec.width - 2, confirm_modal_rec.y + 6, 6, confirm_modal_rec.height - 3, LIGHTGRAY, (Color){0, 0, 0, 0});
+
+    // Draw the modal box
+    DrawRectangleRec(confirm_modal_rec, WHITE);
+    DrawRectangleLinesEx(confirm_modal_rec, 2, LIGHTGRAY);
+
+    // Draw Triangle lines
+    DrawTriangle(
+        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 - 50, confirm_modal_rec.y + 110}, 
+        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 + 50, confirm_modal_rec.y + 110}, 
+        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 25}, 
+        RED
+    );
+    // Draw smaller white triangle to cover the red triangle lines
+    DrawTriangle(
+        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 - 40, confirm_modal_rec.y + 104.5}, 
+        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2 + 40, confirm_modal_rec.y + 104.5}, 
+        (Vector2){confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 35}, 
+        WHITE
+    );
+    // Draw exclamation point in triangle
+    DrawRectangleRounded((Rectangle){ confirm_modal_rec.x + confirm_modal_rec.width / 2 - 3.5, confirm_modal_rec.y + 47, 7, 37}, 1, 5, RED);
+    DrawCircle(confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 95, 5, RED);
+
+    // Delete Modal Text
+    DrawText(header_text, confirm_modal_rec.x + confirm_modal_rec.width / 2 - MeasureText(header_text, 22) / 2, confirm_modal_rec.y + 135, 22, BLACK);
+    DrawText(body_text, confirm_modal_rec.x + confirm_modal_rec.width / 2 - MeasureText(body_text, 19) / 2, confirm_modal_rec.y + 185, 19, BLACK);
+
+    // Draw Submit Button
+    Rectangle submit_button_rec = (Rectangle){confirm_modal_rec.x + confirm_modal_rec.width - 200, confirm_modal_rec.y + confirm_modal_rec.height - 65, MeasureText("Confirm", 20) + 10, 30};
+    DrawRectangleRec(submit_button_rec, RED);
+    // Button shadow
+    DrawLine(submit_button_rec.x+ submit_button_rec.width + 1, submit_button_rec.y + 1, submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + submit_button_rec.height, BLACK);
+    DrawLine(submit_button_rec.x + 1, submit_button_rec.y + submit_button_rec.height + 1, submit_button_rec.x + submit_button_rec.width+1, submit_button_rec.y + submit_button_rec.height + 1, BLACK);
+
+    // Draw Cancel Button
+    Rectangle cancel_button_rec = (Rectangle){confirm_modal_rec.x + 100, submit_button_rec.y, MeasureText("Cancel", 20) + 10, 30};
+
+    DrawText("Confirm", submit_button_rec.x + 5, submit_button_rec.y + 5, 20, WHITE);
+    DrawText("Cancel", cancel_button_rec.x + 5, cancel_button_rec.y + 5, 20, BLACK);
+
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        if (CheckCollisionPointRec(GetMousePosition(), submit_button_rec))
+        {
+            _onsubmit();
+        }
+        else if (CheckCollisionPointRec(GetMousePosition(), cancel_button_rec))
+        {
+            _oncancel();
+        }
+    }
+}
 
 // Draws a button with the pokemon nickname
 void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname, bool selected)
@@ -17,6 +97,26 @@ void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname, bool se
     DrawText(pokemon_nickname, rect.x + 10, rect.y + 6, 20, selected ? LIGHTGRAY : BLACK);
 }
 
+// Concantenate the trainer's name and id into a string for Raylib to draw
+void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name, bool show_gender)
+{
+    strcpy(trainer_name, "NAME/");
+    strcat(trainer_name, trainer->trainer_name);
+    if (trainer->trainer_generation == SAVE_GENERATION_2 && show_gender)
+    {
+        strcat(trainer_name, " ");
+        strcat(trainer_name, trainer->trainer_gender == PKSAV_GEN2_GENDER_FEMALE ? "F" : "M");
+    }
+}
+
+// Concantenate the trainer's id into a string for Raylib to draw
+void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id)
+{
+    char id_str[6];
+    strcpy(trainer_id, "IDNo ");
+    snprintf(id_str, sizeof(id_str), "%u", trainer->trainer_id); // "IDNo %u" loses 3 chars even with enough space?
+    strcat(trainer_id, id_str);
+}
 // Draws the trainers name, id, and party pokemon in pokemon buttons
 void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool showGender)
 {
@@ -290,55 +390,58 @@ void draw_change_dir(struct SaveFileData *save_file_data)
 }
 void draw_settings(void)
 {
+    const Color settings_text_color = BLACK;
+
     BeginDrawing();
     ClearBackground(background_color);
-    DrawText("Settings", 50, 50, 20, BLACK);
-    DrawText("Change Save Directory", 50, 200, 20, BLACK);
+    // DrawRectangleGradientH(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, COLOR_PKMN_GOLD, COLOR_PKMN_SILVER);
+    DrawText("Settings", 50, 50, 20, settings_text_color);
+    DrawText("Change Save Directory", 50, 200, 20, settings_text_color);
     // Toggle for random ivs on trade boolean
-    DrawText("Disable random DVs on trade", 50, 225, 20, BLACK);
+    DrawText("Disable random DVs on trade", 50, 225, 20, settings_text_color);
     // Checkbox for random ivs on trade
-    DrawText("ON", 385, 225, 20, BLACK);
+    DrawText("ON", 385, 225, 20, settings_text_color);
     Rectangle checkbox_rec_on = (Rectangle){385 + MeasureText("ON", 20) + 5, 225, 20, 20};
-    DrawRectangleLinesEx(checkbox_rec_on, 2, BLACK);
+    DrawRectangleLinesEx(checkbox_rec_on, 2, settings_text_color);
     Rectangle checkbox_rec_off = (Rectangle){checkbox_rec_on.x + checkbox_rec_on.width + 5, 225, 20, 20};
-    DrawRectangleLinesEx(checkbox_rec_off, 2, BLACK);
-    DrawText("OFF", checkbox_rec_off.x + checkbox_rec_off.width + 5, checkbox_rec_off.y, 20, BLACK);
+    DrawRectangleLinesEx(checkbox_rec_off, 2, settings_text_color);
+    DrawText("OFF", checkbox_rec_off.x + checkbox_rec_off.width + 5, checkbox_rec_off.y, 20, settings_text_color);
     // Toggle for item override evolutions
-    DrawText("Item required for evolution", 50, 250, 20, BLACK);
+    DrawText("Item required for evolution", 50, 250, 20, settings_text_color);
     // Checkbox for item override evolutions
-    DrawText("ON", 385, 250, 20, BLACK);
+    DrawText("ON", 385, 250, 20, settings_text_color);
     Rectangle checkbox_rec_on_item = (Rectangle){385 + MeasureText("ON", 20) + 5, 250, 20, 20};
-    DrawRectangleLinesEx(checkbox_rec_on_item, 2, BLACK);
+    DrawRectangleLinesEx(checkbox_rec_on_item, 2, settings_text_color);
     Rectangle checkbox_rec_off_item = (Rectangle){checkbox_rec_on_item.x + checkbox_rec_on_item.width + 5, 250, 20, 20};
-    DrawRectangleLinesEx(checkbox_rec_off_item, 2, BLACK);
-    DrawText("OFF", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 5, checkbox_rec_off_item.y, 20, BLACK);
+    DrawRectangleLinesEx(checkbox_rec_off_item, 2, settings_text_color);
+    DrawText("OFF", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 5, checkbox_rec_off_item.y, 20, settings_text_color);
 
     bool _is_rand_disabled = get_is_random_DVs_disabled();
     if (_is_rand_disabled)
     {
         // Draw filled in square
-        DrawRectangle(checkbox_rec_on.x + 3, checkbox_rec_on.y + 3, checkbox_rec_on.width - 6, checkbox_rec_on.height - 6, BLACK);
-        DrawText("DVs will be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, BLACK);
+        DrawRectangle(checkbox_rec_on.x + 3, checkbox_rec_on.y + 3, checkbox_rec_on.width - 6, checkbox_rec_on.height - 6, settings_text_color);
+        DrawText("DVs will be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, settings_text_color);
     }
     else
     {
         // Draw filled in square
-        DrawRectangle(checkbox_rec_off.x + 3, checkbox_rec_off.y + 3, checkbox_rec_off.width - 6, checkbox_rec_off.height - 6, BLACK);
-        DrawText("DVs will not be retained (default)", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, BLACK);
+        DrawRectangle(checkbox_rec_off.x + 3, checkbox_rec_off.y + 3, checkbox_rec_off.width - 6, checkbox_rec_off.height - 6, settings_text_color);
+        DrawText("DVs will not be retained (default)", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, settings_text_color);
     }
 
     bool _is_item_required = get_is_item_required();
     if (_is_item_required)
     {
         // Draw filled in square
-        DrawRectangle(checkbox_rec_on_item.x + 3, checkbox_rec_on_item.y + 3, checkbox_rec_on_item.width - 6, checkbox_rec_on_item.height - 6, BLACK);
-        DrawText("Items will be required (default)", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, 250, 16, BLACK);
+        DrawRectangle(checkbox_rec_on_item.x + 3, checkbox_rec_on_item.y + 3, checkbox_rec_on_item.width - 6, checkbox_rec_on_item.height - 6, settings_text_color);
+        DrawText("Items will be required (default)", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, 250, 16, settings_text_color);
     }
     else
     {
         // Draw filled in square
-        DrawRectangle(checkbox_rec_off_item.x + 3, checkbox_rec_off_item.y + 3, checkbox_rec_off_item.width - 6, checkbox_rec_off_item.height - 6, BLACK);
-        DrawText("Items will not be required", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, 250, 16, BLACK);
+        DrawRectangle(checkbox_rec_off_item.x + 3, checkbox_rec_off_item.y + 3, checkbox_rec_off_item.width - 6, checkbox_rec_off_item.height - 6, settings_text_color);
+        DrawText("Items will not be required", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, 250, 16, settings_text_color);
     }
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
@@ -351,20 +454,29 @@ void draw_settings(void)
         {
             set_is_random_DVs_disabled(false);
             write_key_to_config("DISABLE_RANDOM_IVS_ON_TRADE", "false");
-        } 
+        }
         else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_on_item))
         {
             set_is_item_required(true);
             write_key_to_config("ITEM_REQUIRED_EVOLUTIONS", "true");
-        } else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_off_item))
+        }
+        else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_off_item))
         {
             set_is_item_required(false);
             write_key_to_config("ITEM_REQUIRED_EVOLUTIONS", "false");
         }
     }
-    DrawText("About Pokerom Trader", 50, 325, 20, BLACK);
-    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    DrawText("About Pokerom Trader", 50, 325, 20, settings_text_color);
+
+    // Delete app data button
+    Rectangle delete_app_data_rec = (Rectangle){SCREEN_WIDTH - MeasureText("Delete app data", 20) + 10 - 75, NEXT_BUTTON_Y - 5, MeasureText("Delete app data", 20) + 10, 30};
+    DrawRectangleRec(delete_app_data_rec, show_delete_modal || was_data_deleted ? LIGHTGRAY : RED);
+    DrawText("Delete app data", delete_app_data_rec.x + 5, NEXT_BUTTON_Y, 20, WHITE);
+    DrawLine(delete_app_data_rec.x+ delete_app_data_rec.width + 1, delete_app_data_rec.y + 1, delete_app_data_rec.x + delete_app_data_rec.width + 1, delete_app_data_rec.y + delete_app_data_rec.height, show_delete_modal || was_data_deleted ? LIGHTGRAY : BLACK);
+    DrawLine(delete_app_data_rec.x + 1, delete_app_data_rec.y + delete_app_data_rec.height + 1, delete_app_data_rec.x + delete_app_data_rec.width+1, delete_app_data_rec.y + delete_app_data_rec.height + 1, show_delete_modal || was_data_deleted ? LIGHTGRAY : BLACK);
+
+    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, settings_text_color);
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !show_delete_modal)
     {
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 200, 200, 20}))
         {
@@ -379,7 +491,21 @@ void draw_settings(void)
             if (!was_mouse_pressed)
                 current_screen = SCREEN_MAIN_MENU;
         }
+        else if (CheckCollisionPointRec(GetMousePosition(), delete_app_data_rec) && !was_data_deleted)
+        {
+            show_delete_modal = true;
+        }
     }
+
+    // Draw a delete modal to confirm deleting app data on center screen box with shadow. confirm button cancel button
+    if (show_delete_modal)
+    {
+        const char *delete_modal_text = "Are you sure you want to delete all app data?";
+        const char *details_text = "This will delete all save files and settings in app directory.";
+
+        _draw_confirmation_modal(delete_modal_text, details_text, on_delete_modal_submit, on_delete_modal_cancel);
+    }
+
     EndDrawing();
     was_mouse_pressed = false;
 }
@@ -634,7 +760,8 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
                 {
                     selected_saves_index = -1;
                 }
-                else {
+                else
+                {
                     selected_saves_index = i;
                 }
             }
