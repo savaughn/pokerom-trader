@@ -53,7 +53,7 @@ https://discord.gg/JUzzegS3AP
 | Platform          | Compatibility   |
 |-------------------|-----------------|
 | Windows           | ❌ |
-| Linux             | ❌ |
+| Linux (built with ubuntu)             | ✅ |
 | MacOS x86_64      | ✅  |
 | MacOS arm64       | ✅  |
 | iOS               | ❌  |
@@ -63,7 +63,7 @@ https://discord.gg/JUzzegS3AP
 
 Download the latest release from the [releases page](https://github.com/savaughn/pokerom-trader/releases).
 
-Default saves folder is located ~/Library/PokeromTrader/saves. You can change this in the settings menu.
+Default saves folder is located ~/Library/PokeromTrader/saves on OSX and ~/.pokeromtrader/ in linux. You can change this in the settings menu.
 
 To execute, right click PokeromTrader.app and select "Open" to bypass the MacOS security warning.
 
