@@ -55,7 +55,7 @@ jobs:
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: pokeromtrader-artifacts-x64  # Specify a name for your artifacts
+        name: "pokeromtrader-artifacts-x64"
         path: build/  # Specify the directory containing your build artifacts
 
   build_arm64:
@@ -105,7 +105,7 @@ jobs:
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: pokeromtrader-artifacts-arm64  # Specify a name for your artifacts
+        name: "pokeromtrader-artifacts-arm64"
         path: build/  # Specify the directory containing your build artifacts
 
   bundle_macos_arm64:
@@ -117,7 +117,7 @@ jobs:
       # Download the build artifact from the 'build' job
       uses: actions/download-artifact@v2
       with:
-        name: pokeromtrader-artifacts-arm64  # Specify the name of the build artifact
+        name: "pokeromtrader-artifacts-arm64"  # Specify the name of the build artifact
 
     - name: Bundle macOS Release
       run: |
@@ -161,7 +161,7 @@ jobs:
     - name: Upload macOS Release
       uses: actions/upload-artifact@v2
       with:
-        name: pokeromtrader-arm64  # Specify a name for your macOS release
+        name: "pokeromtrader-arm64"  # Specify a name for your macOS release
         path: build/macos
 
   bundle_macos_x64:
@@ -173,7 +173,7 @@ jobs:
       # Download the build artifact from the 'build' job
       uses: actions/download-artifact@v2
       with:
-        name: pokeromtrader-artifacts-x64  # Specify the name of the build artifact
+        name: "pokeromtrader-artifacts-x64" # Specify the name of the build artifact
 
     - name: Bundle macOS Release
       run: |
@@ -216,5 +216,5 @@ jobs:
     - name: Upload macOS Release
       uses: actions/upload-artifact@v2
       with:
-        name: pokeromtrader-x64  # Specify a name for your macOS release
+        name: "pokeromtrader-x64"  # Specify a name for your macOS release
         path: build/macos 
