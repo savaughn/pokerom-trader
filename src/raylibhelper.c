@@ -19,6 +19,7 @@ static bool show_delete_modal = false;
 static bool was_data_deleted = false;
 static bool show_reset_modal = false;
 static struct SaveFileData *_save_file_data = NULL;
+static bool is_build_prerelease = false;
 
 void on_delete_modal_cancel(void)
 {
@@ -227,11 +228,11 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
 void draw_about(void)
 {
     int x = 50;
-
     BeginDrawing();
     ClearBackground(background_color);
 
     DrawText("About Pokerom Trader", x, 100, 20, BLACK);
+    DrawText(TextFormat("v%s%s", PROJECT_VERSION, is_build_prerelease ? "-prerelease" : ""), x, 125, 20, BLACK);
     DrawText("Pokerom Trader is a tool for trading Pokemon between two save files", x, 200, 20, BLACK);
     DrawText("written by github.com/savaughn 2023", x, 225, 20, BLACK);
     DrawText("Pokerom Trader is open source and licensed under the MIT license", x, 250, 20, BLACK);
@@ -1085,6 +1086,7 @@ void draw_raylib_screen_loop(
     PokemonSave *pkmn_save_player2)
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pokerom Trader");
+    is_build_prerelease = strcmp(PROJECT_VERSION_TYPE, "prerelease") == 0;
 
     while (!should_close_window && !WindowShouldClose())
     {
