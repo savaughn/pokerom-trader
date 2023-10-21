@@ -29,6 +29,14 @@ enum eligible_evolution_status
     E_EVO_STATUS_MISSING_ITEM
 };
 
+enum eligible_trade_status
+{
+    E_TRADE_STATUS_ELIGIBLE,
+    E_TRADE_STATUS_GEN2_PKMN,
+    E_TRADE_STATUS_GEN2_MOVE,
+    E_TRADE_STATUS_HM_MOVE,
+};
+
 // Pokémon Evolution Pair Lookup Table
 static const struct pkmn_evolution_pair_data pkmn_evolution_pairs_gen1[SI_HAUNTER + 1] = {
     [SI_KADABRA] = {
@@ -75,5 +83,6 @@ void set_is_random_DVs_disabled(bool is_disabled);
 bool get_is_item_required(void);
 void set_is_item_required(bool is_required);
 void generate_rand_num_step(SaveGenerationType save_generation_type);
+enum eligible_trade_status check_trade_eligibility(struct TrainerInfo *trainer, uint8_t pkmn_party_index);
 
 #endif /* PKSAVHELPER_H */

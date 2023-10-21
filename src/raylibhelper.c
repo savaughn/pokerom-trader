@@ -156,7 +156,7 @@ void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id)
     strcat(trainer_id, id_str);
 }
 // Draws the trainers name, id, and party pokemon in pokemon buttons
-void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool showGender)
+void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool showGender)
 {
     // Get trainer generation 1 or 2
     SaveGenerationType trainer_generation = trainer->trainer_generation;
@@ -183,24 +183,33 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
     DrawText(trainer_id, x, y + 30, 20, BLACK);
 
     // Draw the pokemon buttons
-    for (int i = 0; i < party_count; i++)
+    for (int party_index = 0; party_index < party_count; party_index++)
     {
+        enum eligible_trade_status trade_status = check_trade_eligibility(trainer, party_index);
+        
         char pokemon_nickname[11] = "\0";
         if (trainer_generation == SAVE_GENERATION_1)
         {
-            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[i], pokemon_nickname, 10);
+            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[party_index], pokemon_nickname, 10);
         }
         else if (trainer_generation == SAVE_GENERATION_2)
         {
-            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[i], pokemon_nickname, 10);
+            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[party_index], pokemon_nickname, 10);
         }
 
-        draw_pkmn_button((Rectangle){x - 10, y + 70 + (i * 30), 200, 30}, i, pokemon_nickname, current_trainer_index != -1 && trainerSelection[current_trainer_index].pkmn_party_index == i);
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x - 10, y + 70 + (i * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        draw_pkmn_button((Rectangle){x - 10, y + 70 + (party_index * 30), 200, 30}, party_index, pokemon_nickname, current_trainer_index != -1 && (trainerSelection[current_trainer_index].pkmn_party_index == party_index || trade_status != E_TRADE_STATUS_ELIGIBLE));
+        if (trade_status == E_TRADE_STATUS_GEN2_PKMN)
+            DrawText("Gen 2 only ", x + MeasureText(pokemon_nickname, 20) + 5, y + 70 + (party_index * 30), 20, RED);
+        else if (trade_status == E_TRADE_STATUS_GEN2_MOVE)
+            DrawText("Gen 2 move ", x + MeasureText(pokemon_nickname, 20) + 5, y + 70 + (party_index * 30), 20, RED);
+        else if (trade_status == E_TRADE_STATUS_HM_MOVE)
+            DrawText("HM move", x + MeasureText(pokemon_nickname, 20) + 5, y + 70 + (party_index * 30), 20, RED);
+        
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x - 10, y + 70 + (party_index * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (trainerSelection[current_trainer_index].pkmn_party_index != i)
+            if (trainerSelection[current_trainer_index].pkmn_party_index != party_index && trade_status == E_TRADE_STATUS_ELIGIBLE)
             {
-                trainerSelection[current_trainer_index].pkmn_party_index = i;
+                trainerSelection[current_trainer_index].pkmn_party_index = party_index;
             }
             else
             {
@@ -759,8 +768,8 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    DrawTrainerInfo(trainer1, 50, 50, trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
-    DrawTrainerInfo(trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection, save_player2->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+    draw_trainer_info(trainer1, 50, 50, trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+    draw_trainer_info(trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection, save_player2->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
     uint8_t canSubmitTrade = trainerSelection[0].pkmn_party_index != -1 && trainerSelection[1].pkmn_party_index != -1;
     DrawText("Trade!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, canSubmitTrade ? BLACK : LIGHTGRAY);
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && canSubmitTrade)
@@ -1042,7 +1051,7 @@ void draw_bills_pc(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *
     ClearBackground(RAYWHITE);
     DrawText("Bill's PC", 50, 50, 20, BLACK);
 
-    DrawTrainerInfo(trainer, 50, 100, trainerSelection, pkmn_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+    draw_trainer_info(trainer, 50, 100, trainerSelection, pkmn_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
 
     // Draw a veritcal box to the right of the trainer info
     // labeled box n where n is the box number

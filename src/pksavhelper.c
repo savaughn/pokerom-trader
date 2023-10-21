@@ -378,6 +378,53 @@ void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
     }
 }
 
+bool is_move_HM(uint8_t move_index)
+{
+    return move_index == MOVE_INDEX_HM01 || move_index == MOVE_INDEX_HM02 || move_index == MOVE_INDEX_HM03 || move_index == MOVE_INDEX_HM04 || move_index == MOVE_INDEX_HM05 || move_index == MOVE_INDEX_HM06;
+}
+
+enum eligible_trade_status check_trade_eligibility(struct TrainerInfo *trainer, uint8_t pkmn_party_index)
+{
+    // All Gen1 saves are eligible for trade except with HM moves
+    if (trainer->trainer_generation == SAVE_GENERATION_1) 
+    {
+        for (int move_index = 0; move_index < 4; move_index++)
+        {
+            uint8_t move = trainer->pokemon_party.gen1_pokemon_party.party[pkmn_party_index].pc_data.moves[move_index];
+            if (is_move_HM(move))
+            {
+                return E_TRADE_STATUS_HM_MOVE;
+            }
+        }
+        return E_TRADE_STATUS_ELIGIBLE;
+    }
+
+    // Prevent Gen2 only pkmn from going to Gen1
+    uint8_t gen2_species = trainer->pokemon_party.gen2_pokemon_party.species[pkmn_party_index];
+    if (gen2_species > 151)
+    {
+        return E_TRADE_STATUS_GEN2_PKMN;
+    }
+
+    // Prevent Gen2 only moves from going to Gen1
+    struct pksav_gen2_party_pokemon gen2_pkmn = trainer->pokemon_party.gen2_pokemon_party.party[pkmn_party_index];
+    for (int i = 0; i < 4; i++)
+    {
+        uint8_t move_index = gen2_pkmn.pc_data.moves[i];
+        if (move_index > MAX_GEN1_MOVE_INDEX)
+        {
+            return E_TRADE_STATUS_GEN2_MOVE;
+        }
+        // flag HM moves
+        if (is_move_HM(move_index))
+        {
+            return E_TRADE_STATUS_HM_MOVE;
+        }
+    }
+
+    return E_TRADE_STATUS_ELIGIBLE;
+}
+
 void swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player1_save, PokemonSave *player2_save, uint8_t pkmn_party_index1, uint8_t pkmn_party_index2)
 {
     // Since this is cross-gen assign the player by generation
@@ -397,31 +444,6 @@ void swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player1_save, Pokem
         uint8_t tmp_index = pkmn_party_index1;
         pkmn_party_index1 = pkmn_party_index2;
         pkmn_party_index2 = tmp_index;
-    }
-
-    // Prevent Gen2 only pkmn from going to Gen1
-    uint8_t gen2_species = player_gen2->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index2];
-    if (gen2_species > 151)
-    {
-        printf("Gen2 only pkmn can't go to Gen1\n");
-        return;
-    }
-
-    // Prevent Gen2 only moves from going to Gen1
-    struct pksav_gen2_party_pokemon gen2_pkmn = player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2];
-    for (int i = 0; i < 4; i++)
-    {
-        uint8_t move_index = gen2_pkmn.pc_data.moves[i];
-        if (move_index > MAX_GEN1_MOVE_INDEX)
-        {
-            printf("Gen2 only moves can't go to Gen1\n");
-            return;
-        }
-        // remove HM moves
-        if (move_index == MOVE_INDEX_HM01 || move_index == MOVE_INDEX_HM02 || move_index == MOVE_INDEX_HM03 || move_index == MOVE_INDEX_HM04 || move_index == MOVE_INDEX_HM05 || move_index == MOVE_INDEX_HM06)
-        {
-            gen2_pkmn.pc_data.moves[i] = 0;
-        }
     }
 
     // swap nickname
