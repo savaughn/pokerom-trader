@@ -5,6 +5,14 @@
 #include "common.h"
 #include "pkmnstats.h"
 
+#define MAX_GEN1_MOVE_INDEX 165
+#define MOVE_INDEX_HM01 15
+#define MOVE_INDEX_HM02 19
+#define MOVE_INDEX_HM03 57
+#define MOVE_INDEX_HM04 70
+#define MOVE_INDEX_HM05 127
+#define MOVE_INDEX_HM06 165
+
 struct pkmn_evolution_pair_data
 {
     char species_name[11];

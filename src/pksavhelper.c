@@ -380,11 +380,6 @@ void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
 
 void swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player1_save, PokemonSave *player2_save, uint8_t pkmn_party_index1, uint8_t pkmn_party_index2)
 {
-    // TODO: Check rules for cross-gen trading
-    // 1. Gen2 only pkmn can't go to gen1
-    // 2. Gen2 moves can't go to gen1
-    // 3. remove HMs from gen2 pkmn
-
     // Since this is cross-gen assign the player by generation
     PokemonSave *player_gen1;
     PokemonSave *player_gen2;
@@ -402,6 +397,31 @@ void swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player1_save, Pokem
         uint8_t tmp_index = pkmn_party_index1;
         pkmn_party_index1 = pkmn_party_index2;
         pkmn_party_index2 = tmp_index;
+    }
+
+    // Prevent Gen2 only pkmn from going to Gen1
+    uint8_t gen2_species = player_gen2->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index2];
+    if (gen2_species > 151)
+    {
+        printf("Gen2 only pkmn can't go to Gen1\n");
+        return;
+    }
+
+    // Prevent Gen2 only moves from going to Gen1
+    struct pksav_gen2_party_pokemon gen2_pkmn = player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2];
+    for (int i = 0; i < 4; i++)
+    {
+        uint8_t move_index = gen2_pkmn.pc_data.moves[i];
+        if (move_index > MAX_GEN1_MOVE_INDEX)
+        {
+            printf("Gen2 only moves can't go to Gen1\n");
+            return;
+        }
+        // remove HM moves
+        if (move_index == MOVE_INDEX_HM01 || move_index == MOVE_INDEX_HM02 || move_index == MOVE_INDEX_HM03 || move_index == MOVE_INDEX_HM04 || move_index == MOVE_INDEX_HM05 || move_index == MOVE_INDEX_HM06)
+        {
+            gen2_pkmn.pc_data.moves[i] = 0;
+        }
     }
 
     // swap nickname
