@@ -54,6 +54,7 @@ static bool item_required_evolutions = true;
 int error_handler(enum pksav_error error, const char *message);
 void swap_party_pkmn_at_indices(struct pksav_gen2_save *pkmn_save, uint8_t pkmn_index1, uint8_t pkmn_index2); // TODO: Update for cross-generation
 void swap_pkmn_at_index_between_saves(PokemonSave *player1_save, PokemonSave *player2_save, uint8_t pkmn_party_index1, uint8_t pkmn_party_index2);
+void swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player1_save, PokemonSave *player2_save, uint8_t pkmn_party_index1, uint8_t pkmn_party_index2);
 void create_trainer(PokemonSave *pkmn_save, struct TrainerInfo *trainer);
 void update_seen_owned_pkmn(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 enum eligible_evolution_status check_trade_evolution_gen1(PokemonSave *pkmn_save, uint8_t pkmn_party_index);

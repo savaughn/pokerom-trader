@@ -17,8 +17,16 @@ enum pksav_error detect_savefile_generation(const char *path, SaveGenerationType
     if (gen1_save_type == PKSAV_GEN1_SAVE_TYPE_NONE)
     {
         pksav_gen2_get_file_save_type(path, &gen2_save_type);
-        // TODO: Error check
-        *save_generation_type = SAVE_GENERATION_2;
+        if (gen2_save_type == PKSAV_GEN2_SAVE_TYPE_NONE)
+        {
+            SAVE_FILE_ERROR = PKSAV_ERROR_INVALID_SAVE;
+            *save_generation_type = SAVE_GENERATION_CORRUPTED;
+            return 0;
+        }
+        else
+        {
+            *save_generation_type = SAVE_GENERATION_2;
+        }
     }
     else
     {
