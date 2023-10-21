@@ -6,6 +6,15 @@
 #define SCREEN_HEIGHT_TEXT_CENTER(size) (SCREEN_HEIGHT / 2 - size / 2)
 #define SCREEN_CENTER(text, size) (Vector2){SCREEN_WIDTH_TEXT_CENTER(text, size), SCREEN_HEIGHT_TEXT_CENTER(size)}
 
+#define COLOR_PKMN_GOLD (Color) {197,183,131,255}
+#define COLOR_PKMN_SILVER (Color) {204,207,214,255}
+#define COLOR_PKMN_GREEN (Color) {62,185,94,255}
+
+enum E_MODAL_TYPES {
+    E_MODAL_WARN,
+    E_MODAL_INFO,
+    E_MODAL_ERROR,
+};
 
 void draw_about(void);
 void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name, bool show_gender);

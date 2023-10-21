@@ -1,4 +1,5 @@
 #include "filehelper.h"
+#include <string.h>
 #ifdef _WIN32
 #else
 #include <unistd.h>
@@ -153,7 +154,7 @@ int write_key_to_config(const char *key, const char *value)
     return 0;
 }
 
-void create_default_config(void)
+void create_default_config(bool overwrite)
 {
     FILE *fp;
     char cwd[MAX_FILE_PATH_CHAR];
@@ -164,24 +165,30 @@ void create_default_config(void)
     // create directory PokeromTrader
     const char *dir_path = USR_DATA_DIR;
     strcat(cwd, dir_path);
-    int status = mkdir(cwd, 0777);
-    if (status == -1)
-    {
-        printf("Error %d creating directory!\n", errno);
-        if (errno != 17)
-            exit(errno);
-    }
 
     // create saves folder
     char saves_dir[MAX_FILE_PATH_CHAR];
     strcpy(saves_dir, cwd);
     strcat(saves_dir, "/saves");
-    status = mkdir(saves_dir, 0777);
-    if (status == -1)
+
+    if (!overwrite)
     {
-        puts("Error creating saves directory");
-        if (errno != 17)
-            exit(errno);
+
+        int status = mkdir(cwd, 0777);
+        if (status == -1)
+        {
+            printf("Error %d creating directory!\n", errno);
+            if (errno != 17)
+                exit(errno);
+        }
+
+        status = mkdir(saves_dir, 0777);
+        if (status == -1)
+        {
+            puts("Error creating saves directory");
+            if (errno != 17)
+                exit(errno);
+        }
     }
 
     // create config.ini file in cwd
@@ -226,7 +233,7 @@ char *read_key_from_config(const char *key)
     // If missing, then create
     if (fp == NULL)
     {
-        create_default_config();
+        create_default_config(false);
 
         // open after creation
         fp = fopen(config_path, "r");
@@ -322,6 +329,27 @@ int delete_app_data(void)
     }
 
     return 0;
+}
+
+void init_settings_from_config(struct SaveFileData *save_file_data)
+{
+    // Read and save the saves file directory from config.ini
+    char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
+    
+    if (config_save_path != NULL)
+    {
+        strcpy((char *)save_file_data->save_dir, config_save_path);
+    } else {
+        strcpy((char *)save_file_data->save_dir, "DIR_NOT_SET");
+    }
+
+    // Read and save the disable random setting from config.ini
+    set_is_random_DVs_disabled(strcmp(read_key_from_config("DISABLE_RANDOM_IVS_ON_TRADE"), "false"));
+    // Read and save the item required evolutions setting from config.ini
+    set_is_item_required(strcmp(read_key_from_config("ITEM_REQUIRED_EVOLUTIONS"), "false"));
+
+    // malloc'd from read_key_from_config
+    free(config_save_path);
 }
 
 #endif
