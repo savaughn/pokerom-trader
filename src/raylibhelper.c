@@ -2,7 +2,12 @@
 #include "filehelper.h"
 #include "pksavhelper.h"
 #include "pksavfilehelper.h"
+#include "chelper.h"
+#ifdef _WIN32
+#include <errno.h>
+#else
 #include <sys/errno.h>
+#endif
 
 const Rectangle input_box_rec = (Rectangle){50, SCREEN_HEIGHT / 2 - 20, SCREEN_WIDTH - 100, 40};
 const Color background_color = RAYWHITE;
@@ -12,6 +17,8 @@ static int no_dir_err = 0;
 static bool was_mouse_pressed = false; // Prevents back navigating two screens with one mouse click
 static bool show_delete_modal = false;
 static bool was_data_deleted = false;
+static bool show_reset_modal = false;
+static struct SaveFileData *_save_file_data = NULL;
 
 void on_delete_modal_cancel(void)
 {
@@ -26,14 +33,34 @@ void on_delete_modal_submit(void)
     was_data_deleted = true;
 }
 
-void _draw_confirmation_modal(const char *header_text, const char *body_text, void (*_onsubmit)(void), void (*_oncancel)(void), enum E_MODAL_TYPES modal_type)
+void on_reset_modal_cancel(void)
 {
+    show_reset_modal = false;
+}
+
+void on_reset_modal_submit(void)
+{
+    create_default_config(true);
+    init_settings_from_config(_save_file_data);
+    show_reset_modal = false;
+}
+
+void _draw_confirmation_modal(const char *header_text, const char *body_text, const char *submit_button_text, void (*_onsubmit)(void), void (*_oncancel)(void), enum E_MODAL_TYPES modal_type)
+{
+    // Default string values
+    char _header_text[60];
+    set_default_value_string(header_text, "Are you sure you want to do this action?", _header_text);
+    char _body_text[64];
+    set_default_value_string(body_text, "This action cannot be undone.", _body_text);
+    char submit_text[11];
+    set_default_value_string(submit_button_text, "Confirm", submit_text);
+    
     const Color scrim = (Color){0, 0, 0, 30};
     // Background scrim
     DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, scrim);
 
     // Modal Rectangle
-    Rectangle confirm_modal_rec = (Rectangle){SCREEN_WIDTH / 2 - MeasureText(header_text, 20) / 2 - 50, SCREEN_HEIGHT / 2 - 150, MeasureText(header_text, 20) + 100, 300};
+    Rectangle confirm_modal_rec = (Rectangle){SCREEN_WIDTH / 2 - MeasureText(_header_text, 20) / 2 - 50, SCREEN_HEIGHT / 2 - 150, MeasureText(_header_text, 20) + 100, 300};
     // Bottom Shadow
     DrawRectangleGradientV(confirm_modal_rec.x + 4, confirm_modal_rec.y + confirm_modal_rec.height - 2, confirm_modal_rec.width - 5, 6, LIGHTGRAY, (Color){0, 0, 0, 0});
     // Right Shadow
@@ -70,21 +97,22 @@ void _draw_confirmation_modal(const char *header_text, const char *body_text, vo
     DrawCircle(confirm_modal_rec.x + confirm_modal_rec.width / 2, confirm_modal_rec.y + 95, 5, modal_type == E_MODAL_WARN ? RED : LIGHTGRAY);
 
     // Modal Text
-    DrawText(header_text, confirm_modal_rec.x + confirm_modal_rec.width / 2 - MeasureText(header_text, 22) / 2, confirm_modal_rec.y + 135, 22, BLACK);
-    DrawText(body_text, confirm_modal_rec.x + confirm_modal_rec.width / 2 - MeasureText(body_text, 19) / 2, confirm_modal_rec.y + 185, 19, BLACK);
+    DrawText(_header_text, confirm_modal_rec.x + confirm_modal_rec.width / 2 - MeasureText(_header_text, 22) / 2, confirm_modal_rec.y + 135, 22, BLACK);
+    DrawText(_body_text, confirm_modal_rec.x + confirm_modal_rec.width / 2 - MeasureText(_body_text, 19) / 2, confirm_modal_rec.y + 185, 19, BLACK);
 
     // Draw Submit Button
-    Rectangle submit_button_rec = (Rectangle){confirm_modal_rec.x + confirm_modal_rec.width - 200, confirm_modal_rec.y + confirm_modal_rec.height - 65, MeasureText("Confirm", 20) + 10, 30};
+    Rectangle submit_button_rec = (Rectangle){confirm_modal_rec.x + confirm_modal_rec.width - 200, confirm_modal_rec.y + confirm_modal_rec.height - 65, MeasureText(submit_text, 20) + 10, 30};
     DrawRectangleRec(submit_button_rec, modal_type == E_MODAL_WARN ? RED : COLOR_PKMN_GREEN);
     // Button shadow
     DrawLine(submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + 1, submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + submit_button_rec.height, BLACK);
     DrawLine(submit_button_rec.x + 1, submit_button_rec.y + submit_button_rec.height + 1, submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + submit_button_rec.height + 1, BLACK);
 
     // Draw Cancel Button
-    Rectangle cancel_button_rec = (Rectangle){confirm_modal_rec.x + 100, submit_button_rec.y, MeasureText("Cancel", 20) + 10, 30};
+    const char *cancel_button_text = "Cancel";
+    Rectangle cancel_button_rec = (Rectangle){confirm_modal_rec.x + 100, submit_button_rec.y, MeasureText(cancel_button_text, 20) + 10, 30};
 
-    DrawText("Confirm", submit_button_rec.x + 5, submit_button_rec.y + 5, 20, WHITE);
-    DrawText("Cancel", cancel_button_rec.x + 5, cancel_button_rec.y + 5, 20, BLACK);
+    DrawText(submit_text, submit_button_rec.x + 5, submit_button_rec.y + 5, 20, WHITE);
+    DrawText(cancel_button_text, cancel_button_rec.x + 5, cancel_button_rec.y + 5, 20, BLACK);
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
@@ -281,7 +309,6 @@ void draw_change_dir(struct SaveFileData *save_file_data)
     // Placeholder Text
     if (!editing_text && !has_shown_placeholder)
     {
-        printf("placeholder\n");
         strcpy(input_text, (char *)save_file_data->save_dir);
         text_size = strlen(input_text);
         has_shown_placeholder = true;
@@ -400,14 +427,13 @@ void draw_change_dir(struct SaveFileData *save_file_data)
     }
     EndDrawing();
 }
-void draw_settings(struct SaveFileData *save_file_data)
+void draw_settings(void)
 {
     const Color settings_text_color = BLACK;
-    const Color settings_text_color_selected = LIGHTGRAY;
 
     BeginDrawing();
     ClearBackground(background_color);
-    // DrawRectangleGradientH(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, COLOR_PKMN_GOLD, COLOR_PKMN_SILVER);
+
     DrawText("Settings", 50, 50, 20, settings_text_color);
     DrawText("Change Save Directory", 50, 200, 20, settings_text_color);
     // Toggle for random ivs on trade boolean
@@ -517,8 +543,7 @@ void draw_settings(struct SaveFileData *save_file_data)
         }
         else if (CheckCollisionPointRec(GetMousePosition(), reset_config_rec))
         {
-            create_default_config(true);
-            init_settings_from_config(save_file_data);
+            show_reset_modal = true;
         }
     }
 
@@ -528,7 +553,14 @@ void draw_settings(struct SaveFileData *save_file_data)
         const char *delete_modal_text = "Are you sure you want to delete all app data?";
         const char *details_text = "This will delete all save files and settings in app directory.";
 
-        _draw_confirmation_modal(delete_modal_text, details_text, on_delete_modal_submit, on_delete_modal_cancel, E_MODAL_WARN);
+        _draw_confirmation_modal(delete_modal_text, details_text, "Delete", on_delete_modal_submit, on_delete_modal_cancel, E_MODAL_WARN);
+    }
+    else if (show_reset_modal)
+    {
+        const char *reset_modal_text = "Are you sure you want to reset all settings to default?";
+        const char *details_text = "";
+
+        _draw_confirmation_modal(reset_modal_text, details_text, "Reset", on_reset_modal_submit, on_reset_modal_cancel, E_MODAL_INFO);
     }
 
     EndDrawing();
@@ -1074,7 +1106,9 @@ void draw_raylib_screen_loop(
             draw_main_menu(save_file_data);
             break;
         case SCREEN_SETTINGS:
-            draw_settings(save_file_data);
+            // for confirm modal to update app save file data struct
+            _save_file_data = save_file_data;
+            draw_settings();
             break;
         case SCREEN_FILE_EDIT:
             draw_change_dir(save_file_data);

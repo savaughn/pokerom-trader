@@ -335,7 +335,6 @@ void init_settings_from_config(struct SaveFileData *save_file_data)
 {
     // Read and save the saves file directory from config.ini
     char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
-    printf("config_save_path: %s\n", config_save_path);
     
     if (config_save_path != NULL)
     {

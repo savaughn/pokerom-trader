@@ -10,7 +10,9 @@ int main(int argc, char *argv[])
     char player2_save_path[MAX_FILE_PATH_CHAR];
     PokemonSave pkmn_save_player1;
     PokemonSave pkmn_save_player2;
-    struct SaveFileData save_file_data;
+    struct SaveFileData save_file_data = {
+        .num_saves = 0
+    };
 
     init_settings_from_config(&save_file_data);
 
