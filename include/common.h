@@ -70,7 +70,8 @@ typedef enum
 {
     SAVE_GENERATION_NONE,
     SAVE_GENERATION_1,
-    SAVE_GENERATION_2
+    SAVE_GENERATION_2,
+    SAVE_GENERATION_CORRUPTED,
 } SaveGenerationType;
 
 typedef union

@@ -18,7 +18,7 @@ enum E_MODAL_TYPES {
 
 void draw_about(void);
 void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name, bool show_gender);
-void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id);
+void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id_out);
 void draw_change_dir(struct SaveFileData *save_file_data);
 void draw_settings(void);
 void draw_main_menu(struct SaveFileData *save_file_data);

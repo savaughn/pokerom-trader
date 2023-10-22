@@ -5,6 +5,14 @@
 #include "common.h"
 #include "pkmnstats.h"
 
+#define MAX_GEN1_MOVE_INDEX 165
+#define MOVE_INDEX_HM01 15
+#define MOVE_INDEX_HM02 19
+#define MOVE_INDEX_HM03 57
+#define MOVE_INDEX_HM04 70
+#define MOVE_INDEX_HM05 127
+#define MOVE_INDEX_HM06 165
+
 struct pkmn_evolution_pair_data
 {
     char species_name[11];
@@ -19,6 +27,14 @@ enum eligible_evolution_status
     E_EVO_STATUS_NOT_ELIGIBLE,
     E_EVO_STATUS_ELIGIBLE,
     E_EVO_STATUS_MISSING_ITEM
+};
+
+enum eligible_trade_status
+{
+    E_TRADE_STATUS_ELIGIBLE,
+    E_TRADE_STATUS_GEN2_PKMN,
+    E_TRADE_STATUS_GEN2_MOVE,
+    E_TRADE_STATUS_HM_MOVE,
 };
 
 // Pokémon Evolution Pair Lookup Table
@@ -54,6 +70,7 @@ static bool item_required_evolutions = true;
 int error_handler(enum pksav_error error, const char *message);
 void swap_party_pkmn_at_indices(struct pksav_gen2_save *pkmn_save, uint8_t pkmn_index1, uint8_t pkmn_index2); // TODO: Update for cross-generation
 void swap_pkmn_at_index_between_saves(PokemonSave *player1_save, PokemonSave *player2_save, uint8_t pkmn_party_index1, uint8_t pkmn_party_index2);
+void swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player1_save, PokemonSave *player2_save, uint8_t pkmn_party_index1, uint8_t pkmn_party_index2);
 void create_trainer(PokemonSave *pkmn_save, struct TrainerInfo *trainer);
 void update_seen_owned_pkmn(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 enum eligible_evolution_status check_trade_evolution_gen1(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
@@ -66,5 +83,6 @@ void set_is_random_DVs_disabled(bool is_disabled);
 bool get_is_item_required(void);
 void set_is_item_required(bool is_required);
 void generate_rand_num_step(SaveGenerationType save_generation_type);
+enum eligible_trade_status check_trade_eligibility(struct TrainerInfo *trainer, uint8_t pkmn_party_index);
 
 #endif /* PKSAVHELPER_H */

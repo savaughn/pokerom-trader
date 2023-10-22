@@ -20,6 +20,7 @@ static bool was_data_deleted = false;
 static bool show_reset_modal = false;
 static struct SaveFileData *_save_file_data = NULL;
 static bool is_build_prerelease = false;
+static bool is_same_generation = true;
 
 void on_delete_modal_cancel(void)
 {
@@ -151,11 +152,11 @@ void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id)
 {
     char id_str[6];
     strcpy(trainer_id, "IDNo ");
-    snprintf(id_str, sizeof(id_str), "%u", trainer->trainer_id); // "IDNo %u" loses 3 chars even with enough space?
+    snprintf(id_str, sizeof(id_str), "%05u", trainer->trainer_id); // "IDNo %u" loses 3 chars even with enough space?
     strcat(trainer_id, id_str);
 }
 // Draws the trainers name, id, and party pokemon in pokemon buttons
-void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool showGender)
+void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool showGender)
 {
     // Get trainer generation 1 or 2
     SaveGenerationType trainer_generation = trainer->trainer_generation;
@@ -182,24 +183,33 @@ void DrawTrainerInfo(struct TrainerInfo *trainer, int x, int y, struct TrainerSe
     DrawText(trainer_id, x, y + 30, 20, BLACK);
 
     // Draw the pokemon buttons
-    for (int i = 0; i < party_count; i++)
+    for (int party_index = 0; party_index < party_count; party_index++)
     {
-        char pokemon_nickname[11];
+        enum eligible_trade_status trade_status = check_trade_eligibility(trainer, party_index);
+        
+        char pokemon_nickname[11] = "\0";
         if (trainer_generation == SAVE_GENERATION_1)
         {
-            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[i], pokemon_nickname, 10);
+            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[party_index], pokemon_nickname, 10);
         }
         else if (trainer_generation == SAVE_GENERATION_2)
         {
-            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[i], pokemon_nickname, 10);
+            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[party_index], pokemon_nickname, 10);
         }
 
-        draw_pkmn_button((Rectangle){x - 10, y + 70 + (i * 30), 200, 30}, i, pokemon_nickname, current_trainer_index != -1 && trainerSelection[current_trainer_index].pkmn_party_index == i);
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x - 10, y + 70 + (i * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        draw_pkmn_button((Rectangle){x - 10, y + 70 + (party_index * 30), 200, 30}, party_index, pokemon_nickname, current_trainer_index != -1 && (trainerSelection[current_trainer_index].pkmn_party_index == party_index || trade_status != E_TRADE_STATUS_ELIGIBLE));
+        if (trade_status == E_TRADE_STATUS_GEN2_PKMN)
+            DrawText("Gen 2 only ", x + MeasureText(pokemon_nickname, 20) + 5, y + 70 + (party_index * 30), 20, RED);
+        else if (trade_status == E_TRADE_STATUS_GEN2_MOVE)
+            DrawText("Gen 2 move ", x + MeasureText(pokemon_nickname, 20) + 5, y + 70 + (party_index * 30), 20, RED);
+        else if (trade_status == E_TRADE_STATUS_HM_MOVE)
+            DrawText("HM move", x + MeasureText(pokemon_nickname, 20) + 5, y + 70 + (party_index * 30), 20, RED);
+        
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x - 10, y + 70 + (party_index * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (trainerSelection[current_trainer_index].pkmn_party_index != i)
+            if (trainerSelection[current_trainer_index].pkmn_party_index != party_index && trade_status == E_TRADE_STATUS_ELIGIBLE)
             {
-                trainerSelection[current_trainer_index].pkmn_party_index = i;
+                trainerSelection[current_trainer_index].pkmn_party_index = party_index;
             }
             else
             {
@@ -630,8 +640,8 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
     }
     else
     {
-        bool hasSelectedTwoSaves = selected_saves_index[0] != -1 && selected_saves_index[1] != -1;
-        static bool isSameGeneration = true;
+        bool has_selected_two_saves = selected_saves_index[0] != -1 && selected_saves_index[1] != -1;
+        static bool has_file_error = false;
 
         DrawText("Select two save files of the same generation to trade between", SCREEN_WIDTH / 2 - MeasureText("Select two save files of the same generation to trade between", 20) / 2, 25, 20, BLACK);
         for (int i = 0; i < save_file_data->num_saves; i++)
@@ -656,57 +666,65 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                     {
                         selected_saves_index[1] = i;
                     }
+                    pkmn_save_player1->save_generation_type = SAVE_GENERATION_NONE;
+                    pkmn_save_player2->save_generation_type = SAVE_GENERATION_NONE;
+                    has_file_error = false;
                 }
             }
             char *save_name = strrchr(save_file_data->saves_file_path[i], '/');
             save_name++;
             DrawText(save_name, 100, 75 + 25 * i, 20, (selected_saves_index[0] == i || selected_saves_index[1] == i) ? LIGHTGRAY : BLACK);
+        }
+        // Reset generation check
+        if (!is_same_generation)
+        {
+            is_same_generation = selected_saves_index[1] == -1;
+        }
 
-            // Reset generation check
-            if (!isSameGeneration)
+        DrawText("Trade >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, has_selected_two_saves && is_same_generation ? BLACK : LIGHTGRAY);
+        if (has_selected_two_saves)
+        {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
-                isSameGeneration = selected_saves_index[1] == -1;
-            }
-
-            DrawText("Trade >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, hasSelectedTwoSaves && isSameGeneration ? BLACK : LIGHTGRAY);
-            if (!isSameGeneration && hasSelectedTwoSaves)
-                DrawText("Cross-gen trades are not yet supported", NEXT_BUTTON_X - 125, NEXT_BUTTON_Y + 25, 15, RED);
-
-            if (hasSelectedTwoSaves && isSameGeneration)
-            {
-                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
                 {
-                    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+                    // load selection to player1_save
+                    *pkmn_save_player1 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[0]]);
+
+                    // save the selected path name
+                    strcpy(player1_save_path, save_file_data->saves_file_path[selected_saves_index[0]]);
+                    // generate trainer info from save
+                    create_trainer(pkmn_save_player1, trainer1);
+                    // save trainer id to trainerSelection
+                    trainerSelection[0].trainer_id = trainer1->trainer_id;
+
+                    // load selection to player2_save
+                    *pkmn_save_player2 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[1]]);
+                    strcpy(player2_save_path, save_file_data->saves_file_path[selected_saves_index[1]]);
+                    create_trainer(pkmn_save_player2, trainer2);
+                    trainerSelection[1].trainer_id = trainer2->trainer_id;
+
+                    if (pkmn_save_player1->save_generation_type == SAVE_GENERATION_CORRUPTED || pkmn_save_player2->save_generation_type == SAVE_GENERATION_CORRUPTED)
                     {
-                        // load selection to player1_save
-                        *pkmn_save_player1 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[0]]);
-
-                        // save the selected path name
-                        strcpy(player1_save_path, save_file_data->saves_file_path[selected_saves_index[0]]);
-                        // generate trainer info from save
-                        create_trainer(pkmn_save_player1, trainer1);
-                        // save trainer id to trainerSelection
-                        trainerSelection[0].trainer_id = trainer1->trainer_id;
-
-                        // load selection to player2_save
-                        *pkmn_save_player2 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index[1]]);
-                        strcpy(player2_save_path, save_file_data->saves_file_path[selected_saves_index[1]]);
-                        create_trainer(pkmn_save_player2, trainer2);
-                        trainerSelection[1].trainer_id = trainer2->trainer_id;
-
-                        if (pkmn_save_player1->save_generation_type != pkmn_save_player2->save_generation_type)
-                        {
-                            isSameGeneration = false;
-                        }
-                        else
-                        {
-                            current_screen = SCREEN_TRADE;
-                        }
+                        has_file_error = true;
+                    }
+                    else
+                    {
+                        is_same_generation = pkmn_save_player1->save_generation_type == pkmn_save_player2->save_generation_type;
+                        current_screen = SCREEN_TRADE;
+                        selected_saves_index[0] = -1;
+                        selected_saves_index[1] = -1;
+                        has_file_error = false;
                     }
                 }
             }
+            if (has_file_error)
+            {
+                DrawText("save file invalid", NEXT_BUTTON_X - 15, NEXT_BUTTON_Y + 25, 15, RED);
+            }
         }
     }
+
     // Add back button
     DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
@@ -747,8 +765,8 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    DrawTrainerInfo(trainer1, 50, 50, trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
-    DrawTrainerInfo(trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection, save_player2->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+    draw_trainer_info(trainer1, 50, 50, trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+    draw_trainer_info(trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection, save_player2->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
     uint8_t canSubmitTrade = trainerSelection[0].pkmn_party_index != -1 && trainerSelection[1].pkmn_party_index != -1;
     DrawText("Trade!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, canSubmitTrade ? BLACK : LIGHTGRAY);
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && canSubmitTrade)
@@ -759,7 +777,14 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
             trainerSelection[0].pkmn_party_index = -1;
             trainerSelection[1].pkmn_party_index = -1;
 
-            swap_pkmn_at_index_between_saves(save_player1, save_player2, selected_index_trainer1, selected_index_trainer2);
+            if (is_same_generation)
+            {
+                swap_pkmn_at_index_between_saves(save_player1, save_player2, selected_index_trainer1, selected_index_trainer2);
+            }
+            else
+            {
+                swap_pkmn_at_index_between_saves_cross_gen(save_player1, save_player2, selected_index_trainer1, selected_index_trainer2);
+            }
             update_seen_owned_pkmn(save_player1, selected_index_trainer1);
             update_seen_owned_pkmn(save_player2, selected_index_trainer2);
             save_savefile_to_path(save_player1, player1_save_path);
@@ -795,7 +820,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
 
     // select a save file
     static int selected_saves_index = -1;
-    bool hasSelectedSave = selected_saves_index != -1;
+    bool hasSelectedSave = selected_saves_index != -1 && save_player1->save_generation_type != SAVE_GENERATION_CORRUPTED;
 
     if (save_file_data->num_saves == 0)
     {
@@ -822,6 +847,8 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
                 {
                     selected_saves_index = i;
                 }
+                // Reset when selecting a file after seeing error message
+                save_player1->save_generation_type = SAVE_GENERATION_NONE;
             }
         }
         char *save_name = strrchr(save_file_data->saves_file_path[i], '/');
@@ -840,10 +867,6 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
             {
                 if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
                 {
-                    if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC)
-                        current_screen = SCREEN_BILLS_PC;
-                    if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE)
-                        current_screen = SCREEN_EVOLVE;
                     // load selection to player1_save
                     *save_player1 = load_savefile_from_path(save_file_data->saves_file_path[selected_saves_index]);
                     // save the selected path name
@@ -852,11 +875,19 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *s
                     create_trainer(save_player1, trainer1);
                     // save trainer id to trainerSelection
                     trainerSelection->trainer_id = trainer1->trainer_id;
+
+                    if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC)
+                        current_screen = SCREEN_BILLS_PC;
+                    if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE && save_player1->save_generation_type != SAVE_GENERATION_CORRUPTED)
+                        current_screen = SCREEN_EVOLVE;
                 }
             }
         }
     }
-
+    if (save_player1->save_generation_type == SAVE_GENERATION_CORRUPTED)
+    {
+        DrawText("save file invalid", NEXT_BUTTON_X + 5, NEXT_BUTTON_Y + 25, 15, RED);
+    }
     if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC)
         DrawText("Bill's PC", 25, 25, 20, BLACK);
     if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE)
@@ -1017,7 +1048,7 @@ void draw_bills_pc(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *
     ClearBackground(RAYWHITE);
     DrawText("Bill's PC", 50, 50, 20, BLACK);
 
-    DrawTrainerInfo(trainer, 50, 100, trainerSelection, pkmn_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+    draw_trainer_info(trainer, 50, 100, trainerSelection, pkmn_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
 
     // Draw a veritcal box to the right of the trainer info
     // labeled box n where n is the box number
