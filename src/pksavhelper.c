@@ -7,7 +7,7 @@
 int error_handler(enum pksav_error error, const char *message)
 {
     printf("%s\n", message);
-    // exit(1);
+    // TODO: Print error to log file
     return 0;
 }
 

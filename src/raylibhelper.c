@@ -682,9 +682,6 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
         }
 
         DrawText("Trade >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, has_selected_two_saves && is_same_generation ? BLACK : LIGHTGRAY);
-        // if (!isSameGeneration && has_selected_two_saves)
-        //     DrawText("Cross-gen trades are not yet supported", NEXT_BUTTON_X - 125, NEXT_BUTTON_Y + 25, 15, RED);
-
         if (has_selected_two_saves)
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
