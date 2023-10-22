@@ -1,8 +1,5 @@
 # Pokerom Trader - Pokémon Save File Trading GUI
 
-![file select screen](https://user-images.githubusercontent.com/25937456/273107563-1e773463-417a-4865-ace6-80958c2d0d3b.png)
-![Pokerom Trader](https://github.com/savaughn/pokerom-trader/assets/25937456/c55aa92e-24ef-4ddf-931c-44c58d384621)
-
 ## Overview
 
 Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the PKSav C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon between different save files or Pokémon game versions. This is not another save file editor. This replicates the in-game trading experience resulting in legal pokémon.
@@ -31,14 +28,10 @@ There is no backup system implemented yet. Make backup saves before using this o
 
 ## What's working
 
-|      | Red  | Blue | Yellow | Gold | Silver | Crystal |
-|------|------|------|--------|------|--------|---------|
-| Red  | ✅  | ✅  | ✅      | ❌  | ❌     | ❌      |
-| Blue | ✅  | ✅   | ✅      | ❌  | ❌     | ❌     |
-| Yellow | ✅  | ✅   | ✅      | ❌  | ❌    | ❌     |
-| Gold | ❌  | ❌   | ❌     | ✅  | ✅     | ✅      |
-| Silver | ❌  | ❌   | ❌      | ✅  | ✅     | ✅      |
-| Crystal | ❌  | ❌   | ❌      | ✅  | ✅     | ✅      |
+- Same-gen trading
+- Cross-gen trading
+- Gen 1 trade evolutions
+- Gen 2 trade evolutions
 
 *Perfect Crystal save files seem to work.
 
@@ -65,10 +58,10 @@ Download the latest release from the [releases page](https://github.com/savaughn
 
 Default saves folder is located ~/Library/PokeromTrader/saves on OSX and ~/.pokeromtrader/ in linux. You can change this in the settings menu.
 
-To execute, right click PokeromTrader.app and select "Open" to bypass the MacOS security warning.
+To execute, right click PokeromTrader.app and select "Open" to bypass the MacOS security warning. This is only required the first time you open the app.
 
 ## Contributing
-If you wish to build this project from source or contribute to the project, then follow the instructions below. Tip: You can just copy/paste the entire block of commands into your terminal.
+If you wish to build this project from source or contribute to the project, then follow the instructions below.
 ### Installation
 
    ```bash
