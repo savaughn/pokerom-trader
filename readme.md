@@ -14,8 +14,12 @@ There is no backup system implemented yet. Make backup saves before using this o
 ### Settings 
 - Change save files folder with absolute path to folder
   - Default is ~/Library/PokeromTrader/saves (MacOS)
+  - Default is ~/.pokeromtrader/ (Linux)
 - Disable Random DVs on trade (default off) when on will retain the dvs of the Pokémon being traded or evolved.
   - The in-game experience always randomizes DVs on trade. This is a bypass of the official experience.
+- Item required for evolution. (default on) when on will require the item to be held by the Pokémon being evolved.
+  - This is a bypass of the official experience.
+- Reset to defaults - Resets all settings to default values
 
 ### Deep Dive
 - DV randomization
