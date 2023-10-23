@@ -111,6 +111,10 @@ This project is licensed under the [MIT License](LICENSE).
 
 - [PKSav](https://github.com/ncorgan/pksav): Thank you to the creators and maintainers of PKSav for providing the library that makes this project possible.
 - [Raylib](www.github.com/raysan5/raylib): Thank you to the creators and maintainers of Raylib for providing the library that makes this project possible.
+- [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Main_Page): Thank you to the creators and maintainers of Bulbapedia for providing the information that makes this project possible.
+- [TextStudio](https://www.textstudio.com/logo/pokemon-3d-text-318): Used their text generator for stylized text.
+- [Cazwolf](https://cazwolf.itch.io/caz-pixel-consoles): Used their pixel art for the consoles and catridges.
+- [Miguel PM Romeu](https://miguel-pm-romeu.itch.io/pack-of-pokeballs): Modified their pokeball sprites.
 
 ## Disclaimer
 Pokerom Trader is an unofficial application and is not affiliated with or endorsed by Nintendo, Game Freak, Creatures, The Pokémon Company, or any related entities. Pokémon and Pokémon character names are trademarks of Nintendo, Game Freak, Creatures, and The Pokémon Company. All trademarks, character names, and other intellectual property used in this application are used for identification and informational purposes only. The use of these names and marks is believed to qualify as fair use under trademark law. Pokerom Trader is not endorsed by or affiliated with any of the aforementioned entities. Pokerom Trader is provided "as is" without warranty of any kind, and the developers make no warranties, express or implied, regarding the accuracy or completeness of the content provided in this application.
