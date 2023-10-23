@@ -26,8 +26,10 @@ static int rand_console_index_2 = -1;
 static int rand_pokeball_index = -1;
 static int anim_from_right[4] = {300, 300, 300, 300};
 static bool has_finished_right_anim = false;
-
+static int active_anim_index = -1;
+static int active_hover_index = -1;
 static Image *pkrom_trader_logo;
+static int selected_main_menu_index = -1;
 
 void on_delete_modal_cancel(void)
 {
@@ -585,30 +587,56 @@ void draw_settings(void)
     was_mouse_pressed = false;
 }
 
-bool draw_menu_button(int x, int y, const char *text, int text_size)
+bool draw_menu_button(int x, int y, const char *text, int text_size, int index)
 {
     const int rec_height = 45;
     const int line_width = 3;
     bool selected = false;
+    bool clicked = false;
+    int selected_offset = 0;
+    Color selected_color = COLOR_PKMN_YELLOW;
 
     // on mouse hover
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x, y, 150, rec_height}))
     {
-        DrawRectangleGradientH(x + 140, y - 2 + 2, 6, rec_height + 6, DARKGRAY, (Color){0, 0, 0, 0});
-        DrawRectangleGradientV(x - 2, y + rec_height + 1, 142, 6, DARKGRAY, (Color){0, 0, 0, 0});
-        DrawTriangle((Vector2){x - 10, y - 2}, (Vector2){x - 20, y - 2}, (Vector2){x - 10, y + rec_height + 1}, COLOR_PKMN_YELLOW);
-        DrawRectangle(x - 10, y - 2, 150, rec_height + 4, COLOR_PKMN_YELLOW);
-        DrawText(text, x, y + 7, text_size, BLACK);
-        DrawLineEx((Vector2){x - 20, y - 2}, (Vector2){x + 140, y - 2}, line_width, BLACK);
-        DrawLineEx((Vector2){x - 10, y + rec_height + 1}, (Vector2){x + 140, y + rec_height + 1}, line_width, BLACK);
-        DrawLineEx((Vector2){x - 20, y - 2}, (Vector2){x - 10, y + rec_height + 1}, line_width, BLACK);
-        DrawLineEx((Vector2){x + 140, y - 2}, (Vector2){x + 140, y + rec_height + 2}, line_width, BLACK);
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+        {
+            clicked = true;
+            selected_offset = 2;
+            selected_color = COLOR_PKMN_DARKYELLOW;
+            selected_main_menu_index = index;
+        }
+        
+        // Shadow
+        if (!clicked)
+            DrawRectangleGradientH(x + 140, y - 2 + 2, 6, rec_height + 6, DARKGRAY, (Color){0, 0, 0, 0});
+        if (!clicked)
+            DrawRectangleGradientV(x - 2, y + rec_height + 1, 142, 6, DARKGRAY, (Color){0, 0, 0, 0});
+
+        // Hovered box
+        DrawTriangle((Vector2){x - 10 + selected_offset, y - 2}, (Vector2){x - 20 + selected_offset, y - 2}, (Vector2){x - 10 + selected_offset, y + rec_height + 1}, selected_color);
+        DrawRectangle(x - 10 + selected_offset, y - 2, 150, rec_height + 4, selected_color);
+        DrawText(text, x + selected_offset, y + 7, text_size, BLACK);
+
+        // Box outline
+        DrawLineEx((Vector2){x - 20 + selected_offset, y - 2}, (Vector2){x + 140 + selected_offset, y - 2}, line_width, BLACK);
+        DrawLineEx((Vector2){x - 10 + selected_offset, y + rec_height + 1}, (Vector2){x + 140 + selected_offset, y + rec_height + 1}, line_width, BLACK);
+        DrawLineEx((Vector2){x - 20 + selected_offset, y - 2}, (Vector2){x - 10 + selected_offset, y + rec_height + 1}, line_width, BLACK);
+        DrawLineEx((Vector2){x + 140 + selected_offset, y - 2}, (Vector2){x + 140 + selected_offset, y + rec_height + 2}, line_width, BLACK);
 
         return true;
     }
     else
     {
         DrawText(text, x + 10, y + 5, text_size, BLACK);
+        // TODO: bad ux where pressing button and moving
+        // mouse focus off button will still select button
+        // on mouse button release. Adding next line will
+        // stop the button from working
+        // selected_main_menu_index = -1;
+        clicked = false;
+        selected_color = COLOR_PKMN_YELLOW;
+        selected_offset = 0;
     }
 
     return false;
@@ -619,18 +647,20 @@ void draw_main_menu(struct SaveFileData *save_file_data, Texture2D *pkrom_trader
     BeginDrawing();
     ClearBackground((Color){204, 0, 0, 0});
     DrawCircle(SCREEN_WIDTH * 1.15, SCREEN_HEIGHT * 1.725, 800, BLACK);
-    DrawCircle(SCREEN_WIDTH * 1.15, SCREEN_HEIGHT * 1.725, 750, WHITE);
+    DrawCircle(SCREEN_WIDTH * 1.15, SCREEN_HEIGHT * 1.725, 730, WHITE);
 
     const int start_y = 200;
-    const int start_x = 100;
+    const int start_x = 75;
     const int rec_height_offset = 50;
     const int text_size = 30;
+    const uint8_t anim_speed = 45;
     static Texture2D trade;
     static Texture2D evolve;
     static Texture2D settings;
     static Texture2D quit;
     static Texture2D consoles[10];
     static Texture2D pk_balls[4];
+
     if (trade.id == NULL)
     {
         trade = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
@@ -667,18 +697,32 @@ void draw_main_menu(struct SaveFileData *save_file_data, Texture2D *pkrom_trader
     const uint8_t console_x_offset = 70;
     static uint8_t anim_index = 0;
 
+    //if (SHOW_BILLS_PC && CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 300, 200, 20}))
+    //         get_save_files(save_file_data);
+    //         current_screen = SCREEN_BILLS_PC_FILE_SELECT;
+
+
+    
+
     // Draw image pkrom_trader_logo
     DrawTextureEx(*pkrom_trader_logo, (Vector2){50, 50}, 0, 0.62, WHITE);
-    // DrawText("Pokerom Trader", 190, 100, 20, BLACK);
-    // DrawText("Trade", 190, 200, 20, BLACK);
-    if (draw_menu_button(start_x, start_y, "Trade", text_size))
+    if (draw_menu_button(start_x, start_y, "Trade", text_size, 0))
+    {
+        active_anim_index = 0;
+        active_hover_index = 0;
+    }
+    else
+    {
+        active_hover_index = -1;
+    }
+    if (active_anim_index == 0)
     {
         static int frame_counter = 0;
         if (rand_console_index_1 == -1)
             rand_console_index_1 = GetRandomValue(0, 9);
         if (rand_console_index_2 == -1)
             rand_console_index_2 = GetRandomValue(0, 9);
-        
+
         DrawTextureEx(trade, (Vector2){details_rec.x + anim_from_right[0], details_rec.y + 25}, 0, 0.5, WHITE);
         DrawTextureEx(consoles[rand_console_index_1], (Vector2){details_rec.x + anim_from_right[0] - 40, details_rec.y + 150}, 0, 3, WHITE);
 
@@ -709,21 +753,39 @@ void draw_main_menu(struct SaveFileData *save_file_data, Texture2D *pkrom_trader
 
         if (frame_counter % 10 == 0)
             anim_index++;
-        if (anim_from_right[0] >= 0) anim_from_right[0] -= 20;
+        if (active_hover_index == 0 && anim_from_right[0] >= 0)
+            anim_from_right[0] -= anim_speed;
+        if (active_hover_index == -1)
+            anim_from_right[0] += anim_speed;
+        if (anim_from_right[0] > 300)
+        {
+            active_anim_index = -1;
+            anim_from_right[0] = 300;
+        }
         anim_index %= 9;
         frame_counter++;
 
         DrawTextureEx(consoles[rand_console_index_2], (Vector2){details_rec.x + anim_from_right[0] + console_x_offset + 120, details_rec.y + 150}, 0, 3, WHITE);
-        DrawText("Trade pokemon between save files.", details_text.x + anim_from_right[0] + 40, details_text.y, 20, BLACK);
-    } else {
+        DrawText("Trade pokemon between save files", details_text.x + anim_from_right[0] + 40, details_text.y, 20, BLACK);
+    }
+    else
+    {
         rand_console_index_1 = -1;
         rand_console_index_2 = -1;
         anim_from_right[0] = 300;
     }
     if (SHOW_BILLS_PC)
         DrawText("Bill's PC", 190, 300, 20, BLACK);
-    // DrawText("Evolve", 190, 225, 20, BLACK);
-    if (draw_menu_button(start_x + 15, start_y + rec_height_offset, "Evolve", text_size) )
+    if (draw_menu_button(start_x + 15, start_y + rec_height_offset, "Evolve", text_size, 1))
+    {
+        active_anim_index = 1;
+        active_hover_index = 1;
+    }
+    else
+    {
+        active_hover_index = -1;
+    }
+    if (active_anim_index == 1)
     {
         static int frame_counter = 0;
         if (rand_pokeball_index == -1)
@@ -731,76 +793,132 @@ void draw_main_menu(struct SaveFileData *save_file_data, Texture2D *pkrom_trader
 
         DrawTextureEx(evolve, (Vector2){details_rec.x + anim_from_right[1], details_rec.y + 25}, 0, 0.5, WHITE);
         DrawTextureEx(pk_balls[rand_pokeball_index], (Vector2){details_rec.x + anim_from_right[1] + 15, details_rec.y + 80}, 0, 0.25, WHITE);
-        if (anim_index > 0) DrawRectangle(details_rec.x+ anim_from_right[1] + 200, details_rec.y + 190, 50, 10, BLACK);
+        if (anim_index > 0)
+            DrawRectangle(details_rec.x + anim_from_right[1] + 200, details_rec.y + 190, 50, 10, BLACK);
         if (anim_index > 1)
-            DrawRectangle(details_rec.x+ anim_from_right[1] + 200, details_rec.y + 170, 50, 15, BLACK);
+            DrawRectangle(details_rec.x + anim_from_right[1] + 200, details_rec.y + 170, 50, 15, BLACK);
         if (anim_index > 2)
-            // DrawRectangle(details_rec.x + 200, details_rec.y + 130, 50, 20, BLACK);
             DrawTriangle(
-                (Vector2){details_rec.x+ anim_from_right[1] + 200, details_rec.y + 165},
-                (Vector2){details_rec.x+ anim_from_right[1] + 250, details_rec.y + 165},
-                (Vector2){details_rec.x+ anim_from_right[1] + 225, details_rec.y + 140}, BLACK);
-        DrawText("Evolve pokemon with trade evolutions.", details_text.x + anim_from_right[1] + 40, details_text.y, 20, BLACK);
+                (Vector2){details_rec.x + anim_from_right[1] + 200, details_rec.y + 165},
+                (Vector2){details_rec.x + anim_from_right[1] + 250, details_rec.y + 165},
+                (Vector2){details_rec.x + anim_from_right[1] + 225, details_rec.y + 140}, BLACK);
+        DrawText("Evolve pokemon with trade evolutions", details_text.x + anim_from_right[1] + 40, details_text.y, 20, BLACK);
 
         if (frame_counter % 15 == 0)
             anim_index++;
-        if (anim_from_right[1] >= 0) anim_from_right[1] -= 20;
+        if (active_hover_index == 1 && anim_from_right[1] >= 0)
+            anim_from_right[1] -= anim_speed;
+        if (active_hover_index == -1)
+            anim_from_right[1] += anim_speed;
+        if (anim_from_right[1] > 300)
+        {
+            active_anim_index = -1;
+            anim_from_right[1] = 300;
+        }
         anim_index %= 4;
         frame_counter++;
-    } else {
+    }
+    else
+    {
         rand_pokeball_index = -1;
         anim_from_right[1] = 300;
     }
-    // DrawText("Settings", 190, 250, 20, BLACK);
-    if (draw_menu_button(start_x + 30, start_y + (rec_height_offset * 2), "Settings", text_size))
+    if (draw_menu_button(start_x + 30, start_y + (rec_height_offset * 2), "Settings", text_size, 2))
+    {
+        active_anim_index = 2;
+        active_hover_index = 2;
+    }
+    else
+    {
+        active_hover_index = -1;
+    }
+    if (active_anim_index == 2)
     {
         static int frame_counter = 0;
         DrawTextureEx(settings, (Vector2){details_rec.x + anim_from_right[2] - 25, details_rec.y + 100}, 0, 0.5, WHITE);
-        DrawText("Change trade and evolution settings.", details_text.x + anim_from_right[2] + 40, details_text.y, 20, BLACK);
-        if (anim_from_right[2] >= 0) anim_from_right[2] -= 20;
+        DrawText("Change trade and evolution settings", details_text.x + anim_from_right[2] + 40, details_text.y, 20, BLACK);
+        if (active_hover_index == 2 && anim_from_right[2] >= 0)
+            anim_from_right[2] -= anim_speed;
+        if (active_hover_index == -1)
+            anim_from_right[2] += anim_speed;
+        if (anim_from_right[2] > 300)
+        {
+            active_anim_index = -1;
+            anim_from_right[2] = 300;
+        }
         frame_counter++;
-    } else 
+    }
+    else
     {
         anim_from_right[2] = 300;
     }
-    // DrawText("Quit", 190, 275, 20, BLACK);
-    if (draw_menu_button(start_x + 45, start_y + (rec_height_offset * 3), "Quit", text_size))
+    if (draw_menu_button(start_x + 45, start_y + (rec_height_offset * 3), "Quit", text_size, 3))
+    {
+        active_anim_index = 3;
+        active_hover_index = 3;
+    }
+    else
+    {
+        active_hover_index = -1;
+    }
+    if (active_anim_index == 3)
     {
         static int frame_counter = 0;
         DrawTextureEx(quit, (Vector2){details_rec.x + anim_from_right[3], details_rec.y + 100}, 0, 0.5, WHITE);
-        DrawText("Quit Pokerom Trader.", details_text.x + anim_from_right[3] + 80, details_text.y, 20, BLACK);
-        if (anim_from_right[3] >= 0) anim_from_right[3] -= 20;
+        DrawText("Quit Pokerom Trader", details_text.x + anim_from_right[3] + 80, details_text.y, 20, BLACK);
+        if (active_hover_index == 3 && anim_from_right[3] >= 0)
+            anim_from_right[3] -= anim_speed;
+        if (active_hover_index == -1)
+            anim_from_right[3] += anim_speed;
+        if (anim_from_right[3] > 300)
+        {
+            active_anim_index = -1;
+            anim_from_right[3] = 300;
+        }
         frame_counter++;
-    } else{
+    }
+    else
+    {
         anim_from_right[3] = 300;
     }
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+
+    if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
     {
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 200, 200, 20}))
+        switch (selected_main_menu_index)
+        {
+        case 0:
         {
             int err = get_save_files(save_file_data);
             no_dir_err = err;
             current_screen = SCREEN_FILE_SELECT;
+            selected_main_menu_index = -1;
+            break;
         }
-        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 250, 200, 20}))
-        {
-            current_screen = SCREEN_SETTINGS;
-        }
-        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 275, 200, 20}))
-        {
-            should_close_window = true;
-        }
-        else if (SHOW_BILLS_PC && CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 300, 200, 20}))
-        {
-            get_save_files(save_file_data);
-            current_screen = SCREEN_BILLS_PC_FILE_SELECT;
-        }
-        else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 225, 200, 20}))
+        case 1:
         {
             get_save_files(save_file_data);
             current_screen = SCREEN_EVOLVE_FILE_SELECT;
+            selected_main_menu_index = -1;
+            break;
+        }
+        case 2: 
+        {
+            current_screen = SCREEN_SETTINGS;
+            selected_main_menu_index = -1;
+            break;
+        }
+        case 3:
+        {
+            should_close_window = true;
+            selected_main_menu_index = -1;
+            break;
+        }
+        default:
+            selected_main_menu_index = -1;
+            break;
         }
     }
+
     EndDrawing();
 }
 void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_path, char *player2_save_path, struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, struct TrainerSelection trainerSelection[2], PokemonSave *pkmn_save_player1, PokemonSave *pkmn_save_player2)
