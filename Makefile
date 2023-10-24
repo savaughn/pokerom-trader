@@ -30,12 +30,14 @@ PLATFORM              ?= PLATFORM_DESKTOP
 
 # Define project variables
 PROJECT_NAME          ?= pokeromtrader
-PROJECT_VERSION       := 0.4.0
+PROJECT_VERSION       := 0.4.1
 # prerelease or release
-PROJECT_VERSION_TYPE  ?= release
+PROJECT_VERSION_TYPE  ?= prerelease
 PROJECT_BUILD_PATH    ?= .
 
 RAYLIB_PATH           ?= deps/raylib
+
+CI_BUILD              := false
 
 # Locations of raylib.h and libraylib.a/libraylib.so
 # NOTE: Those variables are only used for PLATFORM_OS: LINUX, BSD
@@ -233,7 +235,7 @@ ifeq ($(PLATFORM),PLATFORM_DRM)
     CFLAGS += -std=gnu99 -DEGL_NO_X11
 endif
 
-CFLAGS += -DPROJECT_VERSION=\"$(PROJECT_VERSION)\" -DPROJECT_VERSION_TYPE=\"$(PROJECT_VERSION_TYPE)\"
+CFLAGS += -DPROJECT_VERSION=\"$(PROJECT_VERSION)\" -DPROJECT_VERSION_TYPE=\"$(PROJECT_VERSION_TYPE)\" -DCI_BUILD=$(CI_BUILD)
 
 # Define include paths for required headers: INCLUDE_PATHS
 # NOTE: Some external/extras libraries could be required (stb, physac, easings...)
