@@ -19,7 +19,6 @@ const Color background_color = RAYWHITE;
 static bool should_close_window = false;
 static GameScreen current_screen = SCREEN_MAIN_MENU;
 static int no_dir_err = 0;
-static bool was_mouse_pressed = false; // Prevents back navigating two screens with one mouse click
 static bool show_delete_modal = false;
 static bool was_data_deleted = false;
 static bool show_reset_modal = false;
@@ -65,8 +64,63 @@ void on_reset_modal_submit(void)
     show_reset_modal = false;
 }
 
+bool draw_menu_button(int x, int y, const char *text, int text_size, int index)
+{
+    const int rec_height = 45;
+    const int line_width = 3;
+    bool clicked = false;
+    int selected_offset = 0;
+    Color selected_color = COLOR_PKMN_YELLOW;
+
+    // on mouse hover
+    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x, y, 150, rec_height}))
+    {
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+        {
+            clicked = true;
+            selected_offset = 2;
+            selected_color = COLOR_PKMN_DARKYELLOW;
+            selected_main_menu_index = index;
+        }
+
+        // Shadow
+        if (!clicked)
+            DrawRectangleGradientH(x + 140, y - 2 + 2, 6, rec_height + 6, DARKGRAY, (Color){0, 0, 0, 0});
+        if (!clicked)
+            DrawRectangleGradientV(x - 2, y + rec_height + 1, 142, 6, DARKGRAY, (Color){0, 0, 0, 0});
+
+        // Hovered box
+        DrawTriangle((Vector2){x - 10 + selected_offset, y - 2}, (Vector2){x - 20 + selected_offset, y - 2}, (Vector2){x - 10 + selected_offset, y + rec_height + 1}, selected_color);
+        DrawRectangle(x - 10 + selected_offset, y - 2, 150, rec_height + 4, selected_color);
+        DrawText(text, x + selected_offset, y + 7, text_size, BLACK);
+
+        // Box outline
+        DrawLineEx((Vector2){x - 20 + selected_offset, y - 2}, (Vector2){x + 140 + selected_offset, y - 2}, line_width, BLACK);
+        DrawLineEx((Vector2){x - 10 + selected_offset, y + rec_height + 1}, (Vector2){x + 140 + selected_offset, y + rec_height + 1}, line_width, BLACK);
+        DrawLineEx((Vector2){x - 20 + selected_offset, y - 2}, (Vector2){x - 10 + selected_offset, y + rec_height + 1}, line_width, BLACK);
+        DrawLineEx((Vector2){x + 140 + selected_offset, y - 2}, (Vector2){x + 140 + selected_offset, y + rec_height + 2}, line_width, BLACK);
+
+        return true;
+    }
+    else
+    {
+        DrawText(text, x + 10, y + 5, text_size, BLACK);
+        // TODO: bad ux where pressing button and moving
+        // mouse focus off button will still select button
+        // on mouse button release. Adding next line will
+        // stop the button from working
+        // selected_main_menu_index = -1;
+        clicked = false;
+        selected_color = COLOR_PKMN_YELLOW;
+        selected_offset = 0;
+    }
+
+    return false;
+}
+
 void _draw_confirmation_modal(const char *header_text, const char *body_text, const char *submit_button_text, void (*_onsubmit)(void), void (*_oncancel)(void), enum E_MODAL_TYPES modal_type)
 {
+    static int selected_index = -1;
     // Default string values
     char _header_text[60];
     set_default_value_string(header_text, "Are you sure you want to do this action?", _header_text);
@@ -121,28 +175,57 @@ void _draw_confirmation_modal(const char *header_text, const char *body_text, co
     DrawText(_body_text, confirm_modal_rec.x + confirm_modal_rec.width / 2 - MeasureText(_body_text, 19) / 2, confirm_modal_rec.y + 185, 19, BLACK);
 
     // Draw Submit Button
-    Rectangle submit_button_rec = (Rectangle){confirm_modal_rec.x + confirm_modal_rec.width - 200, confirm_modal_rec.y + confirm_modal_rec.height - 65, MeasureText(submit_text, 20) + 10, 30};
-    DrawRectangleRec(submit_button_rec, modal_type == E_MODAL_WARN ? RED : COLOR_PKMN_GREEN);
+    Rectangle submit_button_rec = (Rectangle){confirm_modal_rec.x + confirm_modal_rec.width - 200, confirm_modal_rec.y + confirm_modal_rec.height - 65, MeasureText(submit_text, 20) + 30, 40};
+    DrawRectangleRec(submit_button_rec, selected_index == 1 ? LIGHTGRAY : modal_type == E_MODAL_WARN ? RED
+                                                                                                     : COLOR_PKMN_GREEN);
     // Button shadow
-    DrawLine(submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + 1, submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + submit_button_rec.height, BLACK);
-    DrawLine(submit_button_rec.x + 1, submit_button_rec.y + submit_button_rec.height + 1, submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + submit_button_rec.height + 1, BLACK);
+    if (selected_index != 1)
+        DrawLine(submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + 1, submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + submit_button_rec.height, BLACK);
+    if (selected_index != 1)
+        DrawLine(submit_button_rec.x + 1, submit_button_rec.y + submit_button_rec.height + 1, submit_button_rec.x + submit_button_rec.width + 1, submit_button_rec.y + submit_button_rec.height + 1, BLACK);
 
     // Draw Cancel Button
     const char *cancel_button_text = "Cancel";
     Rectangle cancel_button_rec = (Rectangle){confirm_modal_rec.x + 100, submit_button_rec.y, MeasureText(cancel_button_text, 20) + 10, 30};
 
-    DrawText(submit_text, submit_button_rec.x + 5, submit_button_rec.y + 5, 20, WHITE);
-    DrawText(cancel_button_text, cancel_button_rec.x + 5, cancel_button_rec.y + 5, 20, BLACK);
+    DrawText(submit_text, submit_button_rec.x + 15, submit_button_rec.y + 10, 20, selected_index == 1 ? DARKGRAY : BLACK);
+    DrawText(cancel_button_text, cancel_button_rec.x + 5, cancel_button_rec.y + 5, 20, selected_index == 0 ? LIGHTGRAY : BLACK);
 
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), submit_button_rec))
         {
-            _onsubmit();
+            selected_index = 1;
         }
         else if (CheckCollisionPointRec(GetMousePosition(), cancel_button_rec))
         {
-            _oncancel();
+            selected_index = 0;
+        }
+        else
+        {
+            selected_index = -1;
+        }
+    }
+    if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+    {
+        switch (selected_index)
+        {
+        case 0:
+            if (CheckCollisionPointRec(GetMousePosition(), cancel_button_rec) && selected_index == 0)
+            {
+                _oncancel();
+                selected_index = -1;
+                break;
+            }
+        case 1:
+            if (CheckCollisionPointRec(GetMousePosition(), submit_button_rec) && selected_index == 1)
+            {
+                _onsubmit();
+                selected_index = -1;
+                break;
+            }
+        default:
+            break;
         }
     }
 }
@@ -256,6 +339,7 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
 void draw_about(void)
 {
     int x = 50;
+    static int selected_index = -1;
     BeginDrawing();
     ClearBackground(background_color);
 
@@ -267,22 +351,46 @@ void draw_about(void)
     DrawText("Pokerom Trader uses the following libraries:", x, 300, 20, BLACK);
     DrawText("raylib - https://www.raylib.com/", x, 325, 20, BLACK);
     DrawText("pksav - https://github.com/ncorgan/pksav", x, 350, 20, BLACK);
-    DrawText("Legal >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, BLACK);
-    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
+    DrawText("Legal >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, selected_index == 1 ? LIGHTGRAY : BLACK);
+    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, selected_index == 0 ? LIGHTGRAY : BLACK);
 
     EndDrawing();
 
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
         {
-            current_screen = SCREEN_LEGAL;
-            was_mouse_pressed = true;
+            selected_index = 1;
         }
         else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
         {
-            current_screen = SCREEN_SETTINGS;
-            was_mouse_pressed = true;
+            selected_index = 0;
+        }
+        else
+        {
+            selected_index = -1;
+        }
+    }
+    if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+    {
+        switch (selected_index)
+        {
+        case 0:
+            if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+            {
+                current_screen = SCREEN_SETTINGS;
+                selected_index = -1;
+                break;
+            }
+        case 1:
+            if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+            {
+                current_screen = SCREEN_LEGAL;
+                selected_index = -1;
+                break;
+            }
+        default:
+            break;
         }
     }
 }
@@ -302,6 +410,7 @@ void draw_legal(void)
         "without warranty of any kind, and the developers make no warranties,",
         "express or implied, regarding the accuracy or completeness of the",
         "content provided in this application."};
+    static int selected_index = -1;
 
     BeginDrawing();
     ClearBackground(background_color);
@@ -311,13 +420,24 @@ void draw_legal(void)
         DrawText(disclaimer_lines[i], 50, 75 + (i * 25), 20, BLACK);
     }
 
-    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, selected_index == 0 ? LIGHTGRAY : BLACK);
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
         {
-            current_screen = SCREEN_SETTINGS;
-            was_mouse_pressed = true;
+            selected_index = 0;
+        }
+        else
+        {
+            selected_index = -1;
+        }
+    }
+    if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+    {
+        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+        {
+            current_screen = SCREEN_ABOUT;
+            selected_index = -1;
         }
     }
     EndDrawing();
@@ -459,30 +579,32 @@ void draw_change_dir(struct SaveFileData *save_file_data)
 void draw_settings(void)
 {
     const Color settings_text_color = BLACK;
+    const Color settings_text_color_selected = LIGHTGRAY;
+    const int start_y = 200;
+    static int selected_index = -1;
 
     BeginDrawing();
-    ClearBackground((Color){204, 0, 0, 0});
+    ClearBackground(COLOR_PKMN_RED);
     DrawCircle(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 3.5, 1350, BLACK);
     DrawCircle(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 3.5, 1320, WHITE);
 
-    DrawText("Settings", 50, 50, 20, settings_text_color);
-    DrawText("Change Save Directory", 50, 200, 20, settings_text_color);
+    DrawTextureEx(settings, (Vector2){50, 50}, 0, 0.4, WHITE);
     // Toggle for random ivs on trade boolean
-    DrawText("Disable random DVs on trade", 50, 225, 20, settings_text_color);
+    DrawText("Disable random DVs on trade", 50, start_y - 25, 20, settings_text_color);
     // Checkbox for random ivs on trade
-    DrawText("ON", 385, 225, 20, settings_text_color);
-    Rectangle checkbox_rec_on = (Rectangle){385 + MeasureText("ON", 20) + 5, 225, 20, 20};
+    DrawText("ON", 385, start_y - 25, 20, settings_text_color);
+    Rectangle checkbox_rec_on = (Rectangle){385 + MeasureText("ON", 20) + 5, start_y - 25, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_on, 2, settings_text_color);
-    Rectangle checkbox_rec_off = (Rectangle){checkbox_rec_on.x + checkbox_rec_on.width + 5, 225, 20, 20};
+    Rectangle checkbox_rec_off = (Rectangle){checkbox_rec_on.x + checkbox_rec_on.width + 5, start_y - 25, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_off, 2, settings_text_color);
     DrawText("OFF", checkbox_rec_off.x + checkbox_rec_off.width + 5, checkbox_rec_off.y, 20, settings_text_color);
     // Toggle for item override evolutions
-    DrawText("Item required for evolution", 50, 250, 20, settings_text_color);
+    DrawText("Item required for evolution", 50, start_y, 20, settings_text_color);
     // Checkbox for item override evolutions
-    DrawText("ON", 385, 250, 20, settings_text_color);
-    Rectangle checkbox_rec_on_item = (Rectangle){385 + MeasureText("ON", 20) + 5, 250, 20, 20};
+    DrawText("ON", 385, start_y, 20, settings_text_color);
+    Rectangle checkbox_rec_on_item = (Rectangle){385 + MeasureText("ON", 20) + 5, start_y, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_on_item, 2, settings_text_color);
-    Rectangle checkbox_rec_off_item = (Rectangle){checkbox_rec_on_item.x + checkbox_rec_on_item.width + 5, 250, 20, 20};
+    Rectangle checkbox_rec_off_item = (Rectangle){checkbox_rec_on_item.x + checkbox_rec_on_item.width + 5, start_y, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_off_item, 2, settings_text_color);
     DrawText("OFF", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 5, checkbox_rec_off_item.y, 20, settings_text_color);
 
@@ -491,13 +613,13 @@ void draw_settings(void)
     {
         // Draw filled in square
         DrawRectangle(checkbox_rec_on.x + 3, checkbox_rec_on.y + 3, checkbox_rec_on.width - 6, checkbox_rec_on.height - 6, settings_text_color);
-        DrawText("DVs will be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, settings_text_color);
+        DrawText("DVs will be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, start_y - 25, 16, settings_text_color);
     }
     else
     {
         // Draw filled in square
         DrawRectangle(checkbox_rec_off.x + 3, checkbox_rec_off.y + 3, checkbox_rec_off.width - 6, checkbox_rec_off.height - 6, settings_text_color);
-        DrawText("DVs will not be retained (default)", checkbox_rec_off.x + checkbox_rec_off.width + 65, 225, 16, settings_text_color);
+        DrawText("DVs will not be retained (default)", checkbox_rec_off.x + checkbox_rec_off.width + 65, start_y - 25, 16, settings_text_color);
     }
 
     bool _is_item_required = get_is_item_required();
@@ -505,13 +627,13 @@ void draw_settings(void)
     {
         // Draw filled in square
         DrawRectangle(checkbox_rec_on_item.x + 3, checkbox_rec_on_item.y + 3, checkbox_rec_on_item.width - 6, checkbox_rec_on_item.height - 6, settings_text_color);
-        DrawText("Items will be required (default)", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, 250, 16, settings_text_color);
+        DrawText("Items will be required (default)", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, start_y, 16, settings_text_color);
     }
     else
     {
         // Draw filled in square
         DrawRectangle(checkbox_rec_off_item.x + 3, checkbox_rec_off_item.y + 3, checkbox_rec_off_item.width - 6, checkbox_rec_off_item.height - 6, settings_text_color);
-        DrawText("Items will not be required", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, 250, 16, settings_text_color);
+        DrawText("Items will not be required", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, start_y, 16, settings_text_color);
     }
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
@@ -536,45 +658,93 @@ void draw_settings(void)
             write_key_to_config("ITEM_REQUIRED_EVOLUTIONS", "false");
         }
     }
-
+    Rectangle change_dir_rec = (Rectangle){50, start_y + 75, 200, 20};
+    DrawText("Change Save Directory", change_dir_rec.x, change_dir_rec.y, 20, selected_index == 0 ? settings_text_color_selected : settings_text_color);
     // Draw reset default config button
     const char *reset_config_text = "Reset to defaults";
-    Rectangle reset_config_rec = (Rectangle){50, 275, MeasureText(reset_config_text, 20) + 10, 30};
-    DrawText(reset_config_text, reset_config_rec.x, reset_config_rec.y, 20, settings_text_color);
+    Rectangle reset_config_rec = (Rectangle){50, start_y + 25, MeasureText(reset_config_text, 20) + 10, 30};
+    DrawText(reset_config_text, reset_config_rec.x, reset_config_rec.y, 20, selected_index == 4 ? settings_text_color_selected : settings_text_color);
 
-    const Rectangle about_button_rec = (Rectangle){SCREEN_WIDTH_TEXT_CENTER("About Pokerom Trader", 20), NEXT_BUTTON_Y, MeasureText("About Pokerom Trader", 20) + 10, 30};
-    DrawText("About Pokerom Trader", about_button_rec.x + 5, about_button_rec.y + 5, 20, settings_text_color);
+    const Rectangle about_button_rec = (Rectangle){50, start_y + 100, MeasureText("About Pokerom Trader", 20) + 10, 30};
+    DrawText("About Pokerom Trader", about_button_rec.x, about_button_rec.y, 20, selected_index == 1 ? settings_text_color_selected : settings_text_color);
 
     // Delete app data button
     Rectangle delete_app_data_rec = (Rectangle){SCREEN_WIDTH - MeasureText("Delete app data", 20) + 10 - 75, NEXT_BUTTON_Y - 5, MeasureText("Delete app data", 20) + 10, 30};
-    DrawRectangleRec(delete_app_data_rec, show_delete_modal || was_data_deleted ? LIGHTGRAY : RED);
+    DrawRectangleRec(delete_app_data_rec, show_delete_modal || was_data_deleted || selected_index == 3 ? LIGHTGRAY : RED);
     DrawText("Delete app data", delete_app_data_rec.x + 5, NEXT_BUTTON_Y, 20, WHITE);
     DrawLine(delete_app_data_rec.x + delete_app_data_rec.width + 1, delete_app_data_rec.y + 1, delete_app_data_rec.x + delete_app_data_rec.width + 1, delete_app_data_rec.y + delete_app_data_rec.height, show_delete_modal || was_data_deleted ? LIGHTGRAY : BLACK);
     DrawLine(delete_app_data_rec.x + 1, delete_app_data_rec.y + delete_app_data_rec.height + 1, delete_app_data_rec.x + delete_app_data_rec.width + 1, delete_app_data_rec.y + delete_app_data_rec.height + 1, show_delete_modal || was_data_deleted ? LIGHTGRAY : BLACK);
 
-    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, settings_text_color);
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !show_delete_modal)
+    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, selected_index == 2 ? settings_text_color_selected : settings_text_color);
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !show_delete_modal && !show_reset_modal)
     {
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){50, 200, 200, 20}))
+        if (CheckCollisionPointRec(GetMousePosition(), change_dir_rec))
         {
-            current_screen = SCREEN_FILE_EDIT;
+            selected_index = 0;
         }
         else if (CheckCollisionPointRec(GetMousePosition(), about_button_rec))
         {
-            current_screen = SCREEN_ABOUT;
+            selected_index = 1;
         }
         else if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
         {
-            if (!was_mouse_pressed)
-                current_screen = SCREEN_MAIN_MENU;
+            selected_index = 2;
         }
         else if (CheckCollisionPointRec(GetMousePosition(), delete_app_data_rec) && !was_data_deleted)
         {
-            show_delete_modal = true;
+            selected_index = 3;
         }
         else if (CheckCollisionPointRec(GetMousePosition(), reset_config_rec))
         {
-            show_reset_modal = true;
+            selected_index = 4;
+        }
+        else
+        {
+            selected_index = -1;
+        }
+    }
+
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+    {
+        switch (selected_index)
+        {
+        case 0:
+            if (CheckCollisionPointRec(GetMousePosition(), change_dir_rec))
+            {
+                current_screen = SCREEN_FILE_EDIT;
+            }
+            selected_index = -1;
+            break;
+        case 1:
+            if (CheckCollisionPointRec(GetMousePosition(), about_button_rec))
+            {
+                current_screen = SCREEN_ABOUT;
+            }
+            selected_index = -1;
+            break;
+        case 2:
+            if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+            {
+                current_screen = SCREEN_MAIN_MENU;
+            }
+            selected_index = -1;
+            break;
+        case 3:
+            if (CheckCollisionPointRec(GetMousePosition(), delete_app_data_rec) && !was_data_deleted)
+            {
+                show_delete_modal = true;
+            }
+            selected_index = -1;
+            break;
+        case 4:
+            if (CheckCollisionPointRec(GetMousePosition(), reset_config_rec))
+            {
+                show_reset_modal = true;
+            }
+            selected_index = -1;
+            break;
+        default:
+            break;
         }
     }
 
@@ -595,67 +765,12 @@ void draw_settings(void)
     }
 
     EndDrawing();
-    was_mouse_pressed = false;
-}
-
-bool draw_menu_button(int x, int y, const char *text, int text_size, int index)
-{
-    const int rec_height = 45;
-    const int line_width = 3;
-    bool clicked = false;
-    int selected_offset = 0;
-    Color selected_color = COLOR_PKMN_YELLOW;
-
-    // on mouse hover
-    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x, y, 150, rec_height}))
-    {
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
-        {
-            clicked = true;
-            selected_offset = 2;
-            selected_color = COLOR_PKMN_DARKYELLOW;
-            selected_main_menu_index = index;
-        }
-
-        // Shadow
-        if (!clicked)
-            DrawRectangleGradientH(x + 140, y - 2 + 2, 6, rec_height + 6, DARKGRAY, (Color){0, 0, 0, 0});
-        if (!clicked)
-            DrawRectangleGradientV(x - 2, y + rec_height + 1, 142, 6, DARKGRAY, (Color){0, 0, 0, 0});
-
-        // Hovered box
-        DrawTriangle((Vector2){x - 10 + selected_offset, y - 2}, (Vector2){x - 20 + selected_offset, y - 2}, (Vector2){x - 10 + selected_offset, y + rec_height + 1}, selected_color);
-        DrawRectangle(x - 10 + selected_offset, y - 2, 150, rec_height + 4, selected_color);
-        DrawText(text, x + selected_offset, y + 7, text_size, BLACK);
-
-        // Box outline
-        DrawLineEx((Vector2){x - 20 + selected_offset, y - 2}, (Vector2){x + 140 + selected_offset, y - 2}, line_width, BLACK);
-        DrawLineEx((Vector2){x - 10 + selected_offset, y + rec_height + 1}, (Vector2){x + 140 + selected_offset, y + rec_height + 1}, line_width, BLACK);
-        DrawLineEx((Vector2){x - 20 + selected_offset, y - 2}, (Vector2){x - 10 + selected_offset, y + rec_height + 1}, line_width, BLACK);
-        DrawLineEx((Vector2){x + 140 + selected_offset, y - 2}, (Vector2){x + 140 + selected_offset, y + rec_height + 2}, line_width, BLACK);
-
-        return true;
-    }
-    else
-    {
-        DrawText(text, x + 10, y + 5, text_size, BLACK);
-        // TODO: bad ux where pressing button and moving
-        // mouse focus off button will still select button
-        // on mouse button release. Adding next line will
-        // stop the button from working
-        // selected_main_menu_index = -1;
-        clicked = false;
-        selected_color = COLOR_PKMN_YELLOW;
-        selected_offset = 0;
-    }
-
-    return false;
 }
 
 void draw_main_menu(struct SaveFileData *save_file_data)
 {
     BeginDrawing();
-    ClearBackground((Color){204, 0, 0, 0});
+    ClearBackground(COLOR_PKMN_RED);
     DrawCircle(SCREEN_WIDTH * 1.15, SCREEN_HEIGHT * 1.725, 800, BLACK);
     DrawCircle(SCREEN_WIDTH * 1.15, SCREEN_HEIGHT * 1.725, 730, WHITE);
 
