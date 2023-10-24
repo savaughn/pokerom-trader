@@ -1,5 +1,9 @@
 # Pokerom Trader - Pokémon Save File Trading GUI
 
+![Pokerom Trader](https://user-images.githubusercontent.com/25937456/277514322-288a8da9-fb6f-4ae1-8adb-00ccaed6683d.gif)
+#
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/savaughn/pokerom-trader) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/savaughn/pokerom-trader/build-macos.yml?branch=main) ![GitHub issues](https://img.shields.io/github/issues/savaughn/pokerom-trader) ![GitHub](https://img.shields.io/github/license/savaughn/pokerom-trader) ![GitHub all releases](https://img.shields.io/github/downloads/savaughn/pokerom-trader/total)
+
 ## Overview
 
 Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the PKSav C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon between different save files or Pokémon game versions. This is not another save file editor. This replicates the in-game trading experience resulting in legal pokémon.
