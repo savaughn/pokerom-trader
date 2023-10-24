@@ -25,11 +25,15 @@ static int rand_console_index_1 = -1;
 static int rand_console_index_2 = -1;
 static int rand_pokeball_index = -1;
 static int anim_from_right[4] = {300, 300, 300, 300};
-static bool has_finished_right_anim = false;
 static int active_anim_index = -1;
 static int active_hover_index = -1;
-static Image *pkrom_trader_logo;
 static int selected_main_menu_index = -1;
+
+Texture2D pkrom_trader_logo;
+Texture2D trade;
+Texture2D evolve;
+Texture2D settings;
+Texture2D quit;
 
 void on_delete_modal_cancel(void)
 {
@@ -452,7 +456,9 @@ void draw_settings(void)
     const Color settings_text_color = BLACK;
 
     BeginDrawing();
-    ClearBackground(background_color);
+    ClearBackground((Color){204, 0, 0, 0});
+    DrawCircle(SCREEN_WIDTH /2, SCREEN_HEIGHT * 3.5, 1350, BLACK);
+    DrawCircle(SCREEN_WIDTH /2, SCREEN_HEIGHT * 3.5, 1320, WHITE);
 
     DrawText("Settings", 50, 50, 20, settings_text_color);
     DrawText("Change Save Directory", 50, 200, 20, settings_text_color);
@@ -591,7 +597,6 @@ bool draw_menu_button(int x, int y, const char *text, int text_size, int index)
 {
     const int rec_height = 45;
     const int line_width = 3;
-    bool selected = false;
     bool clicked = false;
     int selected_offset = 0;
     Color selected_color = COLOR_PKMN_YELLOW;
@@ -642,7 +647,7 @@ bool draw_menu_button(int x, int y, const char *text, int text_size, int index)
     return false;
 }
 
-void draw_main_menu(struct SaveFileData *save_file_data, Texture2D *pkrom_trader_logo)
+void draw_main_menu(struct SaveFileData *save_file_data)
 {
     BeginDrawing();
     ClearBackground((Color){204, 0, 0, 0});
@@ -654,29 +659,9 @@ void draw_main_menu(struct SaveFileData *save_file_data, Texture2D *pkrom_trader
     const int rec_height_offset = 50;
     const int text_size = 30;
     const uint8_t anim_speed = 45;
-    static Texture2D trade;
-    static Texture2D evolve;
-    static Texture2D settings;
-    static Texture2D quit;
     static Texture2D consoles[10];
     static Texture2D pk_balls[4];
 
-    if (trade.id == NULL)
-    {
-        trade = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
-    }
-    if (evolve.id == NULL)
-    {
-        evolve = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
-    }
-    if (settings.id == NULL)
-    {
-        settings = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
-    }
-    if (quit.id == NULL)
-    {
-        quit = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
-    }
     if (consoles[0].id == NULL)
     {
         for (int i = 0; i < 10; i++)
@@ -701,11 +686,8 @@ void draw_main_menu(struct SaveFileData *save_file_data, Texture2D *pkrom_trader
     //         get_save_files(save_file_data);
     //         current_screen = SCREEN_BILLS_PC_FILE_SELECT;
 
-
-    
-
     // Draw image pkrom_trader_logo
-    DrawTextureEx(*pkrom_trader_logo, (Vector2){50, 50}, 0, 0.62, WHITE);
+    DrawTextureEx(pkrom_trader_logo, (Vector2){50, 50}, 0, 0.62, WHITE);
     if (draw_menu_button(start_x, start_y, "Trade", text_size, 0))
     {
         active_anim_index = 0;
@@ -892,6 +874,7 @@ void draw_main_menu(struct SaveFileData *save_file_data, Texture2D *pkrom_trader
             no_dir_err = err;
             current_screen = SCREEN_FILE_SELECT;
             selected_main_menu_index = -1;
+            anim_from_right[0] = 300;
             break;
         }
         case 1:
@@ -899,24 +882,39 @@ void draw_main_menu(struct SaveFileData *save_file_data, Texture2D *pkrom_trader
             get_save_files(save_file_data);
             current_screen = SCREEN_EVOLVE_FILE_SELECT;
             selected_main_menu_index = -1;
+            anim_from_right[1] = 300;
             break;
         }
         case 2: 
         {
             current_screen = SCREEN_SETTINGS;
             selected_main_menu_index = -1;
+            anim_from_right[2] = 300;
             break;
         }
         case 3:
         {
             should_close_window = true;
             selected_main_menu_index = -1;
+            anim_from_right[3] = 300;
             break;
         }
         default:
             selected_main_menu_index = -1;
             break;
         }
+        // UnloadTexture(trade);
+        // UnloadTexture(evolve);
+        // UnloadTexture(settings);
+        // UnloadTexture(quit);
+        // for (int i = 0; i < 10; i++)
+        // {
+        //     UnloadTexture(consoles[i]);
+        // }
+        // for (int i = 0; i < 4; i++)
+        // {
+        //     UnloadTexture(pk_balls[i]);
+        // }
     }
 
     EndDrawing();
@@ -1423,7 +1421,24 @@ void draw_raylib_screen_loop(
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pokerom Trader");
     SetTargetFPS(60);
     is_build_prerelease = strcmp(PROJECT_VERSION_TYPE, "prerelease") == 0;
-    Texture2D pkrom_trader_logo = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
+    pkrom_trader_logo = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
+
+    if (trade.id == NULL)
+    {
+        trade = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
+    }
+    if (evolve.id == NULL)
+    {
+        evolve = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
+    }
+    if (settings.id == NULL)
+    {
+        settings = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
+    }
+    if (quit.id == NULL)
+    {
+        quit = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
+    }
 
     while (!should_close_window && !WindowShouldClose())
     {
@@ -1442,7 +1457,7 @@ void draw_raylib_screen_loop(
             draw_trade(pkmn_save_player1, pkmn_save_player2, player1_save_path, player2_save_path, trainerSelection, trainer1, trainer2);
             break;
         case SCREEN_MAIN_MENU:
-            draw_main_menu(save_file_data, &pkrom_trader_logo);
+            draw_main_menu(save_file_data);
             break;
         case SCREEN_SETTINGS:
             // for confirm modal to update app save file data struct
@@ -1483,4 +1498,11 @@ void draw_raylib_screen_loop(
             break;
         }
     }
+
+    UnloadTexture(pkrom_trader_logo);
+    UnloadTexture(trade);
+    UnloadTexture(evolve);
+    UnloadTexture(settings);
+
+    CloseWindow();
 }
