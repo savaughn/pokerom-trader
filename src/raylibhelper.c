@@ -590,21 +590,21 @@ void draw_settings(void)
 
     DrawTextureEx(settings, (Vector2){50, 50}, 0, 0.4, WHITE);
     // Toggle for random ivs on trade boolean
-    DrawText("Disable random DVs on trade", 50, start_y, 20, settings_text_color);
+    DrawText("Disable random DVs on trade", 50, start_y - 25, 20, settings_text_color);
     // Checkbox for random ivs on trade
-    DrawText("ON", 385, start_y, 20, settings_text_color);
-    Rectangle checkbox_rec_on = (Rectangle){385 + MeasureText("ON", 20) + 5, start_y, 20, 20};
+    DrawText("ON", 385, start_y - 25, 20, settings_text_color);
+    Rectangle checkbox_rec_on = (Rectangle){385 + MeasureText("ON", 20) + 5, start_y - 25, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_on, 2, settings_text_color);
-    Rectangle checkbox_rec_off = (Rectangle){checkbox_rec_on.x + checkbox_rec_on.width + 5, start_y, 20, 20};
+    Rectangle checkbox_rec_off = (Rectangle){checkbox_rec_on.x + checkbox_rec_on.width + 5, start_y - 25, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_off, 2, settings_text_color);
     DrawText("OFF", checkbox_rec_off.x + checkbox_rec_off.width + 5, checkbox_rec_off.y, 20, settings_text_color);
     // Toggle for item override evolutions
-    DrawText("Item required for evolution", 50, start_y + 25, 20, settings_text_color);
+    DrawText("Item required for evolution", 50, start_y, 20, settings_text_color);
     // Checkbox for item override evolutions
-    DrawText("ON", 385, start_y + 25, 20, settings_text_color);
-    Rectangle checkbox_rec_on_item = (Rectangle){385 + MeasureText("ON", 20) + 5, start_y + 25, 20, 20};
+    DrawText("ON", 385, start_y, 20, settings_text_color);
+    Rectangle checkbox_rec_on_item = (Rectangle){385 + MeasureText("ON", 20) + 5, start_y, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_on_item, 2, settings_text_color);
-    Rectangle checkbox_rec_off_item = (Rectangle){checkbox_rec_on_item.x + checkbox_rec_on_item.width + 5, start_y + 25, 20, 20};
+    Rectangle checkbox_rec_off_item = (Rectangle){checkbox_rec_on_item.x + checkbox_rec_on_item.width + 5, start_y, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_off_item, 2, settings_text_color);
     DrawText("OFF", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 5, checkbox_rec_off_item.y, 20, settings_text_color);
 
@@ -613,13 +613,13 @@ void draw_settings(void)
     {
         // Draw filled in square
         DrawRectangle(checkbox_rec_on.x + 3, checkbox_rec_on.y + 3, checkbox_rec_on.width - 6, checkbox_rec_on.height - 6, settings_text_color);
-        DrawText("DVs will be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, start_y, 16, settings_text_color);
+        DrawText("DVs will be retained", checkbox_rec_off.x + checkbox_rec_off.width + 65, start_y - 25, 16, settings_text_color);
     }
     else
     {
         // Draw filled in square
         DrawRectangle(checkbox_rec_off.x + 3, checkbox_rec_off.y + 3, checkbox_rec_off.width - 6, checkbox_rec_off.height - 6, settings_text_color);
-        DrawText("DVs will not be retained (default)", checkbox_rec_off.x + checkbox_rec_off.width + 65, start_y, 16, settings_text_color);
+        DrawText("DVs will not be retained (default)", checkbox_rec_off.x + checkbox_rec_off.width + 65, start_y - 25, 16, settings_text_color);
     }
 
     bool _is_item_required = get_is_item_required();
@@ -627,13 +627,13 @@ void draw_settings(void)
     {
         // Draw filled in square
         DrawRectangle(checkbox_rec_on_item.x + 3, checkbox_rec_on_item.y + 3, checkbox_rec_on_item.width - 6, checkbox_rec_on_item.height - 6, settings_text_color);
-        DrawText("Items will be required (default)", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, start_y + 25, 16, settings_text_color);
+        DrawText("Items will be required (default)", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, start_y, 16, settings_text_color);
     }
     else
     {
         // Draw filled in square
         DrawRectangle(checkbox_rec_off_item.x + 3, checkbox_rec_off_item.y + 3, checkbox_rec_off_item.width - 6, checkbox_rec_off_item.height - 6, settings_text_color);
-        DrawText("Items will not be required", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, start_y + 25, 16, settings_text_color);
+        DrawText("Items will not be required", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, start_y, 16, settings_text_color);
     }
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
@@ -662,11 +662,11 @@ void draw_settings(void)
     DrawText("Change Save Directory", change_dir_rec.x, change_dir_rec.y, 20, selected_index == 0 ? settings_text_color_selected : settings_text_color);
     // Draw reset default config button
     const char *reset_config_text = "Reset to defaults";
-    Rectangle reset_config_rec = (Rectangle){50, start_y + 100, MeasureText(reset_config_text, 20) + 10, 30};
+    Rectangle reset_config_rec = (Rectangle){50, start_y + 25, MeasureText(reset_config_text, 20) + 10, 30};
     DrawText(reset_config_text, reset_config_rec.x, reset_config_rec.y, 20, selected_index == 4 ? settings_text_color_selected : settings_text_color);
 
-    const Rectangle about_button_rec = (Rectangle){SCREEN_WIDTH_TEXT_CENTER("About Pokerom Trader", 20), NEXT_BUTTON_Y, MeasureText("About Pokerom Trader", 20) + 10, 30};
-    DrawText("About Pokerom Trader", about_button_rec.x + 5, about_button_rec.y + 5, 20, selected_index == 1 ? settings_text_color_selected : settings_text_color);
+    const Rectangle about_button_rec = (Rectangle){50, start_y + 100, MeasureText("About Pokerom Trader", 20) + 10, 30};
+    DrawText("About Pokerom Trader", about_button_rec.x, about_button_rec.y, 20, selected_index == 1 ? settings_text_color_selected : settings_text_color);
 
     // Delete app data button
     Rectangle delete_app_data_rec = (Rectangle){SCREEN_WIDTH - MeasureText("Delete app data", 20) + 10 - 75, NEXT_BUTTON_Y - 5, MeasureText("Delete app data", 20) + 10, 30};
