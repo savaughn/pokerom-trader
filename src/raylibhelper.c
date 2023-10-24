@@ -7,6 +7,11 @@
 #include <errno.h>
 #else
 #include <sys/errno.h>
+#ifdef __APPLE__
+#include <CoreFoundation/CoreFoundation.h>
+#else
+
+#endif
 #endif
 
 const Rectangle input_box_rec = (Rectangle){50, SCREEN_HEIGHT / 2 - 20, SCREEN_WIDTH - 100, 40};
@@ -457,8 +462,8 @@ void draw_settings(void)
 
     BeginDrawing();
     ClearBackground((Color){204, 0, 0, 0});
-    DrawCircle(SCREEN_WIDTH /2, SCREEN_HEIGHT * 3.5, 1350, BLACK);
-    DrawCircle(SCREEN_WIDTH /2, SCREEN_HEIGHT * 3.5, 1320, WHITE);
+    DrawCircle(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 3.5, 1350, BLACK);
+    DrawCircle(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 3.5, 1320, WHITE);
 
     DrawText("Settings", 50, 50, 20, settings_text_color);
     DrawText("Change Save Directory", 50, 200, 20, settings_text_color);
@@ -611,7 +616,7 @@ bool draw_menu_button(int x, int y, const char *text, int text_size, int index)
             selected_color = COLOR_PKMN_DARKYELLOW;
             selected_main_menu_index = index;
         }
-        
+
         // Shadow
         if (!clicked)
             DrawRectangleGradientH(x + 140, y - 2 + 2, 6, rec_height + 6, DARKGRAY, (Color){0, 0, 0, 0});
@@ -682,9 +687,9 @@ void draw_main_menu(struct SaveFileData *save_file_data)
     const uint8_t console_x_offset = 70;
     static uint8_t anim_index = 0;
 
-    //if (SHOW_BILLS_PC && CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 300, 200, 20}))
-    //         get_save_files(save_file_data);
-    //         current_screen = SCREEN_BILLS_PC_FILE_SELECT;
+    // if (SHOW_BILLS_PC && CheckCollisionPointRec(GetMousePosition(), (Rectangle){190, 300, 200, 20}))
+    //          get_save_files(save_file_data);
+    //          current_screen = SCREEN_BILLS_PC_FILE_SELECT;
 
     // Draw image pkrom_trader_logo
     DrawTextureEx(pkrom_trader_logo, (Vector2){50, 50}, 0, 0.62, WHITE);
@@ -885,7 +890,7 @@ void draw_main_menu(struct SaveFileData *save_file_data)
             anim_from_right[1] = 300;
             break;
         }
-        case 2: 
+        case 2:
         {
             current_screen = SCREEN_SETTINGS;
             selected_main_menu_index = -1;
@@ -1408,6 +1413,35 @@ void draw_bills_pc(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *
 
     EndDrawing();
 }
+char *get_mac_resource_images_path()
+{
+    static char *images_path = NULL;
+    if (images_path == NULL)
+    {
+        // Get the path to the bundle's resources directory
+        CFBundleRef bundle = CFBundleGetMainBundle();
+        CFURLRef resources_url = CFBundleCopyResourcesDirectoryURL(bundle);
+        char resources_path[PATH_MAX];
+        if (!CFURLGetFileSystemRepresentation(resources_url, true, (UInt8 *)resources_path, PATH_MAX))
+        {
+            fprintf(stderr, "Error: could not get resources directory path\n");
+            exit(EXIT_FAILURE);
+        }
+        CFRelease(resources_url);
+
+        // Construct the path to the "scripts" directory relative to the resources directory
+        images_path = malloc(PATH_MAX);
+        snprintf(images_path, PATH_MAX, "%s/assets/images", resources_path);
+
+        // Change the current working directory to the resources directory
+        if (chdir(resources_path) != 0)
+        {
+            fprintf(stderr, "Error: could not change working directory to resources directory\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+    return images_path;
+}
 void draw_raylib_screen_loop(
     struct SaveFileData *save_file_data,
     struct TrainerInfo *trainer1,
@@ -1421,23 +1455,42 @@ void draw_raylib_screen_loop(
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pokerom Trader");
     SetTargetFPS(60);
     is_build_prerelease = strcmp(PROJECT_VERSION_TYPE, "prerelease") == 0;
-    pkrom_trader_logo = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
 
-    if (trade.id == NULL)
+    if (CI_BUILD)
     {
+#if defined(__APPLE__)
+        get_mac_resource_images_path();
+#else
+        printf("CI_BUILD is true but not on macOS\n");
+#endif
+        pkrom_trader_logo = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
+
+        if (trade.id == NULL)
+        {
+            trade = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
+        }
+        if (evolve.id == NULL)
+        {
+            evolve = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
+        }
+        if (settings.id == NULL)
+        {
+            settings = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
+        }
+        if (quit.id == NULL)
+        {
+            quit = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
+        }
+    }
+    else
+    {
+        pkrom_trader_logo = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
         trade = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
-    }
-    if (evolve.id == NULL)
-    {
         evolve = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
-    }
-    if (settings.id == NULL)
-    {
         settings = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
-    }
-    if (quit.id == NULL)
-    {
         quit = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
+
+        printf("Loaded images from assets/images\n");
     }
 
     while (!should_close_window && !WindowShouldClose())

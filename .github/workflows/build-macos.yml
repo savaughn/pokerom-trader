@@ -35,7 +35,7 @@ jobs:
     - name: Build Project
       run: |
         brew install cppcheck
-        make all
+        make CI_BUILD=true all
     
     - name: Run cppcheck
       run: |
@@ -51,6 +51,11 @@ jobs:
         install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/pksav/build/lib/libpksav.dylib @rpath/libpksav.dylib build/pokeromtrader
         install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/raylib/src/libraylib.a @rpath/libraylib.a build/pokeromtrader
         install_name_tool -add_rpath @executable_path/../Frameworks build/pokeromtrader
+    
+    - name: Copy assets
+      run: |
+        mkdir build/assets
+        cp -r assets build
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v3
@@ -84,7 +89,7 @@ jobs:
     - name: Build Project
       run: |
         brew install cppcheck
-        make all
+        make CI_BUILD=true all
             
     - name: Run cppcheck
       run: |
@@ -101,6 +106,11 @@ jobs:
         install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/pksav/build/lib/libpksav.dylib @rpath/libpksav.dylib build/pokeromtrader
         install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/raylib/src/libraylib.a @rpath/libraylib.a build/pokeromtrader
         install_name_tool -add_rpath @executable_path/../Frameworks build/pokeromtrader
+
+    - name: Copy assets
+      run: |
+        mkdir build/assets
+        cp -r assets build
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v3
@@ -141,6 +151,10 @@ jobs:
         cp "${{ github.workspace }}/pokeromtrader" "${MACOS_DESTINATION}/pokeromtrader"
         cp "${{ github.workspace }}/libpksav.dylib" "${MACOS_FRAMEWORKS_DESTINATION}/libpksav.dylib"
         cp "${{ github.workspace }}/libraylib.a" "${MACOS_FRAMEWORKS_DESTINATION}/libraylib.a"
+
+        # Copy assets
+        mkdir -p "${MACOS_DESTINATION}/../Resources"
+        cp -r "${{ github.workspace }}/assets" "${MACOS_DESTINATION}/../Resources"
         
         # Create Info.plist file
         echo '<?xml version="1.0" encoding="UTF-8"?>' > "${INFO_PLIST}"
@@ -196,6 +210,10 @@ jobs:
         # Copy the executable to the .app bundle
         cp "${{ github.workspace }}/pokeromtrader" "${MACOS_DESTINATION}/pokeromtrader"
         cp "${{ github.workspace }}/libpksav.dylib" "${MACOS_FRAMEWORKS_DESTINATION}/libpksav.dylib"
+
+        # Copy assets
+        mkdir -p "${MACOS_DESTINATION}/../Resources"
+        cp -r "${{ github.workspace }}/assets" "${MACOS_DESTINATION}/../Resources"
         
         # Create Info.plist file
         echo '<?xml version="1.0" encoding="UTF-8"?>' > "${INFO_PLIST}"

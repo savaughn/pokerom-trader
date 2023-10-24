@@ -45,6 +45,12 @@ jobs:
         mkdir -p build/lib
         cp deps/pksav/build/lib/libpksav.so build/lib/
 
+    - name: Bundle Assets
+      run: |
+        # Copy assets to the same directory as the executable
+        mkdir -p build/assets
+        cp -r assets/* build/assets/
+
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v2
       with:
