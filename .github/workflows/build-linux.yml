@@ -10,6 +10,7 @@ on:
 
 jobs:
   build_linux:
+    if: false  # This workflow is disabled
     runs-on: ubuntu-latest
 
     steps:
