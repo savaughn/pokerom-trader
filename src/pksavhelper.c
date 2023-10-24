@@ -652,8 +652,6 @@ void swap_pkmn_at_index_between_saves(PokemonSave *player1_save, PokemonSave *pl
         player2_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index2][strlen(tmp_otname1)] = 0x50;
     }
 
-    // TODO: handle pikachu friendship values
-
     // Generate random DVs and assign them to the traded pokemen
     update_pkmn_DVs(player1_save, pkmn_party_index1);
     update_pkmn_DVs(player2_save, pkmn_party_index2);

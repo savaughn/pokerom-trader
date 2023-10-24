@@ -1528,7 +1528,8 @@ void draw_bills_pc(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *
 
     EndDrawing();
 }
-char *get_mac_resource_images_path()
+#if defined(__APPLE__)
+char *get_mac_resource_images_path(void)
 {
     static char *images_path = NULL;
     if (images_path == NULL)
@@ -1557,6 +1558,7 @@ char *get_mac_resource_images_path()
     }
     return images_path;
 }
+#endif
 void draw_raylib_screen_loop(
     struct SaveFileData *save_file_data,
     struct TrainerInfo *trainer1,
