@@ -16,6 +16,7 @@ There is no backup system implemented yet. Make backup saves before using this o
 - Bill's PC - Allows a user to view and manage their Pokémon boxes and party (in progress)
 
 ### Settings 
+![settings menu](https://user-images.githubusercontent.com/25937456/277552973-c1d28185-c347-463c-bf33-b7b782f6f32e.png)
 - Change save files folder with absolute path to folder
   - Default is ~/Library/PokeromTrader/saves (MacOS)
   - Default is ~/.pokeromtrader/ (Linux)
