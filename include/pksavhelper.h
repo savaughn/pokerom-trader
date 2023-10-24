@@ -39,21 +39,13 @@ enum eligible_trade_status
 
 // Pokémon Evolution Pair Lookup Table
 static const struct pkmn_evolution_pair_data pkmn_evolution_pairs_gen1[SI_HAUNTER + 1] = {
-    [SI_KADABRA] = {
-        .species_name = "KADABRA",
-        .evolution_name = "ALAKAZAM",
-        .species_index = SI_KADABRA,
-        .evolution_index = SI_ALAKAZAM},
+    [SI_KADABRA] = {.species_name = "KADABRA", .evolution_name = "ALAKAZAM", .species_index = SI_KADABRA, .evolution_index = SI_ALAKAZAM},
     [SI_MACHOKE] = {.species_name = "MACHOKE", .evolution_name = "MACHAMP", .species_index = SI_MACHOKE, .evolution_index = SI_MACHAMP},
     [SI_GRAVELER] = {.species_name = "GRAVELER", .evolution_name = "GOLEM", .species_index = SI_GRAVELER, .evolution_index = SI_GOLEM},
     [SI_HAUNTER] = {.species_name = "HAUNTER", .evolution_name = "GENGAR", .species_index = SI_HAUNTER, .evolution_index = SI_GENGAR}};
 
 static const struct pkmn_evolution_pair_data pkmn_evolution_pairs_gen2[MAX_SPECIES_INDEX + 1] = {
-    [KADABRA] = {
-        .species_name = "KADABRA",
-        .evolution_name = "ALAKAZAM",
-        .species_index = KADABRA,
-        .evolution_index = ALAKAZAM},
+    [KADABRA] = { .species_name = "KADABRA", .evolution_name = "ALAKAZAM", .species_index = KADABRA, .evolution_index = ALAKAZAM},
     [MACHOKE] = {.species_name = "MACHOKE", .evolution_name = "MACHAMP", .species_index = MACHOKE, .evolution_index = MACHAMP},
     [GRAVELER] = {.species_name = "GRAVELER", .evolution_name = "GOLEM", .species_index = GRAVELER, .evolution_index = GOLEM},
     [HAUNTER] = {.species_name = "HAUNTER", .evolution_name = "GENGAR", .species_index = HAUNTER, .evolution_index = GENGAR},

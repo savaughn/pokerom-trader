@@ -139,7 +139,7 @@ enum eligible_evolution_status check_trade_evolution_gen1(PokemonSave *pkmn_save
 {
     // Species index of pokemon being checked
     uint8_t species = pkmn_save->save.gen1_save.pokemon_storage.p_party->species[pkmn_party_index];
-    struct pkmn_evolution_pair_data evo_pair = pkmn_evolution_pairs_gen2[species];
+    struct pkmn_evolution_pair_data evo_pair = pkmn_evolution_pairs_gen1[species];
 
     // Check if the pokemon has an initialized evolution pair
     return species == evo_pair.species_index;
@@ -386,7 +386,7 @@ bool is_move_HM(uint8_t move_index)
 enum eligible_trade_status check_trade_eligibility(struct TrainerInfo *trainer, uint8_t pkmn_party_index)
 {
     // All Gen1 saves are eligible for trade except with HM moves
-    if (trainer->trainer_generation == SAVE_GENERATION_1) 
+    if (trainer->trainer_generation == SAVE_GENERATION_1)
     {
         for (int move_index = 0; move_index < 4; move_index++)
         {
@@ -423,6 +423,18 @@ enum eligible_trade_status check_trade_eligibility(struct TrainerInfo *trainer, 
     }
 
     return E_TRADE_STATUS_ELIGIBLE;
+}
+
+bool check_if_reds_pikachu(const PokemonSave *pkmn_save, const uint8_t pkmn_party_index)
+{
+    char tmp_otname_pkmn[11];
+    pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index], tmp_otname_pkmn, 10);
+    char tmp_otname_trainer[11];
+    pksav_gen1_import_text(pkmn_save->save.gen1_save.trainer_info.p_name, tmp_otname_trainer, 10);
+    return pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species == SI_PIKACHU &&   // Is a Pikachu
+        pkmn_save->save.gen1_save.save_type == PKSAV_GEN1_SAVE_TYPE_YELLOW &&   // Is from Yellow
+        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.ot_id == pkmn_save->save.gen1_save.trainer_info.p_id &&   // has the same OT ID as the trainer
+        strcmp(tmp_otname_pkmn, tmp_otname_trainer) == 0; // // has the same OT name as the trainer
 }
 
 void swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player1_save, PokemonSave *player2_save, uint8_t pkmn_party_index1, uint8_t pkmn_party_index2)
@@ -527,7 +539,8 @@ void swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player1_save, Pokem
     // data not found in gen1
     player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].pc_data.held_item = tmp_pokemon_gen1.pc_data.catch_rate;
     player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].pc_data.caught_data = (uint16_t)0;
-    player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].pc_data.friendship = GEN2_FRIENDSHIP_BASE;
+    bool is_reds_pikachu_from_yellow = check_if_reds_pikachu(player_gen1, pkmn_party_index1);
+    player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].pc_data.friendship = is_reds_pikachu_from_yellow ? GEN2_FRIENDSHIP_BASE_REDS_PIKACHU : GEN2_FRIENDSHIP_BASE;
     player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].pc_data.pokerus = (uint8_t)0;
 
     // data not found in gen2
@@ -638,6 +651,8 @@ void swap_pkmn_at_index_between_saves(PokemonSave *player1_save, PokemonSave *pl
         player1_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index1][strlen(tmp_otname2)] = 0x50;
         player2_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index2][strlen(tmp_otname1)] = 0x50;
     }
+
+    // TODO: handle pikachu friendship values
 
     // Generate random DVs and assign them to the traded pokemen
     update_pkmn_DVs(player1_save, pkmn_party_index1);

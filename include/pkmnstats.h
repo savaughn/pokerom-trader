@@ -5,6 +5,7 @@
 typedef unsigned char uint8_t;
 
 #define GEN2_FRIENDSHIP_BASE (uint8_t)70
+#define GEN2_FRIENDSHIP_BASE_REDS_PIKACHU (uint8_t)90
 
 // Gen 1 species index doesn't match pokedex
 #define SI_RHYDON (uint8_t)1
