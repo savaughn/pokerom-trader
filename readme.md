@@ -2,7 +2,7 @@
 
 ![Pokerom Trader](https://user-images.githubusercontent.com/25937456/277514322-288a8da9-fb6f-4ae1-8adb-00ccaed6683d.gif)
 #
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/savaughn/pokerom-trader) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/savaughn/pokerom-trader/build-macos.yml?branch=main) ![GitHub issues](https://img.shields.io/github/issues/savaughn/pokerom-trader) ![GitHub](https://img.shields.io/github/license/savaughn/pokerom-trader) ![GitHub all releases](https://img.shields.io/github/downloads/savaughn/pokerom-trader/total)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/savaughn/pokerom-trader)](https://github.com/savaughn/pokerom-trader/releases) [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/savaughn/pokerom-trader/build-macos.yml?branch=main)](https://github.com/savaughn/pokerom-trader/actions) [![GitHub issues](https://img.shields.io/github/issues/savaughn/pokerom-trader)](https://github.com/savaughn/pokerom-trader/issues) [![GitHub](https://img.shields.io/github/license/savaughn/pokerom-trader)](https://github.com/savaughn/pokerom-trader/blob/main/LICENSE) [![GitHub all releases](https://img.shields.io/github/downloads/savaughn/pokerom-trader/total)](https://github.com/savaughn/pokerom-trader/releases)
 
 ## Overview
 
