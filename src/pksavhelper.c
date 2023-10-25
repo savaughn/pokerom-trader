@@ -3,11 +3,12 @@
 #include <math.h>
 #include <time.h>
 #include "pksavhelper.h"
+#include "filehelper.h"
 
 int error_handler(enum pksav_error error, const char *message)
 {
     printf("%s\n", message);
-    // TODO: Print error to log file
+    write_to_log(message, E_LOG_MESSAGE_TYPE_ERROR);
     return 0;
 }
 

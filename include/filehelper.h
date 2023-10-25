@@ -22,5 +22,6 @@ char *read_key_from_config(const char *key);
 int delete_app_data(void);
 void create_default_config(bool overwrite);
 void init_settings_from_config(struct SaveFileData *save_file_data);
+void write_to_log(const char *msg, const uint8_t message_type);
 
 #endif /* FILEHELPER_H */

@@ -95,4 +95,10 @@ struct TrainerInfo
     SaveGenerationType trainer_generation;
 };
 
+enum E_LOG_MESSAGE_TYPE
+{
+    E_LOG_MESSAGE_TYPE_ERROR,
+    E_LOG_MESSAGE_TYPE_INFO
+};
+
 #endif // COMMON_H
