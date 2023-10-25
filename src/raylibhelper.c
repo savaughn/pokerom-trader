@@ -380,15 +380,15 @@ void draw_about(void)
             {
                 current_screen = SCREEN_SETTINGS;
                 selected_index = -1;
-                break;
             }
+            break;
         case 1:
             if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
             {
                 current_screen = SCREEN_LEGAL;
                 selected_index = -1;
-                break;
             }
+            break;
         default:
             break;
         }

@@ -433,7 +433,7 @@ bool check_if_reds_pikachu(const PokemonSave *pkmn_save, const uint8_t pkmn_part
     pksav_gen1_import_text(pkmn_save->save.gen1_save.trainer_info.p_name, tmp_otname_trainer, 10);
     return pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species == SI_PIKACHU &&   // Is a Pikachu
         pkmn_save->save.gen1_save.save_type == PKSAV_GEN1_SAVE_TYPE_YELLOW &&   // Is from Yellow
-        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.ot_id == pkmn_save->save.gen1_save.trainer_info.p_id &&   // has the same OT ID as the trainer
+        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.ot_id == *pkmn_save->save.gen1_save.trainer_info.p_id &&   // has the same OT ID as the trainer
         strcmp(tmp_otname_pkmn, tmp_otname_trainer) == 0; // // has the same OT name as the trainer
 }
 
