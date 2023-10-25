@@ -17,7 +17,7 @@
 char *resolved_path = NULL;
 char *absolute_path = NULL;
 #ifdef _WIN32
-void get_save_files(struct SaveFileData *save_data)
+int get_save_files(struct SaveFileData *save_data)
 {
     return 0;
 }
@@ -25,7 +25,7 @@ int write_key_to_config(const char *key, const char *value)
 {
     return 0;
 }
-void create_default_config(void)
+void create_default_config(bool overwrite)
 {
     return;
 }
