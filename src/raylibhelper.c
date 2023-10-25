@@ -782,14 +782,14 @@ void draw_main_menu(struct SaveFileData *save_file_data)
     const int text_size = 30;
     const uint8_t anim_speed = 45;
 
-    if (consoles[0].id == NULL)
+    if (consoles[0].id == 0)
     {
         for (int i = 0; i < 10; i++)
         {
             consoles[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/Pixel_Fantasy_Icons_Consoles/Consoles/console_%d.png", i)));
         }
     }
-    if (pk_balls[0].id == NULL)
+    if (pk_balls[0].id == 0)
     {
         for (int i = 0; i < 4; i++)
         {
@@ -936,7 +936,6 @@ void draw_main_menu(struct SaveFileData *save_file_data)
     }
     if (active_anim_index == 2)
     {
-        static int frame_counter = 0;
         DrawTextureEx(settings, (Vector2){details_rec.x + anim_from_right[2] - 25, details_rec.y + 100}, 0, 0.5, WHITE);
         DrawText("Change trade and evolution settings", details_text.x + anim_from_right[2] + 40, details_text.y, 20, BLACK);
         if (active_hover_index == 2 && anim_from_right[2] >= 0)
@@ -948,7 +947,6 @@ void draw_main_menu(struct SaveFileData *save_file_data)
             active_anim_index = -1;
             anim_from_right[2] = 300;
         }
-        frame_counter++;
     }
     else
     {
@@ -965,7 +963,6 @@ void draw_main_menu(struct SaveFileData *save_file_data)
     }
     if (active_anim_index == 3)
     {
-        static int frame_counter = 0;
         DrawTextureEx(quit, (Vector2){details_rec.x + anim_from_right[3], details_rec.y + 100}, 0, 0.5, WHITE);
         DrawText("Quit Pokerom Trader", details_text.x + anim_from_right[3] + 80, details_text.y, 20, BLACK);
         if (active_hover_index == 3 && anim_from_right[3] >= 0)
@@ -977,7 +974,6 @@ void draw_main_menu(struct SaveFileData *save_file_data)
             active_anim_index = -1;
             anim_from_right[3] = 300;
         }
-        frame_counter++;
     }
     else
     {
@@ -1561,42 +1557,28 @@ void draw_raylib_screen_loop(
     SetTargetFPS(60);
     is_build_prerelease = strcmp(PROJECT_VERSION_TYPE, "prerelease") == 0;
 
-    if (CI_BUILD)
-    {
 #if defined(__APPLE__)
+    if (CI_BUILD)
         get_mac_resource_images_path();
-#else
-        printf("CI_BUILD is true but not on macOS\n");
 #endif
         pkrom_trader_logo = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
 
-        if (trade.id == NULL)
+        if (trade.id == 0)
         {
             trade = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
         }
-        if (evolve.id == NULL)
+        if (evolve.id == 0)
         {
             evolve = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
         }
-        if (settings.id == NULL)
+        if (settings.id == 0)
         {
             settings = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
         }
-        if (quit.id == NULL)
+        if (quit.id == 0)
         {
             quit = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
         }
-    }
-    else
-    {
-        pkrom_trader_logo = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
-        trade = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
-        evolve = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
-        settings = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
-        quit = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
-
-        printf("Loaded images from assets/images\n");
-    }
 
     while (!should_close_window && !WindowShouldClose())
     {
