@@ -38,6 +38,8 @@ Texture2D trade;
 Texture2D evolve;
 Texture2D settings;
 Texture2D quit;
+static Texture2D consoles[10];
+static Texture2D pk_balls[4];
 
 void on_delete_modal_cancel(void)
 {
@@ -779,8 +781,6 @@ void draw_main_menu(struct SaveFileData *save_file_data)
     const int rec_height_offset = 50;
     const int text_size = 30;
     const uint8_t anim_speed = 45;
-    static Texture2D consoles[10];
-    static Texture2D pk_balls[4];
 
     if (consoles[0].id == NULL)
     {
@@ -1023,18 +1023,6 @@ void draw_main_menu(struct SaveFileData *save_file_data)
             selected_main_menu_index = -1;
             break;
         }
-        // UnloadTexture(trade);
-        // UnloadTexture(evolve);
-        // UnloadTexture(settings);
-        // UnloadTexture(quit);
-        // for (int i = 0; i < 10; i++)
-        // {
-        //     UnloadTexture(consoles[i]);
-        // }
-        // for (int i = 0; i < 4; i++)
-        // {
-        //     UnloadTexture(pk_balls[i]);
-        // }
     }
 
     EndDrawing();
@@ -1673,6 +1661,15 @@ void draw_raylib_screen_loop(
     UnloadTexture(trade);
     UnloadTexture(evolve);
     UnloadTexture(settings);
+    UnloadTexture(quit);
+    for (int i = 0; i < 4; i++)
+    {
+        UnloadTexture(pk_balls[i]);
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        UnloadTexture(consoles[i]);
+    }
 
     CloseWindow();
 }

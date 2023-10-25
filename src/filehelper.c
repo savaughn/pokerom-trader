@@ -33,6 +33,14 @@ char *read_key_from_config(const char *key)
 {
     return NULL;
 }
+void init_settings_from_config(struct SaveFileData *save_file_data)
+{
+    return;
+}
+void write_to_log(const char *msg, const uint8_t message_type)
+{
+    return;
+}
 
 #else
 
@@ -171,6 +179,11 @@ void create_default_config(bool overwrite)
     strcpy(saves_dir, cwd);
     strcat(saves_dir, "/saves");
 
+    // create logs folder
+    char logs_dir[MAX_FILE_PATH_CHAR];
+    strcpy(logs_dir, cwd);
+    strcat(logs_dir, "/logs");
+
     if (!overwrite)
     {
 
@@ -186,6 +199,14 @@ void create_default_config(bool overwrite)
         if (status == -1)
         {
             puts("Error creating saves directory");
+            if (errno != 17)
+                exit(errno);
+        }
+
+        status = mkdir(logs_dir, 0777);
+        if (status == -1)
+        {
+            puts("Error creating logs directory");
             if (errno != 17)
                 exit(errno);
         }
@@ -312,12 +333,50 @@ int delete_app_data(void)
 
     closedir(dir);
 
+    // delete logs
+    char logs_dir[MAX_FILE_PATH_CHAR];
+    strcpy(logs_dir, config_path);
+    strcat(logs_dir, "/logs");
+
+    dir = opendir(logs_dir);
+    if (dir == NULL)
+    {
+        perror("Error opening directory: ");
+        printf("Path: %s\n", logs_dir);
+        return 1;
+    }
+
+    while ((entry = readdir(dir)) != NULL)
+    {
+        // Check if the entry is a regular file with a .sav extension
+        if (entry->d_type == DT_REG && strstr(entry->d_name, ".txt"))
+        {
+            // Combine the base path and file name
+            char full_path[strlen(logs_dir) + 1 + strlen(entry->d_name) + 1];
+            sprintf(full_path, "%s/%s", logs_dir, entry->d_name);
+
+            // Delete file
+            remove(full_path);
+            unlink(full_path);
+        }
+    }
+
+    closedir(dir);
+
     // Delete saves/ directory
     int status = rmdir(saves_dir);
     if (status == -1)
     {
         perror("Error deleting saves directory: ");
         printf("Path: %s\n", saves_dir);
+    }
+
+    // Delete logs/ directory
+    status = rmdir(logs_dir);
+    if (status == -1)
+    {
+        perror("Error deleting logs directory: ");
+        printf("Path: %s\n", logs_dir);
     }
 
     // Delete PokeromTrader/ directory
@@ -350,6 +409,54 @@ void init_settings_from_config(struct SaveFileData *save_file_data)
 
     // malloc'd from read_key_from_config
     free(config_save_path);
+}
+
+void write_to_log(const char *msg, const uint8_t message_type)
+{
+    FILE *fp;
+    char cwd[MAX_FILE_PATH_CHAR];
+
+    strcpy(cwd, getenv("HOME"));
+    strcat(cwd, USR_DATA_DIR);
+    strcat(cwd, "/logs");
+
+    char date[20];
+    char time_str[20];
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+
+    strftime(date, sizeof(date) - 1, "%Y-%m-%d", t);
+    strftime(time_str, sizeof(time_str) - 1, "%H:%M:%S", t);
+
+    switch (message_type)
+    {
+    case E_LOG_MESSAGE_TYPE_ERROR:
+        strcat(cwd, "/error-log@");
+        break;
+    case E_LOG_MESSAGE_TYPE_INFO:
+        strcat(cwd, "/info-log@");
+        break;
+    default:
+        strcat(cwd, "/log@");
+        break;
+    }
+    strcat(cwd, date);
+    strcat(cwd, ".txt");
+    
+    fp = fopen(cwd, "a+");
+
+    if (fp == NULL)
+    {
+        printf("Error %d creating file!\n", errno);
+        exit(errno);
+    }
+
+    fputs(time_str, fp);
+    fputs(": ", fp);
+    fputs(msg, fp);
+    fputs("\n", fp);
+
+    fclose(fp);
 }
 
 #endif
