@@ -11,7 +11,7 @@
 #define COLOR_PKMN_GREEN (Color) {62,185,94,255}
 #define COLOR_PKMN_YELLOW (Color) {255,222,0,255}
 #define COLOR_PKMN_DARKYELLOW (Color) {179, 161, 37, 255}
-#define COLOR_PKMN_RED (Color){204, 0, 0, 0}
+#define COLOR_PKMN_RED (Color){204, 0, 0, 255}
 
 enum E_MODAL_TYPES {
     E_MODAL_WARN,
