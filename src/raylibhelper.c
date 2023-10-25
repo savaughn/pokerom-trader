@@ -14,10 +14,10 @@
 #endif
 #endif
 
-const Rectangle input_box_rec = (Rectangle){50, SCREEN_HEIGHT / 2 - 20, SCREEN_WIDTH - 100, 40};
+const Rectangle input_box_rec = (Rectangle){50, SCREEN_HEIGHT / 2 +5, SCREEN_WIDTH - 100, 40};
 const Color background_color = RAYWHITE;
 static bool should_close_window = false;
-static GameScreen current_screen = SCREEN_MAIN_MENU;
+static GameScreen current_screen = SCREEN_FILE_EDIT;
 static int no_dir_err = 0;
 static bool show_delete_modal = false;
 static bool was_data_deleted = false;
@@ -453,6 +453,14 @@ void draw_change_dir(struct SaveFileData *save_file_data)
     static bool has_pressed_clear = false;
     static int err = 0;
     char input_text_backup[MAX_FILE_PATH_CHAR];
+    enum screen_buttons
+    {
+        SCREEN_BUTTON_NONE = -1,
+        SCREEN_BUTTON_BACK,
+        SCREEN_BUTTON_SAVE,
+        SCREEN_BUTTON_CLEAR
+    };
+    static int selected_index = SCREEN_BUTTON_NONE;
 
     text_size = strlen(input_text);
     strcpy(input_text_backup, (char *)save_file_data->save_dir);
@@ -505,7 +513,11 @@ void draw_change_dir(struct SaveFileData *save_file_data)
 
     BeginDrawing();
     ClearBackground(background_color);
-    DrawText("Specify folder name containing saves", 50, SCREEN_HEIGHT / 2 - 75, 20, BLACK);
+    DrawCircle(SCREEN_WIDTH * -0.7, SCREEN_HEIGHT * -1, 1380, BLACK);
+    DrawCircle(SCREEN_WIDTH * -0.7, SCREEN_HEIGHT * -1, 1350, COLOR_PKMN_RED);
+
+    DrawTextureEx(settings, (Vector2){50, 50}, 0, 0.4, WHITE);
+    DrawText("Specify folder name containing saves", 50, SCREEN_HEIGHT / 2 - 50, 25, BLACK);
 
     // Draw the input box
     DrawRectangleRec(input_box_rec, WHITE);
@@ -515,68 +527,105 @@ void draw_change_dir(struct SaveFileData *save_file_data)
     DrawText(input_text, input_box_rec.x + 10, input_box_rec.y + 10, 20, BLACK);
 
     Rectangle clear_button_rec = (Rectangle){SCREEN_WIDTH - MeasureText("Clear input", 20) + 10 - 70, input_box_rec.y + 25 + input_box_rec.height - 5, MeasureText("Clear input", 20) + 10, 30};
-    DrawRectangleRec(clear_button_rec, RED);
+    DrawRectangleRec(clear_button_rec, selected_index == SCREEN_BUTTON_CLEAR ? LIGHTGRAY : RED);
     DrawText("Clear input", clear_button_rec.x + 5, clear_button_rec.y + 5, 20, WHITE);
 
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-    {
-        if (CheckCollisionPointRec(GetMousePosition(), clear_button_rec) && text_size > 0)
-        {
-            // Clear the input text
-            memset(input_text, 0, sizeof(input_text));
-
-            text_size = 0;
-            editing_text = true;
-            has_shown_placeholder = true;
-            err = 0;
-            has_pressed_clear = true;
-        }
-    }
-
-    // Draw the blinking cursor
+    // Draw the cursor
     if (editing_text)
     {
-        DrawLine(input_box_rec.x + 8 + MeasureText(input_text, 20), input_box_rec.y + 15,
-                 input_box_rec.x + 8 + MeasureText(input_text, 20), input_box_rec.y + 25, BLACK);
+        DrawLine(input_box_rec.x + 12 + MeasureText(input_text, 20), input_box_rec.y + 10,
+                 input_box_rec.x + 12 + MeasureText(input_text, 20), input_box_rec.y + 30, BLACK);
     }
 
     // Draw the save button
-    DrawText("Save!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, text_size ? BLACK : LIGHTGRAY);
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    const Rectangle save_button_rec = (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT};
+    if (selected_index == SCREEN_BUTTON_SAVE)
     {
-        if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && text_size > 0)
-        {
-            err = write_key_to_config("SAVE_FILE_DIR", input_text);
-            if (err == 0)
-            {
-                strcpy((char *)save_file_data->save_dir, input_text);
-                save_file_data->num_saves = 0;
-                *save_file_data->saves_file_path = NULL;
-                current_screen = SCREEN_SETTINGS;
-                has_shown_placeholder = false;
-            }
-        }
+        DrawText("Save!", save_button_rec.x, save_button_rec.y, 30, LIGHTGRAY);
+    }
+    else
+    {
+        DrawText("Save!", save_button_rec.x, save_button_rec.y, 30, text_size ? BLACK : LIGHTGRAY);
     }
 
     if (err == 1)
-        DrawText(TextFormat("error writing config %d", errno), 50, 50, 20, BLACK);
+        error_handler(0, TextFormat("error writing config %d", errno));
 
-    // add a back button
-    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
-    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+    const Rectangle back_button_rec = (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT};
+    DrawText("< Back", back_button_rec.x, back_button_rec.y, 30, selected_index == SCREEN_BUTTON_BACK ? LIGHTGRAY : BLACK);
+    EndDrawing();
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        if (CheckCollisionPointRec(GetMousePosition(), back_button_rec))
         {
-            if (has_pressed_clear)
-            {
-                strcpy(input_text, input_text_backup);
-            }
-            has_pressed_clear = false;
-            current_screen = SCREEN_SETTINGS;
-            has_shown_placeholder = false;
+            selected_index = SCREEN_BUTTON_BACK;
+        }
+        else if (CheckCollisionPointRec(GetMousePosition(), save_button_rec))
+        {
+            selected_index = SCREEN_BUTTON_SAVE;
+        }
+        else if (CheckCollisionPointRec(GetMousePosition(), clear_button_rec))
+        {
+            selected_index = SCREEN_BUTTON_CLEAR;
+        }
+        else
+        {
+            selected_index = SCREEN_BUTTON_NONE;
         }
     }
-    EndDrawing();
+
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+    {
+        switch (selected_index)
+        {
+        case SCREEN_BUTTON_BACK:
+            if (CheckCollisionPointRec(GetMousePosition(), back_button_rec))
+            {
+                if (has_pressed_clear)
+                {
+                    strcpy(input_text, input_text_backup);
+                }
+                has_pressed_clear = false;
+                current_screen = SCREEN_SETTINGS;
+                has_shown_placeholder = false;
+                selected_index = SCREEN_BUTTON_NONE;
+            }
+            break;
+        case SCREEN_BUTTON_SAVE:
+            if (CheckCollisionPointRec(GetMousePosition(), save_button_rec) && text_size > 0)
+            {
+                err = write_key_to_config("SAVE_FILE_DIR", input_text);
+                if (err == 0)
+                {
+                    strcpy((char *)save_file_data->save_dir, input_text);
+                    save_file_data->num_saves = 0;
+                    *save_file_data->saves_file_path = NULL;
+                    current_screen = SCREEN_SETTINGS;
+                    has_shown_placeholder = false;
+                    selected_index = SCREEN_BUTTON_NONE;
+                }
+            }
+            break;
+        case SCREEN_BUTTON_CLEAR:
+            if (CheckCollisionPointRec(GetMousePosition(), clear_button_rec) && text_size > 0)
+            {
+                // Clear the input text
+                memset(input_text, 0, sizeof(input_text));
+
+                text_size = 0;
+                editing_text = true;
+                has_shown_placeholder = true;
+                err = 0;
+                has_pressed_clear = true;
+                selected_index = SCREEN_BUTTON_NONE;
+            }
+            break;
+        default:
+            selected_index = SCREEN_BUTTON_NONE;
+            break;
+        }
+    }
 }
 void draw_settings(void)
 {
@@ -1561,24 +1610,24 @@ void draw_raylib_screen_loop(
     if (CI_BUILD)
         get_mac_resource_images_path();
 #endif
-        pkrom_trader_logo = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
+    pkrom_trader_logo = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
 
-        if (trade.id == 0)
-        {
-            trade = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
-        }
-        if (evolve.id == 0)
-        {
-            evolve = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
-        }
-        if (settings.id == 0)
-        {
-            settings = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
-        }
-        if (quit.id == 0)
-        {
-            quit = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
-        }
+    if (trade.id == 0)
+    {
+        trade = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
+    }
+    if (evolve.id == 0)
+    {
+        evolve = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
+    }
+    if (settings.id == 0)
+    {
+        settings = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
+    }
+    if (quit.id == 0)
+    {
+        quit = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
+    }
 
     while (!should_close_window && !WindowShouldClose())
     {
