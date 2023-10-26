@@ -41,6 +41,10 @@ void write_to_log(const char *msg, const uint8_t message_type)
 {
     return;
 }
+int delete_app_data(void)
+{
+    return 0;
+}
 
 #else
 
