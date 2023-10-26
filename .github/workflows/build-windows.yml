@@ -4,42 +4,49 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build_x64:
-    if: false  # This workflow is disabled
+  build_windows:
+    # if: false  # This workflow is disabled
     runs-on: windows-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    - name: Setup MSVC Environment (x64)
-      uses: microsoft/setup-msbuild@v1.0.2
+    - run: git config --global core.autocrlf input
+    - uses: actions/checkout@v3
+      
+    - name: Setup msys2
+      uses: msys2/setup-msys2@v2
       with:
-        architecture: x64
+        msystem: UCRT64
 
     - name: Build pksav
       run: |
         cd deps/pksav/
         mkdir build
         cd build
-        cmake ..
-        cmake --build . --config Release
+        cmake .. -DPKSAV_STATIC=ON -G "Unix Makefiles"
+        make
 
     - name: Build raylib
       run: |
         cd deps/raylib/src/
-        mingw32-make PLATFORM=PLATFORM_DESKTOP
+        make PLATFORM=PLATFORM_DESKTOP
 
     - name: Build Project
       run: |
-        mingw32-make PLATFORM=PLATFORM_DESKTOP
+        make PLATFORM=PLATFORM_DESKTOP
 
     - name: Bundle Executable with Library
       run: |
-        # Copy libpksav.dll to the same directory as the executable
-        cp deps/pksav/build/Release/libpksav.dll build/
+        # Copy libpksav.a to the same directory as the executable
+        cp deps/pksav/build/lib/libpksav.a build/
+
+    - name: Copy assets
+      run: |
+        cp -r assets build
       
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v2
