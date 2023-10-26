@@ -393,7 +393,10 @@ LDLIBS += -lpksav
 SOURCE = src
 INCLUDE = include
 OBJ = obj
-PROJECT_SOURCE_FILES := $(wildcard $(SOURCE)/*.c)
+$(shell mkdir -p $(OBJ))
+$(shell mkdir -p $(OBJ)/screens)
+$(shell mkdir -p $(OBJ)/components)
+PROJECT_SOURCE_FILES := $(wildcard $(SOURCE)/*.c $(SOURCE)/screens/*.c $(SOURCE)/components/*.c)
 
 INCLUDE_PATHS += -I$(INCLUDE)
 
