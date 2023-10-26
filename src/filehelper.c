@@ -1,17 +1,20 @@
 #include "filehelper.h"
 #include <string.h>
 #ifdef _WIN32
+#include <errno.h>
 #else
 #include <unistd.h>
 #include <sys/errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#endif
 
 #ifdef __APPLE__
 #define USR_DATA_DIR "/Library/PokeromTrader"
+#elif _WIN32
+#define USR_DATA_DIR "\%APPDATA\%/PokeromTrader"
 #else
 #define USR_DATA_DIR "/.pokeromtrader"
-#endif
 #endif
 
 char *resolved_path = NULL;
