@@ -16,7 +16,7 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *tr
     const int NONE = -1;
     static int selected_index = NONE;
     static int result = 0;
-    char pokemon_nickname[11];
+    char pokemon_nickname[11] = "\0";
     int eligible_pokemon_count = 0;
     const int TRAINER_NAME_X = 50;
     const int TRAINER_NAME_Y = 100;
