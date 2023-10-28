@@ -26,7 +26,11 @@ void on_reset_modal_cancel(void)
 
 void on_reset_modal_submit(void)
 {
+#ifdef _WIN32
+    create_default_config();
+#else
     create_default_config(true);
+#endif
     init_settings_from_config(_save_file_data);
     show_reset_modal = false;
 }

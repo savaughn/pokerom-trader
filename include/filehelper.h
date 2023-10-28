@@ -18,7 +18,6 @@ int get_save_files(struct SaveFileData *save_data);
 void free_filehelper_pointers(void);
 int write_key_to_config(const char *key, const char *value);
 int delete_app_data(void);
-void create_default_config(bool overwrite);
 void init_settings_from_config(struct SaveFileData *save_file_data);
 void write_to_log(const char *msg, const uint8_t message_type);
 #ifdef _WIN32
@@ -30,8 +29,10 @@ struct config_data
 };
 
 struct config_data read_key_from_config(void);
+void create_default_config(void);
 #else
 char *read_key_from_config(const char *key);
+void create_default_config(bool overwrite);
 #endif
 
 #endif /* FILEHELPER_H */

@@ -69,6 +69,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                     has_file_error = false;
                 }
             }
+            // Extract save file name from path
             char *save_name = strrchr(save_file_data->saves_file_path[i], '/');
             save_name++;
             DrawText(save_name, 100, 75 + 25 * i, 20, (selected_saves_index[0] == i || selected_saves_index[1] == i) ? LIGHTGRAY : BLACK);

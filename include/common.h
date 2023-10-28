@@ -125,4 +125,9 @@ enum textures {
         T_COUNT
     };
 
+enum file_op_results {
+    FILE_OP_FAILURE = 0,
+    FILE_OP_SUCCESS
+};
+
 #endif // COMMON_H
