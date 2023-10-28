@@ -55,5 +55,5 @@ jobs:
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: pokeromtrader-artifacts  # Specify a name for your artifacts
+        name: pokeromtrader-artifacts-linux  # Specify a name for your artifacts
         path: build/  # Specify the directory containing your build artifacts

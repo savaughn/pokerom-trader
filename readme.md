@@ -20,6 +20,7 @@ There is no backup system implemented yet. Make backup saves before using this o
 - Change save files folder with absolute path to folder
   - Default is ~/Library/PokeromTrader/saves (MacOS)
   - Default is ~/.pokeromtrader/ (Linux)
+  - Default is \<UserProfile\>\\Documents\\PokeromTrader\\saves (Windows)
 - Disable Random DVs on trade (default off) when on will retain the dvs of the Pokémon being traded or evolved.
   - The in-game experience always randomizes DVs on trade. This is a bypass of the official experience.
 - Item required for evolution. (default on) when on will require the item to be held by the Pokémon being evolved.
@@ -52,12 +53,12 @@ https://discord.gg/JUzzegS3AP
 
 ## Getting Started
 
-| Platform          | Compatibility   |
-|-------------------|-----------------|
-| Windows           | ❌ |
-| Linux (built with ubuntu)             | ✅ |
-| MacOS x86_64      | ✅  |
-| MacOS arm64       | ✅  |
+| Platform          | Compatibility   | default save folder |
+|-------------------|-----------------|---------|
+| Windows           | ✅ | \<UserProfile\>\\Documents\\PokeromTrader\\saves
+| Linux (built with ubuntu)| ✅ |~/.pokeromtrader/saves
+| MacOS x86_64      | ✅  |~/Library/PokeromTrader/saves 
+| MacOS arm64       | ✅  |~/Library/PokeromTrader/saves 
 | iOS               | ❌  |
 | Android           | ❌  |
 | Nintendo Switch   | ❌  |
@@ -65,8 +66,7 @@ https://discord.gg/JUzzegS3AP
 
 Download the latest release from the [releases page](https://github.com/savaughn/pokerom-trader/releases).
 
-Default saves folder is located ~/Library/PokeromTrader/saves on OSX and ~/.pokeromtrader/ in linux. You can change this in the settings menu.
-
+### MacOS
 To execute, right click PokeromTrader.app and select "Open" to bypass the MacOS security warning. This is only required the first time you open the app.
 
 ## Contributing
