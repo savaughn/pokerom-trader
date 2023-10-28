@@ -218,6 +218,26 @@ int delete_app_data(void)
     return 0;
 }
 
+void init_settings_from_config(struct SaveFileData *save_file_data)
+{
+    // Read and save the saves file directory from config.ini
+    struct config_data config_data = read_key_from_config();
+
+    char *save_file_dir = malloc(strlen(config_data.save_file_dir) + 1);
+    if (save_file_dir != NULL)
+    {
+        strcpy(save_file_dir, config_data.save_file_dir);
+        strcpy((char *)save_file_data->save_dir, save_file_dir);
+    } else {
+        strcpy((char *)save_file_data->save_dir, "DIR_NOT_SET");
+    }
+
+    set_is_random_DVs_disabled(strcmp(config_data.disable_random_ivs_on_trade, "false"));
+    set_is_item_required(strcmp(config_data.item_required_evolutions, "false"));
+
+    free(save_file_dir);
+}
+
 #else
 
 int get_save_files(struct SaveFileData *save_data)
@@ -614,27 +634,28 @@ void write_to_log(const char *msg, const uint8_t message_type)
     fclose(fp);
 }
 
-#endif
-
 void init_settings_from_config(struct SaveFileData *save_file_data)
 {
     // Read and save the saves file directory from config.ini
-    struct config_data config_data = read_key_from_config();
-
-    char *save_file_dir = malloc(strlen(config_data.save_file_dir) + 1);
-    if (save_file_dir != NULL)
+    char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
+    
+    if (config_save_path != NULL)
     {
-        strcpy(save_file_dir, config_data.save_file_dir);
-        strcpy((char *)save_file_data->save_dir, save_file_dir);
+        strcpy((char *)save_file_data->save_dir, config_save_path);
     } else {
         strcpy((char *)save_file_data->save_dir, "DIR_NOT_SET");
     }
 
-    set_is_random_DVs_disabled(strcmp(config_data.disable_random_ivs_on_trade, "false"));
-    set_is_item_required(strcmp(config_data.item_required_evolutions, "false"));
+    // Read and save the disable random setting from config.ini
+    set_is_random_DVs_disabled(strcmp(read_key_from_config("DISABLE_RANDOM_IVS_ON_TRADE"), "false"));
+    // Read and save the item required evolutions setting from config.ini
+    set_is_item_required(strcmp(read_key_from_config("ITEM_REQUIRED_EVOLUTIONS"), "false"));
 
-    free(save_file_dir);
+    // malloc'd from read_key_from_config
+    free(config_save_path);
 }
+
+#endif
 
 void free_filehelper_pointers(void)
 {
