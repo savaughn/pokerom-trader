@@ -101,4 +101,27 @@ enum E_LOG_MESSAGE_TYPE
     E_LOG_MESSAGE_TYPE_INFO
 };
 
+enum textures {
+        T_EVOLVE,
+        T_LOGO,
+        T_QUIT,
+        T_SETTINGS,
+        T_TRADE,
+        T_CONSOLE_0,
+        T_CONSOLE_1,
+        T_CONSOLE_2,
+        T_CONSOLE_3,
+        T_CONSOLE_4,
+        T_CONSOLE_5,
+        T_CONSOLE_6,
+        T_CONSOLE_7,
+        T_CONSOLE_8,
+        T_CONSOLE_9,
+        T_POKEBALL_0,
+        T_POKEBALL_1,
+        T_POKEBALL_2,
+        T_POKEBALL_3,
+        T_COUNT
+    };
+
 #endif // COMMON_H
