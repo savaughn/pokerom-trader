@@ -6,7 +6,7 @@
 #include <sys/errno.h>
 #endif
 
-void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_screen)
+void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_screen, Texture2D *settings_texture)
 {
     static bool editing_text = false;
     static char input_text[MAX_FILE_PATH_CHAR];
@@ -78,7 +78,7 @@ void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_sc
     DrawCircle(SCREEN_WIDTH * -0.7, SCREEN_HEIGHT * -1, 1380, BLACK);
     DrawCircle(SCREEN_WIDTH * -0.7, SCREEN_HEIGHT * -1, 1350, COLOR_PKMN_RED);
 
-    DrawTextureEx(settings, (Vector2){50, 50}, 0, 0.4, WHITE);
+    DrawTextureEx(*settings_texture, (Vector2){50, 50}, 0, 0.4, WHITE);
     DrawText("Specify folder name containing saves", 50, SCREEN_HEIGHT / 2 - 50, 25, BLACK);
 
     // Draw the input box

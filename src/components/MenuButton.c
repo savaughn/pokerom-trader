@@ -1,5 +1,8 @@
 #include "raylibhelper.h"
 
+#define COLOR_PKMN_YELLOW (Color) {255,222,0,255}
+#define COLOR_PKMN_DARKYELLOW (Color) {179, 161, 37, 255}
+
 bool draw_menu_button(int x, int y, const char *text, int text_size)
 {
     const int rec_height = 45;

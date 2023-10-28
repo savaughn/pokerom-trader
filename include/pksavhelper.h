@@ -1,7 +1,6 @@
 #ifndef PKSAVHELPER_H
 #define PKSAVHELPER_H
 
-#include <pksav.h>
 #include "common.h"
 #include "pkmnstats.h"
 

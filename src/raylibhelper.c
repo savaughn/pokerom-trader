@@ -34,34 +34,25 @@ void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id)
 }
 
 #if defined(__APPLE__)
-char *get_mac_resource_images_path(void)
+void get_mac_resource_images_path(void)
 {
-    static char *images_path = NULL;
-    if (images_path == NULL)
+    // Get the path to the bundle's resources directory
+    CFBundleRef bundle = CFBundleGetMainBundle();
+    CFURLRef resources_url = CFBundleCopyResourcesDirectoryURL(bundle);
+    char resources_path[PATH_MAX];
+    if (!CFURLGetFileSystemRepresentation(resources_url, true, (UInt8 *)resources_path, PATH_MAX))
     {
-        // Get the path to the bundle's resources directory
-        CFBundleRef bundle = CFBundleGetMainBundle();
-        CFURLRef resources_url = CFBundleCopyResourcesDirectoryURL(bundle);
-        char resources_path[PATH_MAX];
-        if (!CFURLGetFileSystemRepresentation(resources_url, true, (UInt8 *)resources_path, PATH_MAX))
-        {
-            fprintf(stderr, "Error: could not get resources directory path\n");
-            exit(EXIT_FAILURE);
-        }
-        CFRelease(resources_url);
-
-        // Construct the path to the "scripts" directory relative to the resources directory
-        images_path = malloc(PATH_MAX);
-        snprintf(images_path, PATH_MAX, "%s/assets/images", resources_path);
-
-        // Change the current working directory to the resources directory
-        if (chdir(resources_path) != 0)
-        {
-            fprintf(stderr, "Error: could not change working directory to resources directory\n");
-            exit(EXIT_FAILURE);
-        }
+        fprintf(stderr, "Error: could not get resources directory path\n");
+        exit(EXIT_FAILURE);
     }
-    return images_path;
+    CFRelease(resources_url);
+
+    // Change the current working directory to the resources directory
+    if (chdir(resources_path) != 0)
+    {
+        fprintf(stderr, "Error: could not change working directory to resources directory\n");
+        exit(EXIT_FAILURE);
+    }
 }
 #endif
 void draw_raylib_screen_loop(
@@ -80,28 +71,42 @@ void draw_raylib_screen_loop(
     static bool is_same_generation = true;
     static bool should_close_window = false;
     bool is_build_prerelease = strcmp(PROJECT_VERSION_TYPE, "prerelease") == 0;
+    Texture2D textures[19];
 
 #if defined(__APPLE__)
     if (CI_BUILD)
         get_mac_resource_images_path();
 #endif
-    pkrom_trader_logo = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
 
-    if (trade.id == 0)
+    // while textures are loading
+    while (textures[0].id == 0 || textures[1].id == 0 || textures[2].id == 0 || textures[3].id == 0 || textures[4].id == 0)
     {
-        trade = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
-    }
-    if (evolve.id == 0)
-    {
-        evolve = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
-    }
-    if (settings.id == 0)
-    {
-        settings = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
-    }
-    if (quit.id == 0)
-    {
-        quit = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
+        BeginDrawing();
+        ClearBackground(BLACK);
+        DrawText("Loading...", 20, 20, 20, WHITE);
+        EndDrawing();
+
+        if (textures[T_LOGO].id == 0)
+            textures[T_LOGO] = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
+        if (textures[T_TRADE].id == 0)
+            textures[T_TRADE] = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
+        if (textures[T_EVOLVE].id == 0)
+            textures[T_EVOLVE] = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
+        if (textures[T_SETTINGS].id == 0)
+            textures[T_SETTINGS] = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
+        if (textures[T_QUIT].id == 0)
+            textures[T_QUIT] = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
+
+        for (int i = T_CONSOLE_0; i < T_POKEBALL_0; i++)
+        {
+            if (textures[i].id == 0)
+                textures[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/Pixel_Fantasy_Icons_Consoles/Consoles/console_%d.png", i - T_CONSOLE_0)));
+        }
+        for (int i = T_POKEBALL_0; i < T_POKEBALL_3 + 1; i++)
+        {
+            if (textures[i].id == 0)
+                textures[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/pokeballs_MPR/ball_%d.png", i - T_POKEBALL_0)));
+        }
     }
 
     while (!should_close_window && !WindowShouldClose())
@@ -115,13 +120,13 @@ void draw_raylib_screen_loop(
             draw_trade(pkmn_save_player1, pkmn_save_player2, player1_save_path, player2_save_path, trainerSelection, trainer1, trainer2, &is_same_generation, &current_screen);
             break;
         case SCREEN_MAIN_MENU:
-            draw_main_menu(save_file_data, &current_screen, &should_close_window);
+            draw_main_menu(save_file_data, &current_screen, &should_close_window, textures);
             break;
         case SCREEN_SETTINGS:
-            draw_settings(save_file_data, &current_screen);
+            draw_settings(save_file_data, &current_screen, &textures[T_SETTINGS]);
             break;
         case SCREEN_FILE_EDIT:
-            draw_change_dir(save_file_data, &current_screen);
+            draw_change_dir(save_file_data, &current_screen, &textures[T_SETTINGS]);
             break;
         case SCREEN_BILLS_PC_FILE_SELECT:
             draw_file_select_single(save_file_data, pkmn_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_BILLS_PC, &current_screen);
@@ -160,18 +165,9 @@ void draw_raylib_screen_loop(
         }
     }
 
-    UnloadTexture(pkrom_trader_logo);
-    UnloadTexture(trade);
-    UnloadTexture(evolve);
-    UnloadTexture(settings);
-    UnloadTexture(quit);
-    for (int i = 0; i < 4; i++)
+    for (uint8_t i = 0; i < T_COUNT; i++)
     {
-        UnloadTexture(pk_balls[i]);
-    }
-    for (int i = 0; i < 10; i++)
-    {
-        UnloadTexture(consoles[i]);
+        UnloadTexture(textures[i]);
     }
 
     CloseWindow();

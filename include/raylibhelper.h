@@ -25,22 +25,14 @@ enum E_MODAL_TYPES {
 
 static int no_dir_err = 0;
 
-Texture2D pkrom_trader_logo;
-Texture2D trade;
-Texture2D evolve;
-Texture2D settings;
-Texture2D quit;
-static Texture2D consoles[10];
-static Texture2D pk_balls[4];
-
 void draw_about(GameScreen *current_screen, bool is_build_prerelease);
 void draw_legal(GameScreen *current_screen);
-void draw_settings(struct SaveFileData *save_file_data, GameScreen *current_screen);
+void draw_settings(struct SaveFileData *save_file_data, GameScreen *current_screen, Texture2D *settings_texture);
 void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name, bool show_gender);
 void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id_out);
-void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_screen);
+void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_screen, Texture2D *settings_texture);
 void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname, bool selected);
-void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_screen, bool *should_close_window);
+void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_screen, bool *should_close_window, Texture2D *textures);
 void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_path, char *player2_save_path, struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, struct TrainerSelection trainer_selection[2], PokemonSave *pkmn_save_player1, PokemonSave *pkmn_save_player2, GameScreen *current_screen, bool *is_same_generation);
 void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *player1_save_path, char *player2_save_path, struct TrainerSelection trainer_selection[2], struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, bool *is_same_generation, GameScreen *current_screen);
 void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *save_player1, char *player1_save_path, struct TrainerInfo *trainer1, struct TrainerSelection *trainer_selection, enum single_player_menu_types menu_type, GameScreen *current_screen);

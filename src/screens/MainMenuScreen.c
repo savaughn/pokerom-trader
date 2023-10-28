@@ -1,7 +1,7 @@
 #include "raylibhelper.h"
 #include "filehelper.h"
 
-void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_screen, bool *should_close_window)
+void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_screen, bool *should_close_window, Texture2D *textures)
 {
     BeginDrawing();
     ClearBackground(COLOR_PKMN_RED);
@@ -30,21 +30,6 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
     static int active_anim_index = -1;
     static int active_hover_index = -1;
 
-    if (consoles[0].id == 0)
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            consoles[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/Pixel_Fantasy_Icons_Consoles/Consoles/console_%d.png", i)));
-        }
-    }
-    if (pk_balls[0].id == 0)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            pk_balls[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/pokeballs_MPR/ball_%d.png", i)));
-        }
-    }
-
     const Rectangle details_rec = (Rectangle){SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.35, 200, 200};
     const Vector2 details_text = (Vector2){details_rec.x - 100, SCREEN_HEIGHT - 30};
     const uint8_t console_x_offset = 70;
@@ -55,7 +40,7 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
     //          *current_screen = SCREEN_BILLS_PC_FILE_SELECT;
 
     // Draw image pkrom_trader_logo
-    DrawTextureEx(pkrom_trader_logo, (Vector2){50, 50}, 0, 0.62, WHITE);
+    DrawTextureEx(textures[T_LOGO], (Vector2){50, 50}, 0, 0.62, WHITE);
     if (draw_menu_button(start_x, start_y, "Trade", text_size))
     {
         active_anim_index = 0;
@@ -70,12 +55,12 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
     {
         static int frame_counter = 0;
         if (rand_console_index_1 == -1)
-            rand_console_index_1 = GetRandomValue(0, 9);
+            rand_console_index_1 = GetRandomValue(T_CONSOLE_0, T_CONSOLE_9);
         if (rand_console_index_2 == -1)
-            rand_console_index_2 = GetRandomValue(0, 9);
+            rand_console_index_2 = GetRandomValue(T_CONSOLE_0, T_CONSOLE_9);
 
-        DrawTextureEx(trade, (Vector2){details_rec.x + anim_from_right[0], details_rec.y + 25}, 0, 0.5, WHITE);
-        DrawTextureEx(consoles[rand_console_index_1], (Vector2){details_rec.x + anim_from_right[0] - 40, details_rec.y + 150}, 0, 3, WHITE);
+        DrawTextureEx(textures[T_TRADE], (Vector2){details_rec.x + anim_from_right[0], details_rec.y + 25}, 0, 0.5, WHITE);
+        DrawTextureEx(textures[rand_console_index_1], (Vector2){details_rec.x + anim_from_right[0] - 40, details_rec.y + 150}, 0, 3, WHITE);
 
         // Draw arrow to right of consoles[0]
         if (anim_index > 0 && anim_index < 5)
@@ -116,7 +101,7 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
         anim_index %= 9;
         frame_counter++;
 
-        DrawTextureEx(consoles[rand_console_index_2], (Vector2){details_rec.x + anim_from_right[0] + console_x_offset + 120, details_rec.y + 150}, 0, 3, WHITE);
+        DrawTextureEx(textures[rand_console_index_2], (Vector2){details_rec.x + anim_from_right[0] + console_x_offset + 120, details_rec.y + 150}, 0, 3, WHITE);
         DrawText("Trade pokemon between save files", details_text.x + anim_from_right[0] + 40, details_text.y, 20, BLACK);
     }
     else
@@ -141,10 +126,10 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
     {
         static int frame_counter = 0;
         if (rand_pokeball_index == -1)
-            rand_pokeball_index = GetRandomValue(0, 3);
+            rand_pokeball_index = GetRandomValue(T_POKEBALL_0, T_POKEBALL_3);
 
-        DrawTextureEx(evolve, (Vector2){details_rec.x + anim_from_right[1], details_rec.y + 25}, 0, 0.5, WHITE);
-        DrawTextureEx(pk_balls[rand_pokeball_index], (Vector2){details_rec.x + anim_from_right[1] + 15, details_rec.y + 80}, 0, 0.25, WHITE);
+        DrawTextureEx(textures[T_EVOLVE], (Vector2){details_rec.x + anim_from_right[1], details_rec.y + 25}, 0, 0.5, WHITE);
+        DrawTextureEx(textures[rand_pokeball_index], (Vector2){details_rec.x + anim_from_right[1] + 15, details_rec.y + 80}, 0, 0.25, WHITE);
         if (anim_index > 0)
             DrawRectangle(details_rec.x + anim_from_right[1] + 200, details_rec.y + 190, 50, 10, BLACK);
         if (anim_index > 1)
@@ -187,7 +172,7 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
     }
     if (active_anim_index == BUTTON_SETTINGS)
     {
-        DrawTextureEx(settings, (Vector2){details_rec.x + anim_from_right[2] - 25, details_rec.y + 100}, 0, 0.5, WHITE);
+        DrawTextureEx(textures[T_SETTINGS], (Vector2){details_rec.x + anim_from_right[2] - 25, details_rec.y + 100}, 0, 0.5, WHITE);
         DrawText("Change trade and evolution settings", details_text.x + anim_from_right[2] + 40, details_text.y, 20, BLACK);
         if (active_hover_index == BUTTON_SETTINGS && anim_from_right[2] >= 0)
             anim_from_right[2] -= anim_speed;
@@ -215,7 +200,7 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
     }
     if (active_anim_index == 3)
     {
-        DrawTextureEx(quit, (Vector2){details_rec.x + anim_from_right[3], details_rec.y + 100}, 0, 0.5, WHITE);
+        DrawTextureEx(textures[T_QUIT], (Vector2){details_rec.x + anim_from_right[3], details_rec.y + 100}, 0, 0.5, WHITE);
         DrawText("Quit Pokerom Trader", details_text.x + anim_from_right[3] + 80, details_text.y, 20, BLACK);
         if (active_hover_index == BUTTON_QUIT && anim_from_right[3] >= 0)
             anim_from_right[3] -= anim_speed;
