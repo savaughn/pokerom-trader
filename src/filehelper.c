@@ -1,17 +1,23 @@
 #include "filehelper.h"
-#include <string.h>
 #ifdef _WIN32
+#include <errno.h>
+#include <Windows.h>
+#include <tchar.h>
+#include <stdint.h>
+#include <time.h>
 #else
 #include <unistd.h>
 #include <sys/errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#endif
 
 #ifdef __APPLE__
 #define USR_DATA_DIR "/Library/PokeromTrader"
+#elif _WIN32
+#define USR_DATA_DIR "\\Documents\\PokeromTrader"
 #else
 #define USR_DATA_DIR "/.pokeromtrader"
-#endif
 #endif
 
 char *resolved_path = NULL;
@@ -19,27 +25,325 @@ char *absolute_path = NULL;
 #ifdef _WIN32
 int get_save_files(struct SaveFileData *save_data)
 {
+    // Get .sav files from save folder
+    char save_dir[MAX_FILE_PATH_CHAR];
+    strcpy(save_dir, (char *)save_data->save_dir);
+
+    WIN32_FIND_DATA find_file_data;
+    HANDLE hFind;
+    LPCSTR saves[MAX_FILE_PATH_CHAR];
+    strcpy(saves, save_dir);
+    strcat(saves, "\\*.sav");
+
+    hFind = FindFirstFile(saves, &find_file_data);
+
+    if (hFind == INVALID_HANDLE_VALUE)
+    {
+        printf("FindFirstFile failed (%d)\n", GetLastError());
+        save_data->num_saves = 0;
+        // return 1;
+    }
+    else
+    {
+        int num_saves = 0;
+        do
+        {
+            // Combine the base path and file name
+            char full_path[MAX_FILE_PATH_CHAR];
+            sprintf(full_path, "%s/%s", save_dir, find_file_data.cFileName);
+            printf("Found file: %s\n", full_path);
+                save_data->saves_file_path[num_saves] = malloc(strlen(full_path) + 1);
+            strcpy(save_data->saves_file_path[num_saves], full_path);
+            printf("Saved file: %s\n", save_data->saves_file_path[num_saves]);
+            num_saves++;
+        } while (FindNextFile(hFind, &find_file_data) != 0);
+        FindClose(hFind);
+        save_data->num_saves = num_saves;
+        printf("num_saves from load: %d\n", save_data->num_saves);
+    }
+
     return 0;
 }
 int write_key_to_config(const char *key, const char *value)
 {
-    return 0;
+    char config_path[MAX_FILE_PATH_CHAR];
+    strcpy(config_path, getenv("USERPROFILE"));
+    strcat(config_path, USR_DATA_DIR);
+    strcat(config_path, "\\config.ini");
+
+    LPCSTR ini = config_path;
+
+    WINBOOL error = WritePrivateProfileStringA("app", key, value, ini);
+    if (error == FILE_OP_FAILURE)
+        error_handler(error, "Error writing to config.ini");
+    return error;
 }
-void create_default_config(bool overwrite)
+void create_default_config(void)
 {
-    return;
+    char config_path[MAX_PATH];
+
+    // Get the current working directory
+    strcpy(config_path, getenv("USERPROFILE"));
+    strcat(config_path, USR_DATA_DIR);
+
+    // Create the saves folder
+    char saves_dir[MAX_PATH];
+    strcpy(saves_dir, config_path);
+    strcat(saves_dir, "\\saves");
+
+    // Create the logs folder
+    char logs_dir[MAX_PATH];
+    strcpy(logs_dir, config_path);
+    strcat(logs_dir, "\\logs");
+
+    // Create directories
+    if (!CreateDirectory(config_path, NULL))
+    {
+        if (GetLastError() != ERROR_ALREADY_EXISTS)
+        {
+            printf("Error creating directory: %d\n", GetLastError());
+            printf("Path: %s\n", config_path);
+            exit(GetLastError());
+        }
+    }
+
+    if (!CreateDirectory(saves_dir, NULL))
+    {
+        if (GetLastError() != ERROR_ALREADY_EXISTS)
+        {
+            printf("Error creating saves directory: %d\n", GetLastError());
+            exit(GetLastError());
+        }
+    }
+
+    if (!CreateDirectory(logs_dir, NULL))
+    {
+        if (GetLastError() != ERROR_ALREADY_EXISTS)
+        {
+            printf("Error creating logs directory: %d\n", GetLastError());
+            exit(GetLastError());
+        }
+    }
+
+    // Create config.ini file in cwd
+    strcat(config_path, "\\config.ini");
+    FILE *fp = fopen(config_path, "w+");
+
+    if (fp == NULL)
+    {
+        printf("Error creating file: %d\n", GetLastError());
+        exit(GetLastError());
+    }
+
+    fputs("# This is a generated file. Only modify values, not keys.\n", fp);
+    fclose(fp);
+
+    LPCSTR ini = config_path;
+    WritePrivateProfileStringA("app", "SAVE_FILE_DIR", saves_dir, ini);
+    WritePrivateProfileStringA("app", "DISABLE_RANDOM_IVS_ON_TRADE", "false", ini);
+    WritePrivateProfileStringA("app", "ITEM_REQUIRED_EVOLUTIONS", "true", ini);
 }
-char *read_key_from_config(const char *key)
+struct config_data read_key_from_config(void)
 {
-    return NULL;
-}
-void init_settings_from_config(struct SaveFileData *save_file_data)
-{
-    return;
+    char config_path[MAX_FILE_PATH_CHAR];
+    strcpy(config_path, getenv("USERPROFILE"));
+    strcat(config_path, USR_DATA_DIR);
+
+    // if USR_DATA_DIR does not exist, create it
+    if (GetFileAttributes(config_path) == INVALID_FILE_ATTRIBUTES)
+    {
+        create_default_config();
+    }
+
+    strcat(config_path, "\\config.ini");
+
+    LPCSTR ini = config_path;
+    char save_file_str[MAX_FILE_PATH_CHAR];
+    GetPrivateProfileString("app", "SAVE_FILE_DIR", 0, save_file_str, MAX_FILE_PATH_CHAR, ini);
+
+    char disable_random_ivs_on_trade[MAX_FILE_PATH_CHAR];
+    GetPrivateProfileString("app", "DISABLE_RANDOM_IVS_ON_TRADE", 0, disable_random_ivs_on_trade, MAX_FILE_PATH_CHAR, ini);
+
+    char item_required_evolutions[MAX_FILE_PATH_CHAR];
+    GetPrivateProfileString("app", "ITEM_REQUIRED_EVOLUTIONS", 0, item_required_evolutions, MAX_FILE_PATH_CHAR, ini);
+
+    return (struct config_data){
+        .save_file_dir = save_file_str,
+        .disable_random_ivs_on_trade = disable_random_ivs_on_trade,
+        .item_required_evolutions = item_required_evolutions,
+    };
 }
 void write_to_log(const char *msg, const uint8_t message_type)
 {
-    return;
+    FILE *fp;
+
+    char config_path[MAX_FILE_PATH_CHAR];
+    strcpy(config_path, getenv("USERPROFILE"));
+    strcat(config_path, USR_DATA_DIR);
+    strcat(config_path, "\\logs");
+
+    char date[20];
+    char time_str[20];
+    time_t now = time(NULL);
+    struct tm t;
+    localtime_s(&t, &now);
+
+    strftime(date, sizeof(date) - 1, "%Y-%m-%d", &t);
+    strftime(time_str, sizeof(time_str) - 1, "%H:%M:%S", &t);
+
+    switch (message_type)
+    {
+    case E_LOG_MESSAGE_TYPE_ERROR:
+        strcat(config_path, "\\error-log@");
+        break;
+    case E_LOG_MESSAGE_TYPE_INFO:
+        strcat(config_path, "\\info-log@");
+        break;
+    default:
+        strcat(config_path, "\\log@");
+        break;
+    }
+    strcat(config_path, date);
+    strcat(config_path, ".txt");
+
+    fp = fopen(config_path, "a+");
+
+    if (fp == NULL)
+    {
+        printf("Error %d creating file!\n", GetLastError());
+        exit(GetLastError());
+    }
+
+    fputs(time_str, fp);
+    fputs(": ", fp);
+    fputs(msg, fp);
+    fputs("\n", fp);
+
+    fclose(fp);
+}
+int delete_app_data(void)
+{
+    char config_path[MAX_FILE_PATH_CHAR];
+    strcpy(config_path, getenv("USERPROFILE"));
+    strcat(config_path, USR_DATA_DIR);
+
+    // Delete config.ini
+    char config_file[MAX_FILE_PATH_CHAR];
+    strcpy(config_file, config_path);
+    strcat(config_file, "\\config.ini");
+    remove(config_file);
+
+    // Delete all .sav files in saves/
+    char saves_dir[MAX_FILE_PATH_CHAR];
+    strcpy(saves_dir, config_path);
+    strcat(saves_dir, "\\saves");
+
+    WIN32_FIND_DATA find_file_data;
+    HANDLE hFind;
+    LPCSTR saves[MAX_FILE_PATH_CHAR];
+    strcpy(saves, saves_dir);
+    strcat(saves, "\\*.sav");
+
+    hFind = FindFirstFile(saves, &find_file_data);
+
+    if (hFind == INVALID_HANDLE_VALUE)
+    {
+        printf("Empty (saves) (%d)\n", GetLastError());
+    }
+    else
+    {
+        do
+        {
+            // hfind contains .sav extension
+            if (strstr(find_file_data.cFileName, ".sav") == NULL)
+            {
+                continue;
+            }
+
+            // Combine the base path and file name
+            char full_path[MAX_FILE_PATH_CHAR];
+            sprintf(full_path, "%s/%s", saves_dir, find_file_data.cFileName);
+            // Delete file
+            remove(full_path);
+            unlink(full_path);
+        } while (FindNextFile(hFind, &find_file_data) != 0);
+        FindClose(hFind);
+    }
+
+    // Delete saves/ directory
+    int status = rmdir(saves_dir);
+    if (status == -1)
+    {
+        printf("Error deleting saves directory: %d\n", GetLastError());
+    }
+
+    // Delete logs/ directory
+    char logs_dir[MAX_FILE_PATH_CHAR];
+    strcpy(logs_dir, config_path);
+    strcat(logs_dir, "\\logs");
+
+    LPCSTR logs[MAX_FILE_PATH_CHAR];
+    strcpy(logs, logs_dir);
+    strcat(logs, "\\*.txt");
+
+    hFind = FindFirstFileA(logs, &find_file_data);
+
+    if (hFind == INVALID_HANDLE_VALUE)
+    {
+        printf("Empty (logs) (%d)\n", GetLastError());
+    }
+    else
+    {
+        do
+        {
+            // Combine the base path and file name
+            char full_path[MAX_FILE_PATH_CHAR];
+            sprintf(full_path, "%s/%s", logs_dir, find_file_data.cFileName);
+
+            // Delete file
+            remove(full_path);
+            unlink(full_path);
+        } while (FindNextFile(hFind, &find_file_data) != 0);
+        FindClose(hFind);
+    }
+
+    // Delete logs/ directory
+    status = rmdir(logs_dir);
+    if (status == -1)
+    {
+        printf("Error deleting logs directory: %d\n", GetLastError());
+    }
+
+    // Delete PokeromTrader/ directory
+    status = rmdir(config_path);
+    if (status == -1)
+    {
+        printf("Error deleting PokeromTrader directory: %d\n", GetLastError());
+    }
+
+    return 0;
+}
+
+void init_settings_from_config(struct SaveFileData *save_file_data)
+{
+    // Read and save the saves file directory from config.ini
+    struct config_data config_data = read_key_from_config();
+
+    char *save_file_dir = malloc(strlen(config_data.save_file_dir) + 1);
+    if (save_file_dir != NULL)
+    {
+        strcpy(save_file_dir, config_data.save_file_dir);
+        strcpy((char *)save_file_data->save_dir, save_file_dir);
+    }
+    else
+    {
+        strcpy((char *)save_file_data->save_dir, "DIR_NOT_SET");
+    }
+
+    set_is_random_DVs_disabled(strcmp(config_data.disable_random_ivs_on_trade, "false"));
+    set_is_item_required(strcmp(config_data.item_required_evolutions, "false"));
+
+    free(save_file_dir);
 }
 
 #else
@@ -390,27 +694,6 @@ int delete_app_data(void)
     return 0;
 }
 
-void init_settings_from_config(struct SaveFileData *save_file_data)
-{
-    // Read and save the saves file directory from config.ini
-    char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
-    
-    if (config_save_path != NULL)
-    {
-        strcpy((char *)save_file_data->save_dir, config_save_path);
-    } else {
-        strcpy((char *)save_file_data->save_dir, "DIR_NOT_SET");
-    }
-
-    // Read and save the disable random setting from config.ini
-    set_is_random_DVs_disabled(strcmp(read_key_from_config("DISABLE_RANDOM_IVS_ON_TRADE"), "false"));
-    // Read and save the item required evolutions setting from config.ini
-    set_is_item_required(strcmp(read_key_from_config("ITEM_REQUIRED_EVOLUTIONS"), "false"));
-
-    // malloc'd from read_key_from_config
-    free(config_save_path);
-}
-
 void write_to_log(const char *msg, const uint8_t message_type)
 {
     FILE *fp;
@@ -442,7 +725,7 @@ void write_to_log(const char *msg, const uint8_t message_type)
     }
     strcat(cwd, date);
     strcat(cwd, ".txt");
-    
+
     fp = fopen(cwd, "a+");
 
     if (fp == NULL)
@@ -457,6 +740,29 @@ void write_to_log(const char *msg, const uint8_t message_type)
     fputs("\n", fp);
 
     fclose(fp);
+}
+
+void init_settings_from_config(struct SaveFileData *save_file_data)
+{
+    // Read and save the saves file directory from config.ini
+    char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
+
+    if (config_save_path != NULL)
+    {
+        strcpy((char *)save_file_data->save_dir, config_save_path);
+    }
+    else
+    {
+        strcpy((char *)save_file_data->save_dir, "DIR_NOT_SET");
+    }
+
+    // Read and save the disable random setting from config.ini
+    set_is_random_DVs_disabled(strcmp(read_key_from_config("DISABLE_RANDOM_IVS_ON_TRADE"), "false"));
+    // Read and save the item required evolutions setting from config.ini
+    set_is_item_required(strcmp(read_key_from_config("ITEM_REQUIRED_EVOLUTIONS"), "false"));
+
+    // malloc'd from read_key_from_config
+    free(config_save_path);
 }
 
 #endif

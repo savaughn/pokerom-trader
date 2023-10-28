@@ -10,6 +10,7 @@ on:
 
 jobs:
   build_x64:
+    # if: false  # This workflow is disabled
     runs-on: macos-latest
     strategy:
       matrix:
@@ -64,6 +65,7 @@ jobs:
         path: build/  # Specify the directory containing your build artifacts
 
   build_arm64:
+    # if: false  # This workflow is disabled
     runs-on: macos-latest
     strategy:
       matrix:

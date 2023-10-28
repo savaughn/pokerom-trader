@@ -45,6 +45,7 @@ struct TrainerSelection
 };
 
 typedef enum {
+    SCREEN_ERROR = -1,
     SCREEN_FILE_SELECT,
     SCREEN_TRADE,
     SCREEN_MAIN_MENU,
@@ -123,5 +124,10 @@ enum textures {
         T_POKEBALL_3,
         T_COUNT
     };
+
+enum file_op_results {
+    FILE_OP_FAILURE = 0,
+    FILE_OP_SUCCESS
+};
 
 #endif // COMMON_H

@@ -7,8 +7,14 @@
 
 int error_handler(enum pksav_error error, const char *message)
 {
+    if (error == PKSAV_ERROR_NONE)
+    {
+        return 0;
+    }
     printf("%s\n", message);
-    write_to_log(message, E_LOG_MESSAGE_TYPE_ERROR);
+    char error_message[100];
+    sprintf(error_message, "Error code: %d %s", error, message);
+    write_to_log(error_message, E_LOG_MESSAGE_TYPE_ERROR);
     return 0;
 }
 

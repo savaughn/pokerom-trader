@@ -12,7 +12,7 @@ void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_sc
     static char input_text[MAX_FILE_PATH_CHAR];
     static int text_size = 0;
     static bool has_shown_placeholder = false;
-    static int err = 0;
+    static enum file_op_results file_op_result = FILE_OP_FAILURE;
     char input_text_backup[MAX_FILE_PATH_CHAR];
     enum screen_buttons
     {
@@ -110,7 +110,7 @@ void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_sc
         DrawText("Save!", save_button_rec.x, save_button_rec.y, 30, text_size ? BLACK : LIGHTGRAY);
     }
 
-    if (err == 1)
+    if (errno != 0)
         error_handler(0, TextFormat("error writing config %d", errno));
 
     const Rectangle back_button_rec = (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT};
@@ -159,8 +159,8 @@ void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_sc
         case SCREEN_BUTTON_SAVE:
             if (CheckCollisionPointRec(GetMousePosition(), save_button_rec) && text_size > 0)
             {
-                err = write_key_to_config("SAVE_FILE_DIR", input_text);
-                if (err == 0)
+                file_op_result = write_key_to_config("SAVE_FILE_DIR", input_text);
+                if (file_op_result == FILE_OP_SUCCESS)
                 {
                     strcpy((char *)save_file_data->save_dir, input_text);
                     save_file_data->num_saves = 0;
@@ -180,7 +180,7 @@ void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_sc
                 text_size = 0;
                 editing_text = true;
                 has_shown_placeholder = true;
-                err = 0;
+                file_op_result = FILE_OP_FAILURE;
                 has_pressed_clear = true;
                 selected_index = SCREEN_BUTTON_NONE;
             }

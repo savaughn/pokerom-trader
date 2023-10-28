@@ -175,14 +175,14 @@ endif
 #------------------------------------------------------------------------------------------------
 MAKE ?= make
 
-ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-    ifeq ($(PLATFORM_OS),WINDOWS)
-        MAKE = mingw32-make
-    endif
-endif
-ifeq ($(PLATFORM),PLATFORM_ANDROID)
-    MAKE = mingw32-make
-endif
+# ifeq ($(PLATFORM),PLATFORM_DESKTOP)
+#     ifeq ($(PLATFORM_OS),WINDOWS)
+#         MAKE = mingw32-make
+#     endif
+# endif
+# ifeq ($(PLATFORM),PLATFORM_ANDROID)
+#     MAKE = mingw32-make
+# endif
 
 # Define compiler flags: CFLAGS
 #------------------------------------------------------------------------------------------------
