@@ -71,11 +71,15 @@ void draw_raylib_screen_loop(
     static bool is_same_generation = true;
     static bool should_close_window = false;
     bool is_build_prerelease = strcmp(PROJECT_VERSION_TYPE, "prerelease") == 0;
-    Texture2D textures[19];
+    Texture2D textures[19] = {
+        [0 ... 18] = {
+            .id = 0}};
 
 #if defined(__APPLE__)
     if (CI_BUILD)
+    {
         get_mac_resource_images_path();
+    }
 #endif
 
     // while textures are loading
@@ -87,25 +91,39 @@ void draw_raylib_screen_loop(
         EndDrawing();
 
         if (textures[T_LOGO].id == 0)
+        {
             textures[T_LOGO] = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
+        }
         if (textures[T_TRADE].id == 0)
+        {
             textures[T_TRADE] = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
+        }
         if (textures[T_EVOLVE].id == 0)
+        {
             textures[T_EVOLVE] = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
+        }
         if (textures[T_SETTINGS].id == 0)
+        {
             textures[T_SETTINGS] = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
+        }
         if (textures[T_QUIT].id == 0)
+        {
             textures[T_QUIT] = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
+        }
 
         for (int i = T_CONSOLE_0; i < T_POKEBALL_0; i++)
         {
             if (textures[i].id == 0)
+            {
                 textures[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/Pixel_Fantasy_Icons_Consoles/Consoles/console_%d.png", i - T_CONSOLE_0)));
+            }
         }
         for (int i = T_POKEBALL_0; i < T_POKEBALL_3 + 1; i++)
         {
             if (textures[i].id == 0)
+            {
                 textures[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/pokeballs_MPR/ball_%d.png", i - T_POKEBALL_0)));
+            }
         }
     }
 
