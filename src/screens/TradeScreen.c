@@ -10,8 +10,8 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    draw_trainer_info(trainer1, 50, 50, trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
-    draw_trainer_info(trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection, save_player2->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+    draw_trainer_info(trainer1, 50, 50, trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL, *is_same_generation);
+    draw_trainer_info(trainer2, GetScreenWidth() / 2 + 50, 50, trainerSelection, save_player2->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL, *is_same_generation);
     uint8_t canSubmitTrade = trainerSelection[0].pkmn_party_index != -1 && trainerSelection[1].pkmn_party_index != -1;
     DrawText("Trade!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, canSubmitTrade ? BLACK : LIGHTGRAY);
     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && canSubmitTrade)
