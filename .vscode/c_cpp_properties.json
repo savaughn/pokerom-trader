@@ -20,6 +20,25 @@
             "cppStandard": "c++17",
             "intelliSenseMode": "macos-gcc-arm",
             "configurationProvider": "ms-vscode.makefile-tools"
+        },
+        {
+            "name": "linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/deps/pksav/include",
+                "${workspaceFolder}/deps/raylib/src",
+                "${workspaceFolder}/deps/pksav/build/include/pksav"
+            ],
+            "defines": [
+                "PROJECT_VERSION",
+                "PROJECT_VERSION_TYPE",
+                "CI_BUILD"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64"
         }
     ],
     "version": 4

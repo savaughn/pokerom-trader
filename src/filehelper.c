@@ -423,7 +423,7 @@ void write_to_log(const char *msg, const uint8_t message_type)
     char date[20];
     char time_str[20];
     time_t now = time(NULL);
-    struct tm *t = localtime(&now);
+    const struct tm *t = localtime(&now);
 
     strftime(date, sizeof(date) - 1, "%Y-%m-%d", t);
     strftime(time_str, sizeof(time_str) - 1, "%H:%M:%S", t);
