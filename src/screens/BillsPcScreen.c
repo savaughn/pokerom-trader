@@ -10,7 +10,7 @@ void draw_bills_pc(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *
     ClearBackground(RAYWHITE);
     DrawText("Bill's PC", 50, 50, 20, BLACK);
 
-    draw_trainer_info(trainer, 50, 100, trainerSelection, pkmn_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL);
+    draw_trainer_info(trainer, 50, 100, trainerSelection, pkmn_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL, true);
 
     // Draw a veritcal box to the right of the trainer info
     // labeled box n where n is the box number

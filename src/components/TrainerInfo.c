@@ -1,8 +1,9 @@
 #include "raylibhelper.h"
 #include "pksavhelper.h"
+#include <stdio.h>
 
 // Draws the trainers name, id, and party pokemon in pokemon buttons
-void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool showGender)
+void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool showGender, bool is_same_generation)
 {
     // Get trainer generation 1 or 2
     SaveGenerationType trainer_generation = trainer->trainer_generation;
@@ -31,7 +32,11 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
     // Draw the pokemon buttons
     for (int party_index = 0; party_index < party_count; party_index++)
     {
-        enum eligible_trade_status trade_status = check_trade_eligibility(trainer, party_index);
+        enum eligible_trade_status trade_status = E_TRADE_STATUS_ELIGIBLE;
+        if (!is_same_generation)
+        {
+            trade_status = check_trade_eligibility(trainer, party_index);
+        }
 
         char pokemon_nickname[11] = "\0";
         if (trainer_generation == SAVE_GENERATION_1)
