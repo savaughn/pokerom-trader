@@ -1,8 +1,7 @@
 #include "filehelper.h"
-#include <string.h>
 #ifdef _WIN32
 #include <errno.h>
-#include <windows.h>
+#include <Windows.h>
 #include <tchar.h>
 #include <stdint.h>
 #include <time.h>
@@ -52,7 +51,7 @@ int get_save_files(struct SaveFileData *save_data)
             sprintf(full_path, "%s/%s", save_dir, find_file_data.cFileName);
 
             // Get the absolute path
-            char* absolute_path = _fullpath(NULL, full_path, MAX_FILE_PATH_CHAR);
+            char *absolute_path = _fullpath(NULL, full_path, MAX_FILE_PATH_CHAR);
             if (absolute_path)
             {
                 save_data->saves_file_path[num_saves] = absolute_path;
@@ -143,55 +142,28 @@ void create_default_config(bool overwrite)
 
     fclose(fp);
 }
-char *read_key_from_config(const char *key)
+struct config_data read_key_from_config(void)
 {
-    FILE *fp;
-    char *line = NULL;
-    size_t len = 0;
-    char *value = NULL;
-
     char config_path[MAX_FILE_PATH_CHAR];
     strcpy(config_path, getenv("USERPROFILE"));
     strcat(config_path, USR_DATA_DIR);
     strcat(config_path, "\\config.ini");
 
-    fp = fopen(config_path, "r");
+    LPCSTR ini = config_path;
+    char save_file_str[MAX_FILE_PATH_CHAR];
+    GetPrivateProfileString("app", "SAVE_FILE_DIR", 0, save_file_str, MAX_FILE_PATH_CHAR, ini);
 
-    // If missing, then create
-    if (fp == NULL)
-    {
-        create_default_config(false);
+    char disable_random_ivs_on_trade[MAX_FILE_PATH_CHAR];
+    GetPrivateProfileString("app", "DISABLE_RANDOM_IVS_ON_TRADE", 0, disable_random_ivs_on_trade, MAX_FILE_PATH_CHAR, ini);
 
-        // open after creation
-        fp = fopen(config_path, "r");
-    }
+    char item_required_evolutions[MAX_FILE_PATH_CHAR];
+    GetPrivateProfileString("app", "ITEM_REQUIRED_EVOLUTIONS", 0, item_required_evolutions, MAX_FILE_PATH_CHAR, ini);
 
-    while(fgets(line, 1001, fp) != NULL)
-    {
-        // if the line starts with a # or newline, skip it
-        if (line[0] == '#' || line[0] == '\n')
-        {
-            continue;
-        }
-
-        char *token = strtok(line, "=");
-        if (strcmp(token, key) == 0)
-        {
-            token = strtok(NULL, "=");
-            value = malloc(strlen(token) + 1);
-            // remove newline from end of token
-            token[strcspn(token, "\n")] = 0;
-            strcpy(value, token);
-            break;
-        }
-    }
-
-    fclose(fp);
-    if (line)
-    {
-        free(line);
-    }
-    return value;
+    return (struct config_data) {
+        .save_file_dir = save_file_str,
+        .disable_random_ivs_on_trade = disable_random_ivs_on_trade,
+        .item_required_evolutions = item_required_evolutions,
+    };
 }
 
 void write_to_log(const char *msg, const uint8_t message_type)
@@ -240,10 +212,6 @@ void write_to_log(const char *msg, const uint8_t message_type)
     fputs("\n", fp);
 
     fclose(fp);
-}
-int delete_app_data(void)
-{
-    return 0;
 }
 int delete_app_data(void)
 {
@@ -629,7 +597,7 @@ void write_to_log(const char *msg, const uint8_t message_type)
     }
     strcat(cwd, date);
     strcat(cwd, ".txt");
-    
+
     fp = fopen(cwd, "a+");
 
     if (fp == NULL)
@@ -651,22 +619,21 @@ void write_to_log(const char *msg, const uint8_t message_type)
 void init_settings_from_config(struct SaveFileData *save_file_data)
 {
     // Read and save the saves file directory from config.ini
-    char *config_save_path = read_key_from_config("SAVE_FILE_DIR");
-    
-    if (config_save_path != NULL)
+    struct config_data config_data = read_key_from_config();
+
+    char *save_file_dir = malloc(strlen(config_data.save_file_dir) + 1);
+    if (save_file_dir != NULL)
     {
-        strcpy((char *)save_file_data->save_dir, config_save_path);
+        strcpy(save_file_dir, config_data.save_file_dir);
+        strcpy((char *)save_file_data->save_dir, save_file_dir);
     } else {
         strcpy((char *)save_file_data->save_dir, "DIR_NOT_SET");
     }
 
-    // Read and save the disable random setting from config.ini
-    set_is_random_DVs_disabled(strcmp(read_key_from_config("DISABLE_RANDOM_IVS_ON_TRADE"), "false"));
-    // Read and save the item required evolutions setting from config.ini
-    set_is_item_required(strcmp(read_key_from_config("ITEM_REQUIRED_EVOLUTIONS"), "false"));
+    set_is_random_DVs_disabled(strcmp(config_data.disable_random_ivs_on_trade, "false"));
+    set_is_item_required(strcmp(config_data.item_required_evolutions, "false"));
 
-    // malloc'd from read_key_from_config
-    free(config_save_path);
+    free(save_file_dir);
 }
 
 void free_filehelper_pointers(void)

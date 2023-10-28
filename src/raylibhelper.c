@@ -75,6 +75,8 @@ void draw_raylib_screen_loop(
         [0 ... 18] = {
             .id = 0}};
 
+    char error_message[100] = "Something went wrong";
+
 #if defined(__APPLE__)
     if (CI_BUILD)
     {
@@ -83,11 +85,13 @@ void draw_raylib_screen_loop(
 #endif
 
     // while textures are loading
-    while (textures[0].id == 0 || textures[1].id == 0 || textures[2].id == 0 || textures[3].id == 0 || textures[4].id == 0)
+    int texture_load_loop_limit = 3;
+    int texture_loop_count = 0;
+    while (texture_loop_count <= texture_load_loop_limit && (textures[0].id == 0 || textures[1].id == 0 || textures[2].id == 0 || textures[3].id == 0 || textures[4].id == 0))
     {
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawText("Loading...", 20, 20, 20, WHITE);
+        DrawText("Loading Textures...", 20, 20, 20, WHITE);
         EndDrawing();
 
         if (textures[T_LOGO].id == 0)
@@ -124,6 +128,13 @@ void draw_raylib_screen_loop(
             {
                 textures[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/pokeballs_MPR/ball_%d.png", i - T_POKEBALL_0)));
             }
+        }
+
+        texture_loop_count++;
+        if (texture_loop_count >= texture_load_loop_limit)
+        {
+            current_screen = SCREEN_ERROR;
+            strcpy(error_message, "Failed to load textures. Is asset folder with exe?");
         }
     }
 
@@ -171,7 +182,7 @@ void draw_raylib_screen_loop(
         default:
             BeginDrawing();
             ClearBackground(BACKGROUND_COLOR);
-            DrawText("Something went wrong", SCREEN_CENTER("Something went wrong", 20).x, SCREEN_CENTER("Something went wrong", 20).y, 20, BLACK);
+            DrawText(error_message, SCREEN_CENTER(error_message, 20).x, SCREEN_CENTER(error_message, 20).y, 20, BLACK);
             DrawText("Press ESC key to exit!", SCREEN_CENTER("Press ESC key to exit!", 20).x, SCREEN_CENTER("Press ESC key to exit!", 20).x + 50, 20, BLACK);
             EndDrawing();
             // Escape key to close window

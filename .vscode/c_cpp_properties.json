@@ -48,7 +48,10 @@
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE"
+                "_UNICODE",
+                "PROJECT_VERSION",
+                "PROJECT_VERSION_TYPE",
+                "CI_BUILD"
             ],
             "windowsSdkVersion": "10.0.18362.0",
             "compilerPath": "C:/w64devkit/bin/gcc.exe",

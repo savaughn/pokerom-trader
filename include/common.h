@@ -45,6 +45,7 @@ struct TrainerSelection
 };
 
 typedef enum {
+    SCREEN_ERROR = -1,
     SCREEN_FILE_SELECT,
     SCREEN_TRADE,
     SCREEN_MAIN_MENU,
