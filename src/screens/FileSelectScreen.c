@@ -108,7 +108,8 @@ void DrawSaveFileContainer(PokemonSave *pkmn_save, char *save_name, Rectangle co
     DrawRectangleLinesEx((Rectangle){container_rec.x - 3, container_rec.y - 3, container_rec.width + 6, container_rec.height + 6}, 3, WHITE);
     DrawRectangleLinesEx((Rectangle){container_rec.x, container_rec.y, container_rec.width, container_rec.height}, 1, BLACK);
 
-    if (is_selected) {
+    if (is_selected)
+    {
         DrawRectangleGradientH(container_rec.x, container_rec.y, 200, container_rec.height, (Color){0, 0, 0, 175}, (Color){0, 0, 0, 0});
         DrawRectangleGradientH(container_rec.x + container_rec.width - 200, container_rec.y, 200, container_rec.height, (Color){0, 0, 0, 0}, (Color){0, 0, 0, 175});
     }
@@ -156,6 +157,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
         int corrupted_count = 0;
         static int y_offset = 75;
         static int banner_position_offset = 0;
+        const Rectangle bottom_bar_rec = (Rectangle){0, SCREEN_HEIGHT - 50, SCREEN_WIDTH, 100};
 
         // Load save files once
         for (int i = 0; i < save_file_data->num_saves; i++)
@@ -173,45 +175,50 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
             static int mouses_down_index = -1;
             static bool is_moving_scroll = false;
             bool is_corrupted = pkmn_saves[i].save_generation_type == SAVE_GENERATION_CORRUPTED;
-            if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !is_moving_scroll)
+            const Rectangle save_file_rec = (Rectangle){SCREEN_WIDTH / 2 - (SCREEN_WIDTH - 50) / 2, y_offset + (93 * i) - (60 * corrupted_count), SCREEN_WIDTH - 50, 80};
+            if (!CheckCollisionPointRec(GetMousePosition(), bottom_bar_rec))
             {
-                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){SCREEN_WIDTH / 2 - (SCREEN_WIDTH - 50) / 2, y_offset + (93 * i) - (60 * corrupted_count), SCREEN_WIDTH - 50, 80}) && !is_corrupted)
+                if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !is_moving_scroll)
                 {
-                    mouses_down_index = i;
 
-                    pkmn_save_player1->save_generation_type = SAVE_GENERATION_NONE;
-                    pkmn_save_player2->save_generation_type = SAVE_GENERATION_NONE;
-                    has_file_error = false;
-                }
-            }
-
-            if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsKeyDown(KEY_UP) || IsKeyDown(KEY_DOWN))
-            {
-                float mouse_delta = GetMouseDelta().y;
-                int height = save_file_data->num_saves * 93 - 60 * corrupted_count;
-                if (mouse_delta >= 0.5 || mouse_delta <= -0.5)
-                {
-                    y_offset += GetMouseDelta().y * 0.1;
-                    y_offset = y_offset < -height * 0.25 ? -height * 0.25 : y_offset;
-                    y_offset = y_offset > 75 ? 75 : y_offset;
-                    mouses_down_index = -1;
-                    is_moving_scroll = true;
-                    if (y_offset < 50)
+                    if (CheckCollisionPointRec(GetMousePosition(), save_file_rec) && !is_corrupted)
                     {
-                        banner_position_offset = y_offset - 50;
+                        mouses_down_index = i;
+
+                        pkmn_save_player1->save_generation_type = SAVE_GENERATION_NONE;
+                        pkmn_save_player2->save_generation_type = SAVE_GENERATION_NONE;
+                        has_file_error = false;
                     }
                 }
-                else if (IsKeyDown(KEY_UP))
+
+                if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsKeyDown(KEY_UP) || IsKeyDown(KEY_DOWN))
                 {
-                    y_offset += 1;
-                    mouses_down_index = -1;
-                    is_moving_scroll = true;
-                }
-                else if (IsKeyDown(KEY_DOWN))
-                {
-                    y_offset -= 1;
-                    mouses_down_index = -1;
-                    is_moving_scroll = true;
+                    float mouse_delta = GetMouseDelta().y;
+                    int height = save_file_data->num_saves * 93 - 60 * corrupted_count;
+                    if (mouse_delta >= 0.5 || mouse_delta <= -0.5)
+                    {
+                        y_offset += GetMouseDelta().y * 0.1;
+                        y_offset = y_offset < -height * 0.25 ? -height * 0.25 : y_offset;
+                        y_offset = y_offset > 75 ? 75 : y_offset;
+                        mouses_down_index = -1;
+                        is_moving_scroll = true;
+                        if (y_offset < 50)
+                        {
+                            banner_position_offset = y_offset - 50;
+                        }
+                    }
+                    else if (IsKeyDown(KEY_UP))
+                    {
+                        y_offset += 1;
+                        mouses_down_index = -1;
+                        is_moving_scroll = true;
+                    }
+                    else if (IsKeyDown(KEY_DOWN))
+                    {
+                        y_offset -= 1;
+                        mouses_down_index = -1;
+                        is_moving_scroll = true;
+                    }
                 }
             }
 
@@ -246,13 +253,13 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
             if (is_corrupted)
             {
                 corrupted_count++;
-                DrawRectangle(25 + (SCREEN_WIDTH - 50) / 12, y_offset + (93 * i) -2, SCREEN_WIDTH - 50 - (2*(SCREEN_WIDTH - 50) / 12), 25, (Color){255, 255, 255, 125});
-                DrawRectangleGradientH(25, y_offset + (93 * i) -2, (SCREEN_WIDTH - 50) / 12, 25, (Color){255, 255, 255, 0}, (Color){255, 255, 255, 125});
-                DrawRectangleGradientH(SCREEN_WIDTH - 26 - (SCREEN_WIDTH - 50) / 12, y_offset + (93 * i) -2, (SCREEN_WIDTH - 50) / 12, 25, (Color){255, 255, 255, 125}, (Color){255, 255, 255, 0});
+                DrawRectangle(25 + (SCREEN_WIDTH - 50) / 12, y_offset + (93 * i) - 2, SCREEN_WIDTH - 50 - (2 * (SCREEN_WIDTH - 50) / 12), 25, (Color){255, 255, 255, 125});
+                DrawRectangleGradientH(25, y_offset + (93 * i) - 2, (SCREEN_WIDTH - 50) / 12, 25, (Color){255, 255, 255, 0}, (Color){255, 255, 255, 125});
+                DrawRectangleGradientH(SCREEN_WIDTH - 26 - (SCREEN_WIDTH - 50) / 12, y_offset + (93 * i) - 2, (SCREEN_WIDTH - 50) / 12, 25, (Color){255, 255, 255, 125}, (Color){255, 255, 255, 0});
                 DrawText(save_name, 100, y_offset + (93 * i) + 2, 20, DARKGRAY);
                 DrawText("save file invalid", 100 + MeasureText(save_name, 20) + 10, y_offset + (93 * i), 15, BLACK);
             }
-            DrawSaveFileContainer(&pkmn_saves[i], save_name, (Rectangle){SCREEN_WIDTH / 2 - (SCREEN_WIDTH - 50) / 2, y_offset + (93 * i) - (60 * corrupted_count), SCREEN_WIDTH - 50, 80}, (selected_saves_index[0] == i || selected_saves_index[1] == i));
+            DrawSaveFileContainer(&pkmn_saves[i], save_name, save_file_rec, (selected_saves_index[0] == i || selected_saves_index[1] == i));
         }
         // Reset generation check
         if (!*is_same_generation)
@@ -260,22 +267,24 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
             *is_same_generation = selected_saves_index[1] == -1;
         }
 
+        // Top Banner
         int text_width = MeasureText("Select two save files to trade between", 20);
         DrawRectangle(0, -10 + banner_position_offset, SCREEN_WIDTH, 50, WHITE);
-        // DrawRectangle(SCREEN_WIDTH / 2 - text_width / 2 - 15, -10 + banner_position_offset, text_width + 30, 50, WHITE);
-        // DrawRectangleLinesEx((Rectangle){SCREEN_WIDTH / 2 - text_width / 2 - 15, -10 + banner_position_offset, text_width + 30, 50}, 5, BLACK);
         DrawLineEx((Vector2){0, 45 + banner_position_offset}, (Vector2){SCREEN_WIDTH, 45 + banner_position_offset}, 15, BLACK);
         DrawText("Select two save files to trade between", SCREEN_WIDTH / 2 - text_width / 2, 10 + banner_position_offset, 20, BLACK);
 
-        DrawRectangle(0, SCREEN_HEIGHT - 50, SCREEN_WIDTH, 100, WHITE);
-        DrawLineEx((Vector2){0, SCREEN_HEIGHT - 50}, (Vector2){SCREEN_WIDTH, SCREEN_HEIGHT - 50}, 15, BLACK);
-        
-        DrawText("Trade >", NEXT_BUTTON_X, NEXT_BUTTON_Y + 15, 20, has_selected_two_saves && *is_same_generation ? BLACK : LIGHTGRAY);
+        // Bottom bar
+        DrawRectangleRec(bottom_bar_rec, WHITE);
+        DrawLineEx((Vector2){bottom_bar_rec.x, bottom_bar_rec.y}, (Vector2){bottom_bar_rec.width, bottom_bar_rec.y}, 15, BLACK);
+
+        const Rectangle trade_button_rec = (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y + 8, BUTTON_WIDTH, BUTTON_HEIGHT};
+        DrawRectangleLinesEx(trade_button_rec, 2, GREEN);
+        DrawText("Trade >", trade_button_rec.x + 15, trade_button_rec.y + 7, 20, has_selected_two_saves && *is_same_generation ? BLACK : LIGHTGRAY);
         if (has_selected_two_saves)
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
-                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 15, BUTTON_WIDTH, BUTTON_HEIGHT}))
+                if (CheckCollisionPointRec(GetMousePosition(), trade_button_rec))
                 {
                     // load selection to player1_save
                     *pkmn_save_player1 = pkmn_saves[selected_saves_index[0]];
@@ -304,6 +313,12 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                         selected_saves_index[0] = -1;
                         selected_saves_index[1] = -1;
                         has_file_error = false;
+
+                        // reset save files
+                        for (int i = 0; i < MAX_FILE_PATH_COUNT; i++)
+                        {
+                            pkmn_saves[i].save_generation_type = SAVE_GENERATION_NONE;
+                        }
                     }
                 }
             }
@@ -314,9 +329,11 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
         }
     }
 
-    // Add back button
-    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y + 15, 20, BLACK);
-    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 15, BUTTON_WIDTH, BUTTON_HEIGHT}))
+    // Back button
+    const Rectangle back_button_rec = (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y + 8, BUTTON_WIDTH, BUTTON_HEIGHT};
+    DrawRectangleLinesEx(back_button_rec, 2, GREEN);
+    DrawText("< Back", back_button_rec.x + 15, back_button_rec.y + 7, 20, BLACK);
+    if (CheckCollisionPointRec(GetMousePosition(), back_button_rec))
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -325,13 +342,21 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
             selected_saves_index[1] = -1;
             trainer1->trainer_id = 0;
             trainer2->trainer_id = 0;
+
+            // reset save files
+            for (int i = 0; i < MAX_FILE_PATH_COUNT; i++)
+            {
+                pkmn_saves[i].save_generation_type = SAVE_GENERATION_NONE;
+            }
         }
     }
 
-    // change directory button between back and next buttons in line horizontally centered vertically
+    // change directory button
     int button_width = MeasureText("Change Save Directory", 20) + 20;
-    DrawText("Change Save Directory", SCREEN_WIDTH / 2 - button_width / 2, BACK_BUTTON_Y + 15, 20, BLACK);
-    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){SCREEN_WIDTH / 2 - button_width / 2 - 10, BACK_BUTTON_Y - 15, button_width, BUTTON_HEIGHT}))
+    const Rectangle change_dir_button = (Rectangle){SCREEN_WIDTH / 2 - button_width / 2, BACK_BUTTON_Y + 8, button_width, BUTTON_HEIGHT};
+    DrawRectangleLinesEx(change_dir_button, 2, GREEN);
+    DrawText("Change Save Directory", change_dir_button.x + 10, change_dir_button.y + 10, 20, BLACK);
+    if (CheckCollisionPointRec(GetMousePosition(), change_dir_button))
     {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -340,6 +365,12 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
             selected_saves_index[1] = -1;
             trainer1->trainer_id = 0;
             trainer2->trainer_id = 0;
+
+            // reset save files
+            for (int i = 0; i < MAX_FILE_PATH_COUNT; i++)
+            {
+                pkmn_saves[i].save_generation_type = SAVE_GENERATION_NONE;
+            }
         }
     }
 
