@@ -243,6 +243,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
     } ui_selection = E_UI_NONE;
     static bool is_moving_scroll = false;
     static int y_offset = 75;
+    static int banner_position_offset = 0;
 
     BeginDrawing();
     ClearBackground(COLOR_PKMN_RED);
@@ -254,7 +255,6 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
     else
     {
         int corrupted_count = 0;
-        static int banner_position_offset = 0;
 
         // Load save files once
         load_display_files(save_file_data, pkmn_saves);
@@ -374,6 +374,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                 }
                 ui_selection = E_UI_NONE;
                 y_offset = 75;
+                banner_position_offset = 0;
             }
             else
             {
@@ -396,6 +397,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                 }
                 ui_selection = E_UI_NONE;
                 y_offset = 75;
+                banner_position_offset = 0;
             }
             else
             {
@@ -418,6 +420,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                 }
                 ui_selection = E_UI_NONE;
                 y_offset = 75;
+                banner_position_offset = 0;
             }
             else
             {
