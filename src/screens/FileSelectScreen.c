@@ -1,6 +1,9 @@
 #include "raylibhelper.h"
 #include "pksavfilehelper.h"
 
+#define new_max(x,y) (((x) >= (y)) ? (x) : (y))
+#define new_min(x,y) (((x) <= (y)) ? (x) : (y))
+
 static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT] = {
     [0 ... MAX_FILE_PATH_COUNT - 1] = {
         .save_generation_type = SAVE_GENERATION_NONE,
@@ -117,9 +120,9 @@ void DrawSaveFileContainer(PokemonSave *pkmn_save, char *save_name, Rectangle co
 
 void draw_corrupted_save(const char *save_name, const int y_offset, const int index, const int corrupted_count)
 {
-    DrawRectangle(25 + (SCREEN_WIDTH - 50) / 12, y_offset + (93 * index) - (60 * corrupted_count) - 2, SCREEN_WIDTH - 50 - (2 * (SCREEN_WIDTH - 50) / 12), 25, (Color){255, 255, 255, 125});
-    DrawRectangleGradientH(25, y_offset + (93 * index) - (60 * corrupted_count) - 2, (SCREEN_WIDTH - 50) / 12, 25, (Color){255, 255, 255, 0}, (Color){255, 255, 255, 125});
-    DrawRectangleGradientH(SCREEN_WIDTH - 26 - (SCREEN_WIDTH - 50) / 12, y_offset + (93 * index) - (60 * corrupted_count) - 2, (SCREEN_WIDTH - 50) / 12, 25, (Color){255, 255, 255, 125}, (Color){255, 255, 255, 0});
+    DrawRectangle(30 + (SCREEN_WIDTH - 50) / 12, y_offset + (93 * index) - (60 * corrupted_count) - 2, SCREEN_WIDTH - 60 - (2 * (SCREEN_WIDTH - 50) / 12), 25, (Color){255, 255, 255, 125});
+    DrawRectangleGradientH(30, y_offset + (93 * index) - (60 * corrupted_count) - 2, (SCREEN_WIDTH - 50) / 12, 25, (Color){255, 255, 255, 0}, (Color){255, 255, 255, 125});
+    DrawRectangleGradientH(SCREEN_WIDTH - 31 - (SCREEN_WIDTH - 50) / 12, y_offset + (93 * index) - (60 * corrupted_count) - 2, (SCREEN_WIDTH - 50) / 12, 25, (Color){255, 255, 255, 125}, (Color){255, 255, 255, 0});
     DrawText(save_name, 100, y_offset + (93 * index) - (60 * corrupted_count) + 2, 20, DARKGRAY);
     DrawText("save file invalid", 100 + MeasureText(save_name, 20) + 10, y_offset + (93 * index) - (60 * corrupted_count), 15, BLACK);
 }
@@ -154,22 +157,40 @@ void load_display_files(struct SaveFileData *save_file_data, PokemonSave *pkmn_s
     }
 }
 
+void draw_pokeball_scroll(float scroll_position, float transparency)
+{
+    DrawCircleGradient(SCREEN_WIDTH - 10, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), 10, (Color){0, 0, 0, transparency}, (Color){0, 0, 0, 0});
+    DrawCircle(SCREEN_WIDTH - 10, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), 5, (Color){255, 255, 255, transparency});
+    DrawCircleSector((Vector2){SCREEN_WIDTH - 10, 74 + (scroll_position * (SCREEN_HEIGHT - 150))}, 5, 0, -180, 6, (Color){ 230, 41, 55, transparency});
+    DrawCircle(SCREEN_WIDTH - 10, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), 2, (Color){ 0, 0, 0, transparency});
+    DrawLine(SCREEN_WIDTH - 10 - 5, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), SCREEN_WIDTH - 10 + 5, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), (Color){0, 0, 0, transparency});
+    DrawCircle(SCREEN_WIDTH - 10, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), 1, (Color){ 255, 255, 255, transparency});
+}
+
 void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_count, int *mouses_down_index, bool *is_moving_scroll, int *banner_position_offset)
 {
+    const uint8_t box_height = 93;
+    const uint8_t num_visible = 4;
+    const int height = num_saves * box_height - 60 * corrupted_count;
+
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsKeyDown(KEY_UP) || IsKeyDown(KEY_DOWN))
     {
         float mouse_delta = GetMouseDelta().y;
-        int height = num_saves * 93 - 60 * corrupted_count;
+
         if (mouse_delta >= 0.5 || mouse_delta <= -0.5)
         {
-            *y_offset += GetMouseDelta().y * 0.1;
-            *y_offset = *y_offset < -height * 0.25 ? -height * 0.25 : *y_offset;
+            *y_offset += GetMouseDelta().y;
+            *y_offset = *y_offset < -height + (num_visible * box_height) + (corrupted_count*25) ? -height + (num_visible * box_height) + (corrupted_count*25) : *y_offset;
             *y_offset = *y_offset > 75 ? 75 : *y_offset;
             *mouses_down_index = -1;
             *is_moving_scroll = true;
             if (*y_offset < 50)
             {
                 *banner_position_offset = *y_offset - 50;
+            }
+            else
+            {
+                *banner_position_offset = 0;
             }
         }
         else if (IsKeyDown(KEY_UP))
@@ -185,6 +206,42 @@ void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_
             *is_moving_scroll = true;
         }
     }
+
+    const int min_y = (height + (num_visible * box_height) + (corrupted_count*25)) - 75;
+    const int max_y = min_y + 75 - ( -height + (num_visible * box_height) + (corrupted_count*25));
+    const uint8_t t_max = 50;
+    const uint8_t t_min = 0;
+    const uint8_t t_rate = 5;
+    static uint8_t transparency = 0;
+
+
+    // scroll position indicator
+    float scroll_position = min_y + 75 - *y_offset;
+    scroll_position = (scroll_position - min_y) / (max_y - min_y);
+    scroll_position = scroll_position < 0 ? 0 : scroll_position;
+    scroll_position = scroll_position > 1 ? 1 : scroll_position;
+    if (*is_moving_scroll)
+    {
+        transparency += t_rate;
+        if (transparency > t_max)
+        {
+            transparency = t_max;
+        }
+        
+    }
+    else if (transparency > t_min)
+    {
+        transparency -= t_rate;
+        if (transparency < t_min)
+        {
+            transparency = t_min;
+        }
+    }
+
+    DrawRectangleGradientV(SCREEN_WIDTH - 20, 50, 20, SCREEN_HEIGHT/16, (Color){255,255,255, 0}, (Color){255,255,255, transparency});
+    DrawRectangle(SCREEN_WIDTH - 20, 50 + SCREEN_HEIGHT/16, 20, SCREEN_HEIGHT - 100 - 2*(SCREEN_HEIGHT/16), (Color){255,255,255, transparency});
+    DrawRectangleGradientV(SCREEN_WIDTH - 20, SCREEN_HEIGHT - 50 - SCREEN_HEIGHT/16, 20, SCREEN_HEIGHT/16, (Color){255,255,255, transparency}, (Color){255,255,255, 0});
+    draw_pokeball_scroll(scroll_position, (float)transparency * 5.1f);
 }
 
 void update_selected_indexes_with_selection(int *selected_saves_index, int *mouses_down_index, bool *is_moving_scroll)
@@ -255,6 +312,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
     else
     {
         int corrupted_count = 0;
+        static int mouses_down_index = -1;
 
         // Load save files once
         load_display_files(save_file_data, pkmn_saves);
@@ -262,24 +320,8 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
         // Update and draw save files
         for (int i = 0; i < save_file_data->num_saves; i++)
         {
-            static int mouses_down_index = -1;
             bool is_corrupted = pkmn_saves[i].save_generation_type == SAVE_GENERATION_CORRUPTED;
             const Rectangle save_file_rec = (Rectangle){SCREEN_WIDTH / 2 - (SCREEN_WIDTH - 50) / 2, y_offset + (93 * i) - (60 * corrupted_count), SCREEN_WIDTH - 50, 80};
-            // If we are not hovering over the bottom bar
-            if (!CheckCollisionPointRec(GetMousePosition(), bottom_bar_rec))
-            {
-                if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !is_moving_scroll)
-                {
-                    // Select a save file
-                    if (CheckCollisionPointRec(GetMousePosition(), save_file_rec) && !is_corrupted)
-                    {
-                        mouses_down_index = i;
-                        pkmn_save_player1->save_generation_type = SAVE_GENERATION_NONE;
-                        pkmn_save_player2->save_generation_type = SAVE_GENERATION_NONE;
-                    }
-                }
-                handle_list_scroll(&y_offset, save_file_data->num_saves, corrupted_count, &mouses_down_index, &is_moving_scroll, &banner_position_offset);
-            }
 
             // Update selected save files index
             update_selected_indexes_with_selection(selected_saves_index, &mouses_down_index, &is_moving_scroll);
@@ -297,12 +339,29 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
             {
                 DrawSaveFileContainer(&pkmn_saves[i], save_name, save_file_rec, (selected_saves_index[0] == i || selected_saves_index[1] == i));
             }
+
+            // If we are not hovering over the bottom bar
+            if (!CheckCollisionPointRec(GetMousePosition(), bottom_bar_rec))
+            {
+                if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !is_moving_scroll)
+                {
+                    // Select a save file
+                    if (CheckCollisionPointRec(GetMousePosition(), save_file_rec) && !is_corrupted)
+                    {
+                        mouses_down_index = i;
+                        pkmn_save_player1->save_generation_type = SAVE_GENERATION_NONE;
+                        pkmn_save_player2->save_generation_type = SAVE_GENERATION_NONE;
+                    }
+                }
+            }
         }
+
+        handle_list_scroll(&y_offset, save_file_data->num_saves, corrupted_count, &mouses_down_index, &is_moving_scroll, &banner_position_offset);
 
         // Top Banner
         int text_width = MeasureText("Select two save files to trade between", 20);
-        DrawRectangle(0, -10 + banner_position_offset, SCREEN_WIDTH, 50, WHITE);
-        DrawLineEx((Vector2){0, 45 + banner_position_offset}, (Vector2){SCREEN_WIDTH, 45 + banner_position_offset}, 15, BLACK);
+        DrawRectangle(0, banner_position_offset - 10, SCREEN_WIDTH, 50, WHITE);
+        DrawLineEx((Vector2){0, banner_position_offset + 45}, (Vector2){SCREEN_WIDTH, banner_position_offset + 45}, 15, BLACK);
         DrawText("Select two save files to trade between", SCREEN_WIDTH / 2 - text_width / 2, 10 + banner_position_offset, 20, BLACK);
 
         // Bottom bar
