@@ -1,8 +1,8 @@
 #include "raylibhelper.h"
 #include "pksavfilehelper.h"
 
-#define new_max(x,y) (((x) >= (y)) ? (x) : (y))
-#define new_min(x,y) (((x) <= (y)) ? (x) : (y))
+#define new_max(x, y) (((x) >= (y)) ? (x) : (y))
+#define new_min(x, y) (((x) <= (y)) ? (x) : (y))
 
 static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT] = {
     [0 ... MAX_FILE_PATH_COUNT - 1] = {
@@ -161,10 +161,10 @@ void draw_pokeball_scroll(float scroll_position, float transparency)
 {
     DrawCircleGradient(SCREEN_WIDTH - 10, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), 10, (Color){0, 0, 0, transparency}, (Color){0, 0, 0, 0});
     DrawCircle(SCREEN_WIDTH - 10, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), 5, (Color){255, 255, 255, transparency});
-    DrawCircleSector((Vector2){SCREEN_WIDTH - 10, 74 + (scroll_position * (SCREEN_HEIGHT - 150))}, 5, 0, -180, 6, (Color){ 230, 41, 55, transparency});
-    DrawCircle(SCREEN_WIDTH - 10, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), 2, (Color){ 0, 0, 0, transparency});
+    DrawCircleSector((Vector2){SCREEN_WIDTH - 10, 74 + (scroll_position * (SCREEN_HEIGHT - 150))}, 5, 0, -180, 6, (Color){230, 41, 55, transparency});
+    DrawCircle(SCREEN_WIDTH - 10, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), 2, (Color){0, 0, 0, transparency});
     DrawLine(SCREEN_WIDTH - 10 - 5, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), SCREEN_WIDTH - 10 + 5, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), (Color){0, 0, 0, transparency});
-    DrawCircle(SCREEN_WIDTH - 10, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), 1, (Color){ 255, 255, 255, transparency});
+    DrawCircle(SCREEN_WIDTH - 10, 75 + (scroll_position * (SCREEN_HEIGHT - 150)), 1, (Color){255, 255, 255, transparency});
 }
 
 void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_count, int *mouses_down_index, bool *is_moving_scroll, int *banner_position_offset)
@@ -180,7 +180,7 @@ void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_
         if (mouse_delta >= 0.5 || mouse_delta <= -0.5)
         {
             *y_offset += GetMouseDelta().y;
-            *y_offset = *y_offset < -height + (num_visible * box_height) + (corrupted_count*25) ? -height + (num_visible * box_height) + (corrupted_count*25) : *y_offset;
+            *y_offset = *y_offset < -height + (num_visible * box_height) + (corrupted_count * 25) ? -height + (num_visible * box_height) + (corrupted_count * 25) : *y_offset;
             *y_offset = *y_offset > 75 ? 75 : *y_offset;
             *mouses_down_index = -1;
             *is_moving_scroll = true;
@@ -207,13 +207,12 @@ void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_
         }
     }
 
-    const int min_y = (height + (num_visible * box_height) + (corrupted_count*25)) - 75;
-    const int max_y = min_y + 75 - ( -height + (num_visible * box_height) + (corrupted_count*25));
+    const int min_y = (height + (num_visible * box_height) + (corrupted_count * 25)) - 75;
+    const int max_y = min_y + 75 - (-height + (num_visible * box_height) + (corrupted_count * 25));
     const uint8_t t_max = 50;
     const uint8_t t_min = 0;
     const uint8_t t_rate = 5;
     static uint8_t transparency = 0;
-
 
     // scroll position indicator
     float scroll_position = min_y + 75 - *y_offset;
@@ -227,7 +226,6 @@ void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_
         {
             transparency = t_max;
         }
-        
     }
     else if (transparency > t_min)
     {
@@ -237,11 +235,13 @@ void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_
             transparency = t_min;
         }
     }
-
-    DrawRectangleGradientV(SCREEN_WIDTH - 20, 50, 20, SCREEN_HEIGHT/16, (Color){255,255,255, 0}, (Color){255,255,255, transparency});
-    DrawRectangle(SCREEN_WIDTH - 20, 50 + SCREEN_HEIGHT/16, 20, SCREEN_HEIGHT - 100 - 2*(SCREEN_HEIGHT/16), (Color){255,255,255, transparency});
-    DrawRectangleGradientV(SCREEN_WIDTH - 20, SCREEN_HEIGHT - 50 - SCREEN_HEIGHT/16, 20, SCREEN_HEIGHT/16, (Color){255,255,255, transparency}, (Color){255,255,255, 0});
-    draw_pokeball_scroll(scroll_position, (float)transparency * 5.1f);
+    if (height > SCREEN_HEIGHT - 100 - 2 * (SCREEN_HEIGHT / 16))
+    {
+        DrawRectangleGradientV(SCREEN_WIDTH - 20, 50, 20, SCREEN_HEIGHT / 16, (Color){255, 255, 255, 0}, (Color){255, 255, 255, transparency});
+        DrawRectangle(SCREEN_WIDTH - 20, 50 + SCREEN_HEIGHT / 16, 20, SCREEN_HEIGHT - 100 - 2 * (SCREEN_HEIGHT / 16), (Color){255, 255, 255, transparency});
+        DrawRectangleGradientV(SCREEN_WIDTH - 20, SCREEN_HEIGHT - 50 - SCREEN_HEIGHT / 16, 20, SCREEN_HEIGHT / 16, (Color){255, 255, 255, transparency}, (Color){255, 255, 255, 0});
+        draw_pokeball_scroll(scroll_position, (float)transparency * 5.1f);
+    }
 }
 
 void update_selected_indexes_with_selection(int *selected_saves_index, int *mouses_down_index, bool *is_moving_scroll)
