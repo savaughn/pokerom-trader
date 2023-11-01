@@ -36,10 +36,8 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *p
         static int mouses_down_index = -1;
 
         // Header text
-        if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC)
-            DrawText("Select a save file to access Bill's PC", 190, 25, 20, BLACK);
-        if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE)
-            DrawText("Select a save file to access your party", 190, 25, 20, BLACK);
+        // if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC)
+        //     DrawText("Select a save file to access Bill's PC", 190, 25, 20, BLACK);
 
         // Load save files for selection display
         load_display_files(save_file_data, pkmn_saves);
