@@ -153,8 +153,8 @@ void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_sc
                 has_pressed_clear = false;
                 *current_screen = SCREEN_SETTINGS;
                 has_shown_placeholder = false;
-                selected_index = SCREEN_BUTTON_NONE;
             }
+            selected_index = SCREEN_BUTTON_NONE;
             break;
         case SCREEN_BUTTON_SAVE:
             if (CheckCollisionPointRec(GetMousePosition(), save_button_rec) && text_size > 0)
@@ -167,8 +167,8 @@ void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_sc
                     *save_file_data->saves_file_path = NULL;
                     *current_screen = SCREEN_SETTINGS;
                     has_shown_placeholder = false;
-                    selected_index = SCREEN_BUTTON_NONE;
                 }
+                selected_index = SCREEN_BUTTON_NONE;
             }
             break;
         case SCREEN_BUTTON_CLEAR:
@@ -182,11 +182,10 @@ void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_sc
                 has_shown_placeholder = true;
                 file_op_result = FILE_OP_FAILURE;
                 has_pressed_clear = true;
-                selected_index = SCREEN_BUTTON_NONE;
             }
+            selected_index = SCREEN_BUTTON_NONE;
             break;
         default:
-            selected_index = SCREEN_BUTTON_NONE;
             break;
         }
     }

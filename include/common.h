@@ -126,8 +126,8 @@ enum textures {
     };
 
 enum file_op_results {
-    FILE_OP_FAILURE = 0,
-    FILE_OP_SUCCESS
+    FILE_OP_SUCCESS = 0,
+    FILE_OP_FAILURE
 };
 
 #endif // COMMON_H
