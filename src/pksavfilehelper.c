@@ -122,3 +122,16 @@ void save_savefile_to_path(PokemonSave *pkmn_save, char *path)
         printf("Saved to %s\n", path);
     }
 }
+
+void load_display_files(struct SaveFileData *save_file_data, PokemonSave *pkmn_saves)
+{
+    // Load save files once
+    for (int i = 0; i < save_file_data->num_saves; i++)
+    {
+        // if not initialized
+        if (pkmn_saves[i].save_generation_type == SAVE_GENERATION_NONE)
+        {
+            pkmn_saves[i] = load_savefile_from_path(save_file_data->saves_file_path[i]);
+        }
+    }
+}

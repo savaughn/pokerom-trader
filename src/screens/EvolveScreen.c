@@ -4,6 +4,12 @@
 void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *trainer, GameScreen *current_screen)
 {
     SaveGenerationType save_generation_type = pkmn_save->save_generation_type;
+    static enum ui_selections
+    {
+        E_UI_NONE = -1,
+        E_UI_BACK,
+        E_UI_EVOLVE
+    } ui_selection = E_UI_NONE;
 
     // Call rng
     generate_rand_num_step(save_generation_type);
@@ -90,33 +96,66 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *tr
         DrawText(no_pkmn, text_center.x, text_center.y, 20, BLACK);
     }
     // Evolve button (next button)
+    const Rectangle evolve_button_rec = (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT};
     DrawText("Evolve!", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, selected_index != NONE ? BLACK : LIGHTGRAY);
-    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}) && selected_index != NONE)
-    {
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-        {
-            // Generates and assigns random dvs for simulated trade to new trainer
-            update_pkmn_DVs(pkmn_save, selected_index);
-            // Evolve pokemon with the simulated new trainer
-            evolve_party_pokemon_at_index(pkmn_save, selected_index);
-            // Update pokedex
-            update_seen_owned_pkmn(pkmn_save, selected_index);
-            // Generates and assigns random dvs on simulated trade back to OT
-            update_pkmn_DVs(pkmn_save, selected_index);
-            // Finalize pkmn data changes
-            save_savefile_to_path(pkmn_save, save_path);
 
-            selected_index = NONE;
+    const Rectangle back_button_rec = (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT};
+    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, ui_selection == E_UI_BACK ? LIGHTGRAY : BLACK);
+    
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+    {
+        if (CheckCollisionPointRec(GetMousePosition(), evolve_button_rec))
+        {
+            ui_selection = E_UI_EVOLVE;
+        }
+        else if (CheckCollisionPointRec(GetMousePosition(), back_button_rec))
+        {
+            ui_selection = E_UI_BACK;
+        }
+        else
+        {
+            ui_selection = E_UI_NONE;
         }
     }
 
-    DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, BLACK);
-    if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
+    if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && ui_selection != E_UI_NONE)
     {
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        switch (ui_selection)
         {
-            *current_screen = SCREEN_EVOLVE_FILE_SELECT;
-            selected_index = NONE;
+        case E_UI_EVOLVE:
+            if (CheckCollisionPointRec(GetMousePosition(), evolve_button_rec))
+            {
+                // Generates and assigns random dvs for simulated trade to new trainer
+                update_pkmn_DVs(pkmn_save, selected_index);
+                // Evolve pokemon with the simulated new trainer
+                evolve_party_pokemon_at_index(pkmn_save, selected_index);
+                // Update pokedex
+                update_seen_owned_pkmn(pkmn_save, selected_index);
+                // Generates and assigns random dvs on simulated trade back to OT
+                update_pkmn_DVs(pkmn_save, selected_index);
+                // Finalize pkmn data changes
+                save_savefile_to_path(pkmn_save, save_path);
+
+                selected_index = NONE;
+            }
+            else
+            {
+                ui_selection = E_UI_NONE;
+            }
+            break;
+        case E_UI_BACK:
+            if (CheckCollisionPointRec(GetMousePosition(), back_button_rec))
+            {
+                *current_screen = SCREEN_EVOLVE_FILE_SELECT;
+                selected_index = NONE;
+            }
+            else
+            {
+                ui_selection = E_UI_NONE;
+            }
+            break;
+        default:
+            break;
         }
     }
 

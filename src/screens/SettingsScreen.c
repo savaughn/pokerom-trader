@@ -177,35 +177,35 @@ void draw_settings(struct SaveFileData *save_file_data, GameScreen *current_scre
     {
         switch (selected_index)
         {
-        case 0:
+        case BUTTON_CHANGE_DIR:
             if (CheckCollisionPointRec(GetMousePosition(), change_dir_rec))
             {
                 *current_screen = SCREEN_FILE_EDIT;
             }
             selected_index = BUTTON_NONE;
             break;
-        case 1:
+        case BUTTON_ABOUT:
             if (CheckCollisionPointRec(GetMousePosition(), about_button_rec))
             {
                 *current_screen = SCREEN_ABOUT;
             }
             selected_index = BUTTON_NONE;
             break;
-        case 2:
+        case BUTTON_BACK:
             if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
             {
                 *current_screen = SCREEN_MAIN_MENU;
             }
             selected_index = BUTTON_NONE;
             break;
-        case 3:
+        case BUTTON_DELETE:
             if (CheckCollisionPointRec(GetMousePosition(), delete_app_data_rec) && !was_data_deleted)
             {
                 show_delete_modal = true;
             }
             selected_index = BUTTON_NONE;
             break;
-        case 4:
+        case BUTTON_RESET:
             if (CheckCollisionPointRec(GetMousePosition(), reset_config_rec))
             {
                 show_reset_modal = true;
