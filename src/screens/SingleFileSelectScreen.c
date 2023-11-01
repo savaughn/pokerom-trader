@@ -35,10 +35,6 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *p
         int corrupted_count = 0;
         static int mouses_down_index = -1;
 
-        // Header text
-        // if (menu_type == SINGLE_PLAYER_MENU_TYPE_BILLS_PC)
-        //     DrawText("Select a save file to access Bill's PC", 190, 25, 20, BLACK);
-
         // Load save files for selection display
         load_display_files(save_file_data, pkmn_saves);
 
@@ -69,7 +65,6 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *p
 
             char *save_name = strrchr(save_file_data->saves_file_path[i], '/') + 1;
 
-            // DrawText(save_name, 100, 75 + 25 * i, 20, (selected_saves_index == i) ? LIGHTGRAY : BLACK);
             if (is_corrupted)
             {
                 draw_corrupted_save(save_name, y_offset, i, corrupted_count);
@@ -142,10 +137,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *p
                 *current_screen = SCREEN_MAIN_MENU;
                 selected_saves_index = -1;
             }
-            else
-            {
-                ui_selection = E_UI_NONE;
-            }
+            ui_selection = E_UI_NONE;
             break;
         case E_UI_CHANGE_DIR:
             if (CheckCollisionPointRec(GetMousePosition(), change_dir_button))
@@ -155,10 +147,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *p
                 *current_screen = SCREEN_FILE_EDIT;
                 selected_saves_index = -1;
             }
-            else
-            {
-                ui_selection = E_UI_NONE;
-            }
+            ui_selection = E_UI_NONE;
             break;
         case E_UI_EVOLVE:
             if (CheckCollisionPointRec(GetMousePosition(), evolve_button_rec))
@@ -187,10 +176,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *p
                 banner_position_offset = 0;
                 selected_saves_index = -1;
             }
-            else
-            {
-                ui_selection = E_UI_NONE;
-            }
+            ui_selection = E_UI_NONE;
             break;
         default:
             break;
