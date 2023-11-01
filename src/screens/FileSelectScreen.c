@@ -74,7 +74,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
             }
             else
             {
-                DrawSaveFileContainer(&pkmn_saves[i], save_name, save_file_rec, (selected_saves_index[0] == i || selected_saves_index[1] == i));
+                draw_save_file_container(&pkmn_saves[i], save_name, save_file_rec, (selected_saves_index[0] == i || selected_saves_index[1] == i));
             }
 
             // If we are not hovering over the bottom bar
@@ -96,10 +96,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
         handle_list_scroll(&y_offset, save_file_data->num_saves, corrupted_count, &mouses_down_index, &is_moving_scroll, &banner_position_offset);
 
         // Top Banner
-        int text_width = MeasureText("Select two save files to trade between", 20);
-        DrawRectangle(0, banner_position_offset - 10, SCREEN_WIDTH, 50, WHITE);
-        DrawLineEx((Vector2){0, banner_position_offset + 45}, (Vector2){SCREEN_WIDTH, banner_position_offset + 45}, 15, BLACK);
-        DrawText("Select two save files to trade between", SCREEN_WIDTH / 2 - text_width / 2, 10 + banner_position_offset, 20, BLACK);
+        draw_top_banner("Select two save files to trade between", &banner_position_offset);
 
         // Bottom bar
         DrawRectangleRec(bottom_bar_rec, WHITE);

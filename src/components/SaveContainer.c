@@ -1,6 +1,6 @@
 #include "raylibhelper.h"
 
-void DrawSaveFileContainer(PokemonSave *pkmn_save, char *save_name, Rectangle container_rec, bool is_selected)
+void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle container_rec, bool is_selected)
 {
     char trainer_name[7] = "\0";
     uint16_t trainer_id;

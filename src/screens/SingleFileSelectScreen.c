@@ -79,7 +79,7 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *p
             }
             else
             {
-                DrawSaveFileContainer(&pkmn_saves[i], save_name, save_file_rec, (selected_saves_index == i));
+                draw_save_file_container(&pkmn_saves[i], save_name, save_file_rec, (selected_saves_index == i));
             }
 
             // If we are not hovering over the bottom bar
@@ -98,12 +98,8 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *p
         }
 
         handle_list_scroll(&y_offset, save_file_data->num_saves, corrupted_count, &mouses_down_index, &is_moving_scroll, &banner_position_offset);
-        // Top Banner
-        int text_width = MeasureText("Select a save file to access your party", 20);
-        DrawRectangle(0, banner_position_offset - 10, SCREEN_WIDTH, 50, WHITE);
-        DrawLineEx((Vector2){0, banner_position_offset + 45}, (Vector2){SCREEN_WIDTH, banner_position_offset + 45}, 15, BLACK);
-        DrawText("Select a save file to access your party", SCREEN_WIDTH / 2 - text_width / 2, 10 + banner_position_offset, 20, BLACK);
 
+        draw_top_banner("Select a save file to access your party", &banner_position_offset);
         // Bottom bar
         DrawRectangleRec(bottom_bar_rec, WHITE);
         DrawLineEx((Vector2){bottom_bar_rec.x, bottom_bar_rec.y}, (Vector2){bottom_bar_rec.width, bottom_bar_rec.y}, 15, BLACK);

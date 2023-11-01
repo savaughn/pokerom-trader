@@ -176,6 +176,14 @@ void draw_no_save_files(char *save_path)
     DrawText(TextFormat("%s", save_path), SCREEN_CENTER(save_path, 20).x, 275, 20, BLACK);
 }
 
+void draw_top_banner(const char *text, int *banner_position_offset)
+{
+    int text_width = MeasureText(text, 20);
+    DrawRectangle(0, *banner_position_offset - 10, SCREEN_WIDTH, 50, WHITE);
+    DrawLineEx((Vector2){0, *banner_position_offset + 45}, (Vector2){SCREEN_WIDTH, *banner_position_offset + 45}, 15, BLACK);
+    DrawText(text, SCREEN_WIDTH / 2 - text_width / 2, 10 + *banner_position_offset, 20, BLACK);
+}
+
 void draw_raylib_screen_loop(
     struct SaveFileData *save_file_data,
     struct TrainerInfo *trainer1,

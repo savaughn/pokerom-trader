@@ -41,6 +41,7 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *tr
 void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_count, int *mouses_down_index, bool *is_moving_scroll, int *banner_position_offset);
 void update_selected_indexes_with_selection(int *selected_saves_index, int *mouses_down_index, bool *is_moving_scroll);
 void draw_no_save_files(char *save_path);
+void draw_top_banner(const char *text, int *banner_position_offset);
 void draw_raylib_screen_loop(
     struct SaveFileData *save_file_data,
     struct TrainerInfo *trainer1,
