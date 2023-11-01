@@ -9,36 +9,6 @@ static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT] = {
         .save_generation_type = SAVE_GENERATION_NONE,
     }};
 
-void draw_no_save_files(char *save_path)
-{
-    BeginDrawing();
-    ClearBackground(RAYWHITE);
-    if (no_dir_err)
-    {
-        Vector2 text_center = SCREEN_CENTER("Save folder doesn't exist!", 20);
-        DrawText("Save folder doesn't exist!", text_center.x, text_center.y, 20, BLACK);
-    }
-    else
-    {
-        DrawText("No save files found in save folder", 190, 200, 20, BLACK);
-    }
-    DrawText(TextFormat("%s", save_path), SCREEN_CENTER(save_path, 20).x, 275, 20, BLACK);
-    EndDrawing();
-}
-
-void load_display_files(struct SaveFileData *save_file_data, PokemonSave *pkmn_saves)
-{
-    // Load save files once
-    for (int i = 0; i < save_file_data->num_saves; i++)
-    {
-        // if not initialized
-        if (pkmn_saves[i].save_generation_type == SAVE_GENERATION_NONE)
-        {
-            pkmn_saves[i] = load_savefile_from_path(save_file_data->saves_file_path[i]);
-        }
-    }
-}
-
 /**
  * @brief Draw the file select screen
  * @param save_file_data The save file data

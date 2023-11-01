@@ -161,6 +161,21 @@ void update_selected_indexes_with_selection(int *selected_saves_index, int *mous
     }
 }
 
+void draw_no_save_files(char *save_path)
+{
+    ClearBackground(RAYWHITE);
+    if (no_dir_err)
+    {
+        Vector2 text_center = SCREEN_CENTER("Save folder doesn't exist!", 20);
+        DrawText("Save folder doesn't exist!", text_center.x, text_center.y, 20, BLACK);
+    }
+    else
+    {
+        DrawText("No save files found in save folder", 190, 200, 20, BLACK);
+    }
+    DrawText(TextFormat("%s", save_path), SCREEN_CENTER(save_path, 20).x, 275, 20, BLACK);
+}
+
 void draw_raylib_screen_loop(
     struct SaveFileData *save_file_data,
     struct TrainerInfo *trainer1,
