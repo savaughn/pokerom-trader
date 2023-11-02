@@ -54,7 +54,7 @@ void slide_animate_details_pane(uint8_t button_selection)
 
 void draw_trade_arrow_animation(void)
 {
-    static int frame_counter = 0;
+    static uint8_t frame_counter = 0;
     static uint8_t arrow_anim_index = 0;
 
     // Draw arrow to right of consoles[0]
@@ -85,6 +85,7 @@ void draw_trade_arrow_animation(void)
     if (frame_counter % 10 == 0)
     {
         arrow_anim_index++;
+        frame_counter = 0;
     }
     arrow_anim_index %= 9;
     frame_counter++;
@@ -92,7 +93,7 @@ void draw_trade_arrow_animation(void)
 
 void draw_evolution_arrow_animation(void)
 {
-    static int frame_counter = 0;
+    static uint8_t frame_counter = 0;
     static uint8_t arrow_anim_index = 0;
 
     if (arrow_anim_index > 0)
@@ -108,6 +109,7 @@ void draw_evolution_arrow_animation(void)
     if (frame_counter % 15 == 0)
     {
         arrow_anim_index++;
+        frame_counter = 0;
     }
     arrow_anim_index %= 4;
     frame_counter++;
