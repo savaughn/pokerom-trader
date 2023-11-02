@@ -299,15 +299,11 @@ void draw_raylib_screen_loop(
             draw_evolve(pkmn_save_player1, player1_save_path, trainer1, &current_screen);
             break;
         case SCREEN_ABOUT:
-        {
             draw_about(&current_screen, is_build_prerelease);
             break;
-        }
         case SCREEN_LEGAL:
-        {
             draw_legal(&current_screen);
             break;
-        }
         default:
             BeginDrawing();
             ClearBackground(BACKGROUND_COLOR);
