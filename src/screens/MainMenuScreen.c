@@ -277,29 +277,44 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
         {
         case BUTTON_TRADE:
         {
-            int err = get_save_files(save_file_data);
-            no_dir_err = err;
-            *current_screen = SCREEN_FILE_SELECT;
-            reset_anim_pos(BUTTON_TRADE);
+            // Selected Trade and still hovering over Trade button
+            if (active_hover_index == BUTTON_TRADE)
+            {
+                no_dir_err = get_save_files(save_file_data);
+                *current_screen = SCREEN_FILE_SELECT;
+                reset_anim_pos(BUTTON_TRADE);
+            }
             break;
         }
         case BUTTON_EVOLVE:
         {
-            get_save_files(save_file_data);
-            *current_screen = SCREEN_EVOLVE_FILE_SELECT;
-            reset_anim_pos(BUTTON_EVOLVE);
+            // Selected Evolve and still hovering over Evolve button
+            if (active_hover_index == BUTTON_EVOLVE)
+            {
+                no_dir_err = get_save_files(save_file_data);
+                *current_screen = SCREEN_EVOLVE_FILE_SELECT;
+                reset_anim_pos(BUTTON_EVOLVE);
+            }
             break;
         }
         case BUTTON_SETTINGS:
         {
-            *current_screen = SCREEN_SETTINGS;
-            reset_anim_pos(BUTTON_SETTINGS);
+            // Selected Settings and still hovering over Settings button
+            if (active_hover_index == BUTTON_SETTINGS)
+            {
+                *current_screen = SCREEN_SETTINGS;
+                reset_anim_pos(BUTTON_SETTINGS);
+            }
             break;
         }
         case BUTTON_QUIT:
         {
-            *should_close_window = true;
-            reset_anim_pos(BUTTON_QUIT);
+            // Selected Quit and still hovering over Quit button
+            if (active_hover_index == BUTTON_QUIT)
+            {
+                *should_close_window = true;
+                reset_anim_pos(BUTTON_QUIT);
+            }
             break;
         }
         default:
