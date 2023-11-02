@@ -7,5 +7,7 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
 void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle container_rec, bool is_selected);
 void draw_corrupted_save(const char *save_name, const int y_offset, const int index, const int corrupted_count);
 void draw_pokeball_scroll(float scroll_position, float transparency);
+void draw_pokeball(int pos_x, int pos_y, int scale);
+bool draw_toast_message(char *message);
 
 #endif // COMPONENTS_H

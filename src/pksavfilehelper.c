@@ -91,7 +91,6 @@ PokemonSave load_savefile_from_path(const char *path)
         break;
     }
     default:
-        error_handler(PKSAV_ERROR_INVALID_SAVE, "Invalid save generation");
         break;
     }
     return pkmn_save;

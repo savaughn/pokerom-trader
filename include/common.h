@@ -6,6 +6,10 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 480
 
+#define new_max(x, y) (((x) >= (y)) ? (x) : (y))
+#define new_min(x, y) (((x) <= (y)) ? (x) : (y))
+#define clamp_max(x, y) (((x) >= (y)) ? (y) : (x))
+
 // Footer Buttons
 #define BUTTON_WIDTH 100
 #define BUTTON_HEIGHT 75
