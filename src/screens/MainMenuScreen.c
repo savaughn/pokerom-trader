@@ -143,10 +143,6 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
     {
         set_active_animation(BUTTON_TRADE);
     }
-    else
-    {
-        clear_active_animation();
-    }
 
     // Update/Draw animated Trade details pane
     if (active_anim_index == BUTTON_TRADE)
@@ -187,10 +183,6 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
     {
         set_active_animation(BUTTON_EVOLVE);
     }
-    else
-    {
-        clear_active_animation();
-    }
 
     // Update/Draw animated Evolve details pane
     if (active_anim_index == BUTTON_EVOLVE)
@@ -225,10 +217,6 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
     {
         set_active_animation(BUTTON_SETTINGS);
     }
-    else
-    {
-        clear_active_animation();
-    }
 
     // Update/Draw animated Settings details pane
     if (active_anim_index == BUTTON_SETTINGS)
@@ -250,10 +238,6 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
     if (draw_menu_button(text_position_start.x + 45, text_position_start.y + (rec_height_offset * 3), "Quit", text_size))
     {
         set_active_animation(BUTTON_QUIT);
-    }
-    else
-    {
-        clear_active_animation();
     }
 
     // Update/Draw animated Quit details pane
@@ -325,4 +309,7 @@ void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_scr
     }
 
     EndDrawing();
+
+    // Reset active hover index
+    clear_active_animation();
 }
