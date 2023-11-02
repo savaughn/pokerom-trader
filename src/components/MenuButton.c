@@ -43,7 +43,6 @@ bool draw_menu_button(int x, int y, const char *text, int text_size)
     else
     {
         DrawText(text, x + 10, y + 5, text_size, BLACK);
+        return false;
     }
-
-    return false;
 }

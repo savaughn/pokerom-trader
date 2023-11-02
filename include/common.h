@@ -103,6 +103,7 @@ enum E_LOG_MESSAGE_TYPE
 };
 
 enum textures {
+        T_NONE = -1,
         T_EVOLVE,
         T_LOGO,
         T_QUIT,
