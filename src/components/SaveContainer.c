@@ -38,15 +38,12 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
     DrawRectangleLines(container_rec.x, container_rec.y, 125 + 5, container_rec.height, BLACK);
 
     // draw trainer name
-    DrawText(trainer_name, container_rec.x + 6, container_rec.y + 6, 20, BLACK);
-    DrawText(trainer_name, container_rec.x + 5, container_rec.y + 5, 20, WHITE);
+    shadow_text(trainer_name, container_rec.x + 5, container_rec.y + 5, 20, WHITE);
 
     // draw trainer id
-    DrawText(TextFormat("ID No.%05u", trainer_id), container_rec.x + 6, container_rec.y + 6 + 25, 20, BLACK);
-    DrawText(TextFormat("ID No.%05u", trainer_id), container_rec.x + 5, container_rec.y + 5 + 25, 20, WHITE);
+    shadow_text(TextFormat("ID No.%05u", trainer_id), container_rec.x + 5, container_rec.y + 5 + 25, 20, WHITE);
 
-    DrawText(TextFormat("%dh%02dm%02ds", hours, minutes, seconds), container_rec.x + 6, container_rec.y + 6 + 50, 20, BLACK);
-    DrawText(TextFormat("%dh%02dm%02ds", hours, minutes, seconds), container_rec.x + 5, container_rec.y + 5 + 50, 20, WHITE);
+    shadow_text(TextFormat("%dh%02dm%02ds", hours, minutes, seconds), container_rec.x + 5, container_rec.y + 5 + 50, 20, WHITE);
 
     // pokemon party grid
     DrawLine(container_rec.x + 130, container_rec.y + (container_rec.height - 30) / 2, container_rec.x + container_rec.width, container_rec.y + (container_rec.height - 30) / 2, BLACK);
@@ -69,10 +66,8 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
         {
             char pokemon_name[11];
             pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_name, 10);
-            DrawText(pokemon_name, name_slots[i].x + 1, name_slots[i].y + 1, 20, BLACK);
-            DrawText(pokemon_name, name_slots[i].x, name_slots[i].y, 20, WHITE);
-            DrawText(TextFormat(" L%d", pkmn_save->save.gen1_save.pokemon_storage.p_party->party->party_data.level), (name_slots[i].x + ((container_rec.width - 135) / 3)) - 60 + 1, name_slots[i].y + 1, 20, BLACK);
-            DrawText(TextFormat(" L%d", pkmn_save->save.gen1_save.pokemon_storage.p_party->party->party_data.level), (name_slots[i].x + ((container_rec.width - 135) / 3)) - 60, name_slots[i].y, 20, WHITE);
+            shadow_text(pokemon_name, name_slots[i].x, name_slots[i].y, 20, WHITE);
+            shadow_text(TextFormat(" L%d", pkmn_save->save.gen1_save.pokemon_storage.p_party->party[i].party_data.level), (name_slots[i].x + ((container_rec.width - 135) / 3)) - 60, name_slots[i].y, 20, WHITE);
         }
     }
     else if (pkmn_save->save_generation_type == SAVE_GENERATION_2)
@@ -81,10 +76,8 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
         {
             char pokemon_name[11] = "\0";
             pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_name, 10);
-            DrawText(pokemon_name, name_slots[i].x + 1, name_slots[i].y + 1, 20, BLACK);
-            DrawText(pokemon_name, name_slots[i].x, name_slots[i].y, 20, WHITE);
-            DrawText(TextFormat(" L%d", pkmn_save->save.gen2_save.pokemon_storage.p_party->party[i].pc_data.level), (name_slots[i].x + ((container_rec.width - 135) / 3)) - 60 + 1, name_slots[i].y + 1, 20, BLACK);
-            DrawText(TextFormat(" L%d", pkmn_save->save.gen2_save.pokemon_storage.p_party->party[i].pc_data.level), (name_slots[i].x + ((container_rec.width - 135) / 3)) - 60, name_slots[i].y, 20, WHITE);
+            shadow_text(pokemon_name, name_slots[i].x, name_slots[i].y, 20, WHITE);
+            shadow_text(TextFormat(" L%d", pkmn_save->save.gen2_save.pokemon_storage.p_party->party[i].pc_data.level), (name_slots[i].x + ((container_rec.width - 135) / 3)) - 60, name_slots[i].y, 20, WHITE);
         }
     }
     else
@@ -94,8 +87,7 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
 
     // draw save name
     DrawLine(container_rec.x + 130, container_rec.y + container_rec.height - 30, container_rec.width + container_rec.x, container_rec.y + container_rec.height - 30, BLACK);
-    DrawText(save_name, (container_rec.width - 135) / 2 + container_rec.x + 135 - MeasureText(save_name, 20) / 2 + 1, container_rec.y + container_rec.height - 25 + 1, 20, BLACK);
-    DrawText(save_name, (container_rec.width - 135) / 2 + container_rec.x + 135 - MeasureText(save_name, 20) / 2, container_rec.y + container_rec.height - 25, 20, WHITE);
+    shadow_text(save_name, (container_rec.width - 135) / 2 + container_rec.x + 135 - MeasureText(save_name, 20) / 2, container_rec.y + container_rec.height - 25, 20, WHITE);
 
     // draw border
     DrawRectangleLinesEx((Rectangle){container_rec.x - 4, container_rec.y - 4, container_rec.width + 8, container_rec.height + 8}, 1, BLACK);

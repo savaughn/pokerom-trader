@@ -6,10 +6,26 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
+void draw_background_grid(void)
+{
+    int line_count_v = SCREEN_HEIGHT / 10;
+    int line_count_h = SCREEN_WIDTH / 10;
+    
+    // draw line grid color_pkmn_red
+    for (int i = 0; i < line_count_v; i++)
+    {
+        DrawRectangle(0, i * 10, SCREEN_WIDTH, 1, COLOR_PKMN_RED);
+    }
+    for (int i = 0; i < line_count_h; i++)
+    {
+        DrawRectangle(i * 10, 0, 1, SCREEN_HEIGHT, COLOR_PKMN_RED);
+    }
+}
+
 // Draws a button with the pokemon nickname
 void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname, bool selected)
 {
-    DrawText(pokemon_nickname, rect.x + 10, rect.y + 6, 20, selected ? LIGHTGRAY : BLACK);
+    shadow_text(pokemon_nickname, rect.x + 10, rect.y + 6, 20, selected ? LIGHTGRAY : WHITE);
 }
 
 // Concantenate the trainer's name and id into a string for Raylib to draw
@@ -29,7 +45,7 @@ void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id)
 {
     char id_str[6];
     strcpy(trainer_id, "IDNo ");
-    snprintf(id_str, sizeof(id_str), "%05u", trainer->trainer_id); // "IDNo %u" loses 3 chars even with enough space?
+    snprintf(id_str, sizeof(id_str), "%05u", trainer->trainer_id);
     strcat(trainer_id, id_str);
 }
 

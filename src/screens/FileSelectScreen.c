@@ -39,7 +39,9 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
     static bool show_duplicate_toast = false;
 
     BeginDrawing();
-    ClearBackground(COLOR_PKMN_RED);
+    ClearBackground(RED);
+
+    draw_background_grid();
 
     if (save_file_data->num_saves == 0)
     {
@@ -234,7 +236,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
 
     if (show_duplicate_toast)
     {
-        show_duplicate_toast = !draw_toast_message("Duplicate save files cannot trade with each other.");
+        show_duplicate_toast = !draw_toast_message("Duplicate save files cannot trade with each other.", TOAST_LONG);
     }
 
     EndDrawing();

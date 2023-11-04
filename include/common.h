@@ -9,6 +9,7 @@
 #define new_max(x, y) (((x) >= (y)) ? (x) : (y))
 #define new_min(x, y) (((x) <= (y)) ? (x) : (y))
 #define clamp_max(x, y) (((x) >= (y)) ? (y) : (x))
+#define clamp_min(x, y) (((x) <= (y)) ? (y) : (x))
 
 // Footer Buttons
 #define BUTTON_WIDTH 100
