@@ -24,7 +24,7 @@ pksavhelper_error update_seen_owned_pkmn(PokemonSave *pkmn_save, uint8_t pokemon
     if (pkmn_save->save_generation_type == SAVE_GENERATION_1)
     {
         uint8_t pkmn_species = pkmn_save->save.gen1_save.pokemon_storage.p_party->species[pokemon_party_index];
-        uint8_t pkdex_entry = species_gen1_to_gen2[pkmn_species];    // Gen2 is pokedex ordered
+        uint8_t pkdex_entry = species_gen1_to_gen2[pkmn_species]; // Gen2 is pokedex ordered
         pksav_error = pksav_set_pokedex_bit(pkmn_save->save.gen1_save.pokedex_lists.p_seen, pkdex_entry, true);
         if (pksav_error != PKSAV_ERROR_NONE)
         {
@@ -306,8 +306,10 @@ void update_pkmn_DVs(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
     // set the ivs to pokemon at index
     for (int i = PKSAV_GB_IV_ATTACK; i < PKSAV_NUM_GB_IVS; i++)
     {
-        if (pkmn_save->save_generation_type == SAVE_GENERATION_1) pksav_set_gb_IV(i, traded_pkmn_rand_dvs[i], &pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.iv_data);
-        else pksav_set_gb_IV(i, traded_pkmn_rand_dvs[i], &pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.iv_data);
+        if (pkmn_save->save_generation_type == SAVE_GENERATION_1)
+            pksav_set_gb_IV(i, traded_pkmn_rand_dvs[i], &pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.iv_data);
+        else
+            pksav_set_gb_IV(i, traded_pkmn_rand_dvs[i], &pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.iv_data);
     }
 }
 
@@ -443,16 +445,16 @@ bool check_if_reds_pikachu(const PokemonSave *pkmn_save, const uint8_t pkmn_part
     pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index], tmp_otname_pkmn, 10);
     char tmp_otname_trainer[11];
     pksav_gen1_import_text(pkmn_save->save.gen1_save.trainer_info.p_name, tmp_otname_trainer, 10);
-    return pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species == SI_PIKACHU &&   // Is a Pikachu
-        pkmn_save->save.gen1_save.save_type == PKSAV_GEN1_SAVE_TYPE_YELLOW &&   // Is from Yellow
-        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.ot_id == *pkmn_save->save.gen1_save.trainer_info.p_id &&   // has the same OT ID as the trainer
-        strcmp(tmp_otname_pkmn, tmp_otname_trainer) == 0; // // has the same OT name as the trainer
+    return pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species == SI_PIKACHU &&                                 // Is a Pikachu
+           pkmn_save->save.gen1_save.save_type == PKSAV_GEN1_SAVE_TYPE_YELLOW &&                                                                       // Is from Yellow
+           pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.ot_id == *pkmn_save->save.gen1_save.trainer_info.p_id && // has the same OT ID as the trainer
+           strcmp(tmp_otname_pkmn, tmp_otname_trainer) == 0;                                                                                           // // has the same OT name as the trainer
 }
 
 pksavhelper_error swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player1_save, PokemonSave *player2_save, uint8_t pkmn_party_index1, uint8_t pkmn_party_index2)
 {
     enum pksav_error pksav_error;
-    
+
     // Since this is cross-gen assign the player by generation
     PokemonSave *player_gen1;
     PokemonSave *player_gen2;
@@ -476,11 +478,35 @@ pksavhelper_error swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player
     char tmp_nickname1[11];
     char tmp_nickname2[11];
     pksav_error = pksav_gen1_import_text(player_gen1->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index1], tmp_nickname1, 10);
+    if (pksav_error != PKSAV_ERROR_NONE)
+    {
+        return error_swap_pkmn;
+    }
     pksav_error = pksav_gen2_import_text(player_gen2->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index2], tmp_nickname2, 10);
+    if (pksav_error != PKSAV_ERROR_NONE)
+    {
+        return error_swap_pkmn;
+    }
     pksav_error = pksav_gen1_export_text(tmp_nickname2, player_gen1->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index1], 10);
+    if (pksav_error != PKSAV_ERROR_NONE)
+    {
+        return error_swap_pkmn;
+    }
     pksav_error = pksav_gen2_export_text(tmp_nickname1, player_gen2->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index2], 10);
+    if (pksav_error != PKSAV_ERROR_NONE)
+    {
+        return error_swap_pkmn;
+    }
     player_gen1->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index1][strlen(tmp_nickname2)] = 0x50;
+    if (pksav_error != PKSAV_ERROR_NONE)
+    {
+        return error_swap_pkmn;
+    }
     player_gen2->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index2][strlen(tmp_nickname1)] = 0x50;
+    if (pksav_error != PKSAV_ERROR_NONE)
+    {
+        return error_swap_pkmn;
+    }
 
     // swap party
     // party_data
@@ -574,9 +600,25 @@ pksavhelper_error swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player
     char tmp_otname_gen1[8];
     char tmp_otname_gen2[8];
     pksav_error = pksav_gen1_import_text(player_gen1->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index1], tmp_otname_gen1, 7);
+    if (pksav_error != PKSAV_ERROR_NONE)
+    {
+        return error_swap_pkmn;
+    }
     pksav_error = pksav_gen2_import_text(player_gen2->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index2], tmp_otname_gen2, 7);
+    if (pksav_error != PKSAV_ERROR_NONE)
+    {
+        return error_swap_pkmn;
+    }
     pksav_error = pksav_gen1_export_text(tmp_otname_gen2, player_gen1->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index1], 7);
+    if (pksav_error != PKSAV_ERROR_NONE)
+    {
+        return error_swap_pkmn;
+    }
     pksav_error = pksav_gen2_export_text(tmp_otname_gen1, player_gen2->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index2], 7);
+    if (pksav_error != PKSAV_ERROR_NONE)
+    {
+        return error_swap_pkmn;
+    }
     player_gen1->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index1][strlen(tmp_otname_gen2)] = 0x50;
     player_gen2->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index2][strlen(tmp_otname_gen1)] = 0x50;
 
@@ -591,10 +633,6 @@ pksavhelper_error swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player
     player_gen1->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index1].pc_data.current_hp = player_gen1->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index1].party_data.max_hp;
     player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].party_data.current_hp = player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].party_data.max_hp;
 
-    if (pksav_error)
-    {
-        return error_swap_pkmn;
-    }
     return error_none;
 }
 
@@ -608,18 +646,50 @@ pksavhelper_error swap_pkmn_at_index_between_saves(PokemonSave *player1_save, Po
     if (player1_save->save_generation_type == SAVE_GENERATION_1)
     {
         pksav_error = pksav_gen1_import_text(player1_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index1], tmp_nickname1, 10);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen1_import_text(player2_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index2], tmp_nickname2, 10);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen1_export_text(tmp_nickname2, player1_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index1], 10);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen1_export_text(tmp_nickname1, player2_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index2], 10);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         player1_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index1][strlen(tmp_nickname2)] = 0x50;
         player2_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index2][strlen(tmp_nickname1)] = 0x50;
     }
     else
     {
         pksav_error = pksav_gen2_import_text(player1_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index1], tmp_nickname1, 10);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen2_import_text(player2_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index2], tmp_nickname2, 10);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen2_export_text(tmp_nickname2, player1_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index1], 10);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen2_export_text(tmp_nickname1, player2_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index2], 10);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         player1_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index1][strlen(tmp_nickname2)] = 0x50;
         player2_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index2][strlen(tmp_nickname1)] = 0x50;
     }
@@ -658,18 +728,50 @@ pksavhelper_error swap_pkmn_at_index_between_saves(PokemonSave *player1_save, Po
     if (player1_save->save_generation_type == SAVE_GENERATION_1)
     {
         pksav_error = pksav_gen1_import_text(player1_save->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index1], tmp_otname1, 7);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen1_import_text(player2_save->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index2], tmp_otname2, 7);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen1_export_text(tmp_otname2, player1_save->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index1], 7);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen1_export_text(tmp_otname1, player2_save->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index2], 7);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         player1_save->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index1][strlen(tmp_otname2)] = 0x50;
         player2_save->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index2][strlen(tmp_otname1)] = 0x50;
     }
     else
     {
         pksav_error = pksav_gen2_import_text(player1_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index1], tmp_otname1, 7);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen2_import_text(player2_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index2], tmp_otname2, 7);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen2_export_text(tmp_otname2, player1_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index1], 7);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         pksav_error = pksav_gen2_export_text(tmp_otname1, player2_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index2], 7);
+        if (pksav_error != PKSAV_ERROR_NONE)
+        {
+            return error_swap_pkmn;
+        }
         player1_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index1][strlen(tmp_otname2)] = 0x50;
         player2_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index2][strlen(tmp_otname1)] = 0x50;
     }
@@ -682,10 +784,6 @@ pksavhelper_error swap_pkmn_at_index_between_saves(PokemonSave *player1_save, Po
     update_pkmn_stats(player1_save, pkmn_party_index1);
     update_pkmn_stats(player2_save, pkmn_party_index2);
 
-    if (pksav_error != PKSAV_ERROR_NONE)
-    {
-        return error_swap_pkmn;
-    }
     return error_none;
 }
 

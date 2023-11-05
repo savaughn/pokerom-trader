@@ -46,7 +46,6 @@ bool draw_toast_message(char *message, enum E_TOAST_DURATION toast_duration, enu
         display_offset_y = 0;
         display_duration = 0;
         has_reached_top = false;
-        current_position = SCREEN_HEIGHT;
         return true;
     }
 

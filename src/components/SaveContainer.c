@@ -21,7 +21,7 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
     {
         pksav_gen2_import_text(pkmn_save->save.gen2_save.trainer_info.p_name, trainer_name, 7);
         trainer_id = pksav_bigendian16(*pkmn_save->save.gen2_save.trainer_info.p_id);
-        struct pksav_gen2_time *save_time = pkmn_save->save.gen2_save.save_time.p_time_played;
+        const struct pksav_gen2_time *save_time = pkmn_save->save.gen2_save.save_time.p_time_played;
         hours = save_time->hours;
         minutes = save_time->minutes;
         seconds = save_time->seconds;

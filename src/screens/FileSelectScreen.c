@@ -24,7 +24,6 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
 {
     static int selected_saves_index[2] = {-1, -1};
     bool has_selected_two_saves = selected_saves_index[0] != -1 && selected_saves_index[1] != -1;
-    static bool is_duplicate_save_file = false;
     const Rectangle bottom_bar_rec = (Rectangle){0, SCREEN_HEIGHT - 50, SCREEN_WIDTH, 100};
     const Rectangle trade_button_rec = (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y + 8, BUTTON_WIDTH, BUTTON_HEIGHT};
     static enum ui_selections {
@@ -141,6 +140,8 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
         case E_UI_TRADE:
             if (CheckCollisionPointRec(GetMousePosition(), trade_button_rec))
             {
+                static bool is_duplicate_save_file = false;
+
                 // load selection to player1_save
                 *pkmn_save_player1 = pkmn_saves[selected_saves_index[0]];
 

@@ -3,10 +3,10 @@
 
 bool draw_save_icon(int pos_x, int pos_y, bool is_visible)
 {
-    static int16_t frame_counter = 0;
-
     if (is_visible)
     {
+        static int16_t frame_counter = 0;
+
         DrawRectangle(pos_x, pos_y, 15, 20, (Color){255, 255, 255, 255});
         DrawTriangle((Vector2){pos_x + 15, pos_y}, (Vector2){pos_x + 15, pos_y + 5}, (Vector2){pos_x + 20, pos_y + 5}, (Color){255, 255, 255, 255});
         DrawRectangle(pos_x + 15, pos_y + 5, 5, 15, (Color){255, 255, 255, 255});
@@ -23,4 +23,5 @@ bool draw_save_icon(int pos_x, int pos_y, bool is_visible)
             return true;
         }
     }
+    return false;
 }

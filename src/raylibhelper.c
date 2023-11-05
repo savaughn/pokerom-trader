@@ -117,7 +117,7 @@ void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_
     const uint8_t t_max = 50;
     const uint8_t t_min = 0;
     const uint8_t t_rate = 5;
-    static uint8_t transparency = 0;
+    static int8_t transparency = 0;
 
     // scroll position indicator
     float scroll_position = min_y + 75 - *y_offset;
@@ -127,18 +127,12 @@ void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_
     if (*is_moving_scroll)
     {
         transparency += t_rate;
-        if (transparency > t_max)
-        {
-            transparency = t_max;
-        }
+        clamp_max(transparency, t_max);
     }
     else if (transparency > t_min)
     {
         transparency -= t_rate;
-        if (transparency < t_min)
-        {
-            transparency = t_min;
-        }
+        clamp_min(transparency, t_min);
     }
     if (height > SCREEN_HEIGHT - 100 - 2 * (SCREEN_HEIGHT / 16))
     {
@@ -192,7 +186,7 @@ void draw_no_save_files(char *save_path)
     DrawText(TextFormat("%s", save_path), SCREEN_CENTER(save_path, 20).x, 275, 20, BLACK);
 }
 
-void draw_top_banner(const char *text, int *banner_position_offset)
+void draw_top_banner(const char *text, const int *banner_position_offset)
 {
     int text_width = MeasureText(text, 20);
     DrawRectangle(0, *banner_position_offset - 10, SCREEN_WIDTH, 50, WHITE);

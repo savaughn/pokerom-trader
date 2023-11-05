@@ -15,7 +15,7 @@ void animate_details_panel(int16_t *grow_x, float *scale_width, uint8_t current_
     {
         grow_x[1] += grow_rate;
     }
-    else if (current_trainer_index == 1 && !tr2_active)
+    else if (current_trainer_index == 1)
     {
         grow_x[1] -= grow_rate;
     }
