@@ -38,8 +38,8 @@ There is no backup system implemented yet. Make backup saves before using this o
 
 ## What's working
 
-- Same-gen trading
-- Cross-gen trading
+- Same-gen trading  (Gen 1 <-> Gen 1, Gen 2 <-> Gen 2)
+- Cross-gen trading (Gen 1 <-> Gen 2)
 - Gen 1 trade evolutions
 - Gen 2 trade evolutions
 
