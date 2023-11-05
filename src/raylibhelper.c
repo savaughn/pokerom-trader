@@ -117,7 +117,7 @@ void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_
     const uint8_t t_max = 50;
     const uint8_t t_min = 0;
     const uint8_t t_rate = 5;
-    static int8_t transparency = 0;
+    static uint8_t transparency = 0;
 
     // scroll position indicator
     float scroll_position = min_y + 75 - *y_offset;
@@ -127,12 +127,18 @@ void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_
     if (*is_moving_scroll)
     {
         transparency += t_rate;
-        clamp_max(transparency, t_max);
+        if (transparency > t_max)
+        {
+            transparency = t_max;
+        }
     }
     else if (transparency > t_min)
     {
         transparency -= t_rate;
-        clamp_min(transparency, t_min);
+        if (transparency < t_min)
+        {
+            transparency = t_min;
+        }
     }
     if (height > SCREEN_HEIGHT - 100 - 2 * (SCREEN_HEIGHT / 16))
     {

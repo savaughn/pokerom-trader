@@ -12,10 +12,19 @@ void draw_pokeball_scroll(float scroll_position, float transparency)
 
 void draw_pokeball(int pos_x, int pos_y, int scale)
 {
+    // Back Shadow
     DrawCircleGradient(pos_x, pos_y, 10 * scale, (Color){0, 0, 0, 255}, (Color){0, 0, 0, 0});
+    // Black ouline
+    DrawCircle(pos_x, pos_y, 5.25 * scale, (Color){0, 0, 0, 255});
+    // Bottom Half white (full-circle)
     DrawCircle(pos_x, pos_y, 5 * scale, (Color){255, 255, 255, 255});
+    // Top Half red (semi-circle)
     DrawCircleSector((Vector2){pos_x, pos_y}, 5 * scale, 0, -180, 360, (Color){230, 41, 55, 255});
-    DrawCircle(pos_x, pos_y, 2 * scale, (Color){0, 0, 0, 255});
-    DrawLine(pos_x, pos_y, pos_x + (5 * scale), pos_y, (Color){0, 0, 0, 255});
-    DrawCircle(pos_x, pos_y, 1* scale, (Color){255, 255, 255, 255});
+    // Black cicle outline open-button
+    DrawCircle(pos_x, pos_y, 1.75 * scale, (Color){0, 0, 0, 255});
+    // Lines from open-button to edges
+    DrawLineEx((Vector2){pos_x, pos_y}, (Vector2){pos_x + (5 * scale), pos_y}, scale * 0.2, (Color){0, 0, 0, 255});
+    DrawLineEx((Vector2){pos_x, pos_y}, (Vector2){pos_x - (5 * scale), pos_y}, scale * 0.2, (Color){0, 0, 0, 255});
+    // white circle open-button
+    DrawCircle(pos_x, pos_y, 1.35 * scale, (Color){255, 255, 255, 255});
 }
