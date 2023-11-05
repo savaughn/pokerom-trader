@@ -1,9 +1,6 @@
 #include "raylibhelper.h"
 #include "pksavfilehelper.h"
 
-#define new_max(x, y) (((x) >= (y)) ? (x) : (y))
-#define new_min(x, y) (((x) <= (y)) ? (x) : (y))
-
 static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT] = {
     [0 ... MAX_FILE_PATH_COUNT - 1] = {
         .save_generation_type = SAVE_GENERATION_NONE,
@@ -38,9 +35,12 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
     static bool is_moving_scroll = false;
     static int y_offset = 75;
     static int banner_position_offset = 0;
+    static bool show_duplicate_toast = false;
 
     BeginDrawing();
-    ClearBackground(COLOR_PKMN_RED);
+    ClearBackground(RED);
+
+    draw_background_grid();
 
     if (save_file_data->num_saves == 0)
     {
@@ -140,6 +140,8 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
         case E_UI_TRADE:
             if (CheckCollisionPointRec(GetMousePosition(), trade_button_rec))
             {
+                static bool is_duplicate_save_file = false;
+
                 // load selection to player1_save
                 *pkmn_save_player1 = pkmn_saves[selected_saves_index[0]];
 
@@ -155,19 +157,27 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                 strcpy(player2_save_path, save_file_data->saves_file_path[selected_saves_index[1]]);
                 create_trainer(pkmn_save_player2, trainer2);
                 trainerSelection[1].trainer_id = trainer2->trainer_id;
-                *is_same_generation = pkmn_save_player1->save_generation_type == pkmn_save_player2->save_generation_type;
-                *current_screen = SCREEN_TRADE;
-                selected_saves_index[0] = -1;
-                selected_saves_index[1] = -1;
+                is_duplicate_save_file = trainer1->trainer_id == trainer2->trainer_id;
 
-                // reset save files
-                for (int i = 0; i < MAX_FILE_PATH_COUNT; i++)
+                *is_same_generation = pkmn_save_player1->save_generation_type == pkmn_save_player2->save_generation_type;
+                if (!is_duplicate_save_file)
                 {
-                    pkmn_saves[i].save_generation_type = SAVE_GENERATION_NONE;
+                    *current_screen = SCREEN_TRADE;
+                    selected_saves_index[0] = -1;
+                    selected_saves_index[1] = -1;
+                    // reset save files
+                    for (int i = 0; i < MAX_FILE_PATH_COUNT; i++)
+                    {
+                        pkmn_saves[i].save_generation_type = SAVE_GENERATION_NONE;
+                    }
+                    ui_selection = E_UI_NONE;
+                    y_offset = 75;
+                    banner_position_offset = 0;
                 }
-                ui_selection = E_UI_NONE;
-                y_offset = 75;
-                banner_position_offset = 0;
+                else
+                {
+                    show_duplicate_toast = true;
+                }
             }
             else
             {
@@ -223,6 +233,11 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
         default:
             break;
         }
+    }
+
+    if (show_duplicate_toast)
+    {
+        show_duplicate_toast = !draw_toast_message("Duplicate save files cannot trade with each other!", TOAST_LONG, TOAST_ERROR);
     }
 
     EndDrawing();

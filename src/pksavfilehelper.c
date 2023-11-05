@@ -91,7 +91,6 @@ PokemonSave load_savefile_from_path(const char *path)
         break;
     }
     default:
-        error_handler(PKSAV_ERROR_INVALID_SAVE, "Invalid save generation");
         break;
     }
     return pkmn_save;
@@ -101,7 +100,7 @@ PokemonSave load_savefile_from_path(const char *path)
  * @param pkmn_save a pointer to a PokemonSave struct save buffer
  * @param path the path to the save file
 */
-void save_savefile_to_path(PokemonSave *pkmn_save, char *path)
+pksavhelper_error save_savefile_to_path(PokemonSave *pkmn_save, char *path)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
     if (pkmn_save->save_generation_type == SAVE_GENERATION_1)
@@ -121,9 +120,15 @@ void save_savefile_to_path(PokemonSave *pkmn_save, char *path)
     {
         printf("Saved to %s\n", path);
     }
+
+    if (err != PKSAV_ERROR_NONE)
+    {
+        return error_update_save;
+    }
+    return error_none;
 }
 
-void load_display_files(struct SaveFileData *save_file_data, PokemonSave *pkmn_saves)
+void load_display_files(const struct SaveFileData *save_file_data, PokemonSave *pkmn_saves)
 {
     // Load save files once
     for (int i = 0; i < save_file_data->num_saves; i++)

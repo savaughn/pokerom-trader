@@ -4,7 +4,7 @@
 void set_default_value_string(const char *eval_str, const char *default_value, char *out_str) {
     if (eval_str == NULL) {
         // Default value is too big for the output buffer
-        if (default_value != NULL && strlen(default_value) + 1 > sizeof(out_str)) {
+        if (strlen(default_value) + 1 > sizeof(out_str)) {
             return;
         }
         strcpy(out_str, default_value);

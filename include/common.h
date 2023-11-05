@@ -6,6 +6,11 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 480
 
+#define new_max(x, y) (((x) >= (y)) ? (x) : (y))
+#define new_min(x, y) (((x) <= (y)) ? (x) : (y))
+#define clamp_max(x, y) (((x) >= (y)) ? (y) : (x))
+#define clamp_min(x, y) (((x) <= (y)) ? (y) : (x))
+
 // Footer Buttons
 #define BUTTON_WIDTH 100
 #define BUTTON_HEIGHT 75
@@ -130,5 +135,13 @@ enum file_op_results {
     FILE_OP_SUCCESS = 0,
     FILE_OP_FAILURE
 };
+
+typedef enum {
+    error_none,
+    error_swap_pkmn,
+    error_update_save,
+    error_update_pokedex,
+    error_update_files
+} pksavhelper_error;
 
 #endif // COMMON_H

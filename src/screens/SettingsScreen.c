@@ -53,7 +53,8 @@ void draw_settings(struct SaveFileData *save_file_data, GameScreen *current_scre
     static int selected_index = BUTTON_NONE;
 
     BeginDrawing();
-    ClearBackground(COLOR_PKMN_RED);
+    ClearBackground(RED);
+    draw_background_grid();
     DrawCircle(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 3.5, 1350, BLACK);
     DrawCircle(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 3.5, 1320, WHITE);
 

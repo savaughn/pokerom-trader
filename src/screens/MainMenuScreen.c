@@ -118,7 +118,9 @@ void draw_evolution_arrow_animation(void)
 void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_screen, bool *should_close_window, Texture2D *textures)
 {
     BeginDrawing();
-    ClearBackground(COLOR_PKMN_RED);
+    ClearBackground(RED);
+    draw_background_grid();
+    
     DrawCircle(SCREEN_WIDTH * 1.15, SCREEN_HEIGHT * 1.725, 800, BLACK);
     DrawCircle(SCREEN_WIDTH * 1.15, SCREEN_HEIGHT * 1.725, 730, WHITE);
 

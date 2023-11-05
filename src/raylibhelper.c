@@ -6,10 +6,26 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
+void draw_background_grid(void)
+{
+    int line_count_v = SCREEN_HEIGHT / 10;
+    int line_count_h = SCREEN_WIDTH / 10;
+    
+    // draw line grid color_pkmn_red
+    for (int i = 0; i < line_count_v; i++)
+    {
+        DrawRectangle(0, i * 10, SCREEN_WIDTH, 1, COLOR_PKMN_RED);
+    }
+    for (int i = 0; i < line_count_h; i++)
+    {
+        DrawRectangle(i * 10, 0, 1, SCREEN_HEIGHT, COLOR_PKMN_RED);
+    }
+}
+
 // Draws a button with the pokemon nickname
 void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname, bool selected)
 {
-    DrawText(pokemon_nickname, rect.x + 10, rect.y + 6, 20, selected ? LIGHTGRAY : BLACK);
+    shadow_text(pokemon_nickname, rect.x + 10, rect.y + 6, 20, selected ? LIGHTGRAY : WHITE);
 }
 
 // Concantenate the trainer's name and id into a string for Raylib to draw
@@ -29,7 +45,7 @@ void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id)
 {
     char id_str[6];
     strcpy(trainer_id, "IDNo ");
-    snprintf(id_str, sizeof(id_str), "%05u", trainer->trainer_id); // "IDNo %u" loses 3 chars even with enough space?
+    snprintf(id_str, sizeof(id_str), "%05u", trainer->trainer_id);
     strcat(trainer_id, id_str);
 }
 
@@ -176,7 +192,7 @@ void draw_no_save_files(char *save_path)
     DrawText(TextFormat("%s", save_path), SCREEN_CENTER(save_path, 20).x, 275, 20, BLACK);
 }
 
-void draw_top_banner(const char *text, int *banner_position_offset)
+void draw_top_banner(const char *text, const int *banner_position_offset)
 {
     int text_width = MeasureText(text, 20);
     DrawRectangle(0, *banner_position_offset - 10, SCREEN_WIDTH, 50, WHITE);
@@ -275,7 +291,7 @@ void draw_raylib_screen_loop(
             draw_file_select(save_file_data, player1_save_path, player2_save_path, trainer1, trainer2, trainerSelection, pkmn_save_player1, pkmn_save_player2, &current_screen, &is_same_generation);
             break;
         case SCREEN_TRADE:
-            draw_trade(pkmn_save_player1, pkmn_save_player2, player1_save_path, player2_save_path, trainerSelection, trainer1, trainer2, &is_same_generation, &current_screen);
+            draw_trade(pkmn_save_player1, pkmn_save_player2, player1_save_path, player2_save_path, trainerSelection, trainer1, trainer2, &is_same_generation, &current_screen, &textures[T_TRADE]);
             break;
         case SCREEN_MAIN_MENU:
             draw_main_menu(save_file_data, &current_screen, &should_close_window, textures);
