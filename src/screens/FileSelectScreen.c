@@ -236,7 +236,7 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
 
     if (show_duplicate_toast)
     {
-        show_duplicate_toast = !draw_toast_message("Duplicate save files cannot trade with each other.", TOAST_LONG);
+        show_duplicate_toast = !draw_toast_message("Duplicate save files cannot trade with each other!", TOAST_LONG, TOAST_ERROR);
     }
 
     EndDrawing();

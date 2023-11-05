@@ -4,29 +4,36 @@
 
 void animate_details_panel(int16_t *grow_x, float *scale_width, uint8_t current_trainer_index, bool tr1_active, bool tr2_active)
 {
-if (tr2_active)
+    const uint8_t min_grow_x = 0;
+    const uint8_t max_grow_x = 207;
+    const uint8_t grow_rate = 50;
+    const float max_scale = 2.1825f;
+    const float min_scale = 1.0f;
+    const float scale_rate = 0.286f;
+    
+    if (tr2_active)
     {
-        grow_x[1]+= 50;
-    } 
+        grow_x[1] += grow_rate;
+    }
     else if (current_trainer_index == 1 && !tr2_active)
     {
-        grow_x[1]-= 50;
+        grow_x[1] -= grow_rate;
     }
-    grow_x[1] = clamp_max(grow_x[1], 208);
-    grow_x[1] = clamp_min(grow_x[1], 0);
-    grow_x[0] = 0;
+    grow_x[1] = clamp_max(grow_x[1], max_grow_x);
+    grow_x[1] = clamp_min(grow_x[1], min_grow_x);
+    grow_x[0] = min_grow_x;
 
     if (tr1_active || tr2_active)
     {
-        scale_width[current_trainer_index] += 0.286f;
+        scale_width[current_trainer_index] += scale_rate;
     }
     else
     {
-        scale_width[current_trainer_index] -= 0.286f;
+        scale_width[current_trainer_index] -= scale_rate;
     }
 
-    scale_width[current_trainer_index] = clamp_max(scale_width[current_trainer_index], 2.19f);
-    scale_width[current_trainer_index] = clamp_min(scale_width[current_trainer_index], 1.0f);
+    scale_width[current_trainer_index] = clamp_max(scale_width[current_trainer_index], max_scale);
+    scale_width[current_trainer_index] = clamp_min(scale_width[current_trainer_index], min_scale);
 }
 
 // Draws the trainers name, id, and party pokemon in pokemon buttons
@@ -47,7 +54,7 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
 
     static int16_t grow_x[2] = {0};
     static float scale_width[2] = {1.0f};
-    
+
     animate_details_panel(grow_x, scale_width, current_trainer_index, tr1_active, tr2_active);
 
     // Details Panel Rectangle
@@ -127,7 +134,7 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
             pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[trainerSelection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, 10);
 
             // Draw level
-            shadow_text(TextFormat( "Level %u", trainer->pokemon_party.gen1_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.level), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 40, 20, WHITE);
+            shadow_text(TextFormat("Level %u", trainer->pokemon_party.gen1_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.level), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 40, 20, WHITE);
             shadow_text("Stats", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 60 : container_rec.x + container_rec.width / 2 + 60, container_rec.y + 70, 20, WHITE);
             shadow_text("DVs", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 70, 20, WHITE);
             // Draw stats
@@ -155,7 +162,7 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
         {
             pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[trainerSelection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, 10);
             // Draw level
-            shadow_text(TextFormat( "Level %u", trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].pc_data.level), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 40, 20, WHITE);
+            shadow_text(TextFormat("Level %u", trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].pc_data.level), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 40, 20, WHITE);
             shadow_text("Stats", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 60 : container_rec.x + container_rec.width / 2 + 60, container_rec.y + 70, 20, WHITE);
             shadow_text("IVs", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 70, 20, WHITE);
             // Draw stats
@@ -172,7 +179,7 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
             shadow_text("Sp.D:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 250, 20, WHITE);
             shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.spdef)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 250, 20, WHITE);
 
-            // Draw IVs inline with stats
+            // Draw DVs
             uint8_t pkmn_dv[PKSAV_NUM_GB_IVS];
             pksav_get_gb_IVs(&trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].pc_data.iv_data, pkmn_dv, sizeof(pkmn_dv));
             shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_HP]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 100, 20, WHITE);

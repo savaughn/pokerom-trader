@@ -136,4 +136,12 @@ enum file_op_results {
     FILE_OP_FAILURE
 };
 
+typedef enum {
+    error_none,
+    error_swap_pkmn,
+    error_update_save,
+    error_update_pokedex,
+    error_update_files
+} pksavhelper_error;
+
 #endif // COMMON_H

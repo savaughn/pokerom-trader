@@ -24,7 +24,8 @@ void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *p
     static int banner_position_offset = 0;
 
     BeginDrawing();
-    ClearBackground(COLOR_PKMN_RED);
+    ClearBackground(RED);
+    draw_background_grid();
 
     if (save_file_data->num_saves == 0)
     {

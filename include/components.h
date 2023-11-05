@@ -1,11 +1,18 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
-enum E_TOAST_LENGTH
+enum E_TOAST_DURATION
 {
     TOAST_SHORT = 60,
     TOAST_MEDIUM = 120,
     TOAST_LONG = 240
+};
+
+enum E_TOAST_TYPE
+{
+    TOAST_SUCCESS = 0,
+    TOAST_ERROR,
+    TOAST_INFO
 };
 
 bool draw_menu_button(int x, int y, const char *text, int text_size);
@@ -15,6 +22,7 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
 void draw_corrupted_save(const char *save_name, const int y_offset, const int index, const int corrupted_count);
 void draw_pokeball_scroll(float scroll_position, float transparency);
 void draw_pokeball(int pos_x, int pos_y, int scale);
-bool draw_toast_message(char *message, enum E_TOAST_LENGTH duration);
+bool draw_toast_message(char *message, enum E_TOAST_DURATION duration, enum E_TOAST_TYPE type);
+bool draw_save_icon(int pos_x, int pos_y, bool is_visible);
 
 #endif // COMPONENTS_H

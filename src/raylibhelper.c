@@ -291,7 +291,7 @@ void draw_raylib_screen_loop(
             draw_file_select(save_file_data, player1_save_path, player2_save_path, trainer1, trainer2, trainerSelection, pkmn_save_player1, pkmn_save_player2, &current_screen, &is_same_generation);
             break;
         case SCREEN_TRADE:
-            draw_trade(pkmn_save_player1, pkmn_save_player2, player1_save_path, player2_save_path, trainerSelection, trainer1, trainer2, &is_same_generation, &current_screen);
+            draw_trade(pkmn_save_player1, pkmn_save_player2, player1_save_path, player2_save_path, trainerSelection, trainer1, trainer2, &is_same_generation, &current_screen, &textures[T_TRADE]);
             break;
         case SCREEN_MAIN_MENU:
             draw_main_menu(save_file_data, &current_screen, &should_close_window, textures);
