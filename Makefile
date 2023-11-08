@@ -30,7 +30,7 @@ PLATFORM              ?= PLATFORM_DESKTOP
 
 # Define project variables
 PROJECT_NAME          ?= pokeromtrader
-PROJECT_VERSION       := 0.6.0
+PROJECT_VERSION       := 0.6.1
 # prerelease or release
 PROJECT_VERSION_TYPE  ?= release
 PROJECT_BUILD_PATH    ?= .

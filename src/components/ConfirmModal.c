@@ -23,7 +23,7 @@ void draw_confirmation_modal(const char *header_text, const char *body_text, con
     DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, scrim);
 
     // Modal Rectangle
-    Rectangle confirm_modal_rec = (Rectangle){SCREEN_WIDTH / 2 - MeasureText(header_text, 20) / 2 - 50, SCREEN_HEIGHT / 2 - 150, MeasureText(_header_text, 20) + 100, 300};
+    Rectangle confirm_modal_rec = (Rectangle){SCREEN_WIDTH / 2 - MeasureText(header_text, 20) / 2 - 50, SCREEN_HEIGHT / 2 - 150, clamp_min(MeasureText(header_text, 20) + 100, SCREEN_WIDTH*0.8), 300};
     // Bottom Shadow
     DrawRectangleGradientV(confirm_modal_rec.x + 4, confirm_modal_rec.y + confirm_modal_rec.height - 2, confirm_modal_rec.width - 5, 6, LIGHTGRAY, (Color){0, 0, 0, 0});
     // Right Shadow
