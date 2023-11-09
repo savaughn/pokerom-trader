@@ -34,6 +34,7 @@ jobs:
       run: |
         cd deps/raylib/src/
         make PLATFORM=PLATFORM_DESKTOP
+        sudo make install
 
     - name: Build Project
       run: |

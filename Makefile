@@ -115,7 +115,7 @@ endif
 # TODO: Do we really need this?
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),LINUX)
-        RAYLIB_PREFIX  ?= ../raylib
+        RAYLIB_PREFIX  ?= deps/raylib
         RAYLIB_PATH     = $(realpath $(RAYLIB_PREFIX))
     endif
 endif
