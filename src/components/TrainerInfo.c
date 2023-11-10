@@ -43,8 +43,8 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
     SaveGenerationType trainer_generation = trainer->trainer_generation;
 
     // Create the trainer name and id strings for Raylib drawing
-    char trainer_name[15];
-    create_trainer_name_str(trainer, trainer_name, show_gender);
+    char trainer_name[15] = "\0";
+    create_trainer_name_str(trainer, trainer_name);
     char trainer_id[11];
     create_trainer_id_str(trainer, trainer_id);
     int current_trainer_index = trainer_selection[0].trainer_id == trainer->trainer_id ? 0 : trainer_selection[1].trainer_id == trainer->trainer_id ? 1
@@ -100,14 +100,14 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
            trade_status = check_trade_eligibility(trainer, party_index);
         }
 
-        char pokemon_nickname[11] = "\0";
+        char pokemon_nickname[PKMN_NAME_TEXT_MAX + 1] = "\0";
         if (trainer_generation == SAVE_GENERATION_1)
         {
-            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[party_index], pokemon_nickname, 10);
+            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[party_index], pokemon_nickname, PKMN_NAME_TEXT_MAX);
         }
         else if (trainer_generation == SAVE_GENERATION_2)
         {
-            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[party_index], pokemon_nickname, 10);
+            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[party_index], pokemon_nickname, PKMN_NAME_TEXT_MAX);
         }
 
         draw_pkmn_button((Rectangle){x - 10, y + 70 + (party_index * 30), 200, 30}, party_index, pokemon_nickname, current_trainer_index != -1 && (trainer_selection[current_trainer_index].pkmn_party_index == party_index));
@@ -144,10 +144,10 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
     if (current_trainer_index != -1 && trainer_selection[current_trainer_index].pkmn_party_index != -1 && is_panel_out)
     {
         // Name of the pokemon selected from list
-        static char selected_pokemon_nickname[11];
+        static char selected_pokemon_nickname[PKMN_NAME_TEXT_MAX + 1] = "\0";
         if (trainer_generation == SAVE_GENERATION_1)
         {
-            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[trainer_selection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, 10);
+            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[trainer_selection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, PKMN_NAME_TEXT_MAX);
             struct pksav_gen1_party_pokemon party_pkmn = trainer->pokemon_party.gen1_pokemon_party.party[trainer_selection[current_trainer_index].pkmn_party_index];
             // Draw level
             shadow_text(TextFormat("Level %u", party_pkmn.party_data.level), text_pos_x, container_rec.y + 40, 20, WHITE);
@@ -176,7 +176,7 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
         }
         else if (trainer_generation == SAVE_GENERATION_2)
         {
-            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[trainer_selection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, 10);
+            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[trainer_selection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, PKMN_NAME_TEXT_MAX);
             struct pksav_gen2_party_pokemon party_pkmn = trainer->pokemon_party.gen2_pokemon_party.party[trainer_selection[current_trainer_index].pkmn_party_index];
             // Draw level
             shadow_text(TextFormat("Level %u", party_pkmn.pc_data.level), text_pos_x, container_rec.y + 40, 20, WHITE);

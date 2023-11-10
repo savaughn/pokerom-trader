@@ -1,8 +1,9 @@
 #include "raylibhelper.h"
+#include "pksavhelper.h"
 
 void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle container_rec, bool is_selected)
 {
-    char trainer_name[7] = "\0";
+    char trainer_name[TRAINER_NAME_TEXT_MAX + 1] = "\0";
     uint16_t trainer_id;
     uint16_t hours = 0;
     uint8_t minutes = 0;
@@ -10,7 +11,7 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
 
     if (pkmn_save->save_generation_type == SAVE_GENERATION_1)
     {
-        pksav_gen1_import_text(pkmn_save->save.gen1_save.trainer_info.p_name, trainer_name, 7);
+        pksav_gen1_import_text(pkmn_save->save.gen1_save.trainer_info.p_name, trainer_name, TRAINER_NAME_TEXT_MAX);
         trainer_id = pksav_bigendian16(*pkmn_save->save.gen1_save.trainer_info.p_id);
         struct pksav_gen1_time *save_time = pkmn_save->save.gen1_save.p_time_played;
         hours = pksav_littleendian16(save_time->hours);
@@ -19,7 +20,7 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
     }
     else if (pkmn_save->save_generation_type == SAVE_GENERATION_2)
     {
-        pksav_gen2_import_text(pkmn_save->save.gen2_save.trainer_info.p_name, trainer_name, 7);
+        pksav_gen2_import_text(pkmn_save->save.gen2_save.trainer_info.p_name, trainer_name, TRAINER_NAME_TEXT_MAX);
         trainer_id = pksav_bigendian16(*pkmn_save->save.gen2_save.trainer_info.p_id);
         const struct pksav_gen2_time *save_time = pkmn_save->save.gen2_save.save_time.p_time_played;
         hours = save_time->hours;
@@ -64,8 +65,8 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
     {
         for (int i = 0; i < pkmn_save->save.gen1_save.pokemon_storage.p_party->count; i++)
         {
-            char pokemon_name[11];
-            pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_name, 10);
+            char pokemon_name[PKMN_NAME_TEXT_MAX + 1] = "\0";
+            pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_name, PKMN_NAME_TEXT_MAX);
             shadow_text(pokemon_name, name_slots[i].x, name_slots[i].y, 20, WHITE);
             shadow_text(TextFormat(" L%d", pkmn_save->save.gen1_save.pokemon_storage.p_party->party[i].party_data.level), (name_slots[i].x + ((container_rec.width - 135) / 3)) - 60, name_slots[i].y, 20, WHITE);
         }
@@ -74,8 +75,8 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
     {
         for (int i = 0; i < pkmn_save->save.gen2_save.pokemon_storage.p_party->count; i++)
         {
-            char pokemon_name[11] = "\0";
-            pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_name, 10);
+            char pokemon_name[PKMN_NAME_TEXT_MAX + 1] = "\0";
+            pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_name, PKMN_NAME_TEXT_MAX);
             shadow_text(pokemon_name, name_slots[i].x, name_slots[i].y, 20, WHITE);
             shadow_text(TextFormat(" L%d", pkmn_save->save.gen2_save.pokemon_storage.p_party->party[i].pc_data.level), (name_slots[i].x + ((container_rec.width - 135) / 3)) - 60, name_slots[i].y, 20, WHITE);
         }
