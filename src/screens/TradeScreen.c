@@ -20,10 +20,10 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
 
     DrawTextureEx(*trade_texture, (Vector2){50, 10}, 0, 0.4, WHITE);
 
-    bool is_valid_trade[2] = {true};
-    draw_trainer_info(trainer1, 25, (SCREEN_HEIGHT - 100)/2 - 75, trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL, *is_same_generation, &is_valid_trade);
-    draw_trainer_info(trainer2, SCREEN_WIDTH - 178, (SCREEN_HEIGHT - 100)/2-75, trainerSelection, save_player2->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL, *is_same_generation, &is_valid_trade);
-    bool can_submit_trade = trainerSelection[0].pkmn_party_index != -1 && trainerSelection[1].pkmn_party_index != -1 && is_valid_trade[0] && is_valid_trade[1];
+    bool is_valid_trade[2] = {true, true};
+    draw_trainer_info(trainer1, 25, (SCREEN_HEIGHT - 100)/2 - 75, trainerSelection, save_player1->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL, *is_same_generation, is_valid_trade);
+    draw_trainer_info(trainer2, SCREEN_WIDTH - 178, (SCREEN_HEIGHT - 100)/2-75, trainerSelection, save_player2->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL, *is_same_generation, is_valid_trade);
+    bool can_submit_trade = trainerSelection[0].pkmn_party_index != -1 && trainerSelection[1].pkmn_party_index != -1 && is_valid_trade[0] == true && is_valid_trade[1] == true;
 
     // Bottom bar
     const Rectangle bottom_bar_rec = (Rectangle){0, SCREEN_HEIGHT - 50, SCREEN_WIDTH, 100};
@@ -125,26 +125,26 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
     // Draw Toast with status message
     if (show_trade_toast)
     {
-        char *toast_message = NULL;
+        char toast_message[25];
         switch (pksavhelper_error)
         {
         case error_none:
-            toast_message = "Trade successful!";
+            strcpy(toast_message, "Trade successful!");
             break;
         case error_update_pokedex:
-            toast_message = "Pokédex update failed!";
+            strcpy(toast_message, "Pokédex update failed!");
             break;
         case error_swap_pkmn:
-            toast_message = "Pokémon trade failed!";
+            strcpy(toast_message, "Pokémon trade failed!");
             break;
         case error_update_save:
-            toast_message = "Save update failed!";
+            strcpy(toast_message, "Save update failed!");
             break;
         default:
             break;
         }
         
-        show_trade_toast = !draw_toast_message(toast_message, TOAST_LONG, TOAST_INFO);
+        show_trade_toast = !draw_toast_message(toast_message, TOAST_SHORT, TOAST_INFO);
     }
     else
     {
