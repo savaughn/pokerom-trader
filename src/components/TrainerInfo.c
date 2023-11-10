@@ -37,20 +37,20 @@ void animate_details_panel(int16_t *grow_x, float *scale_width, uint8_t current_
 }
 
 // Draws the trainers name, id, and party pokemon in pokemon buttons
-void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool showGender, bool is_same_generation, bool *is_valid_trade)
+void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainer_selection[2], bool show_gender, bool is_same_generation, bool is_valid_trade[2])
 {
     // Get trainer generation 1 or 2
     SaveGenerationType trainer_generation = trainer->trainer_generation;
 
     // Create the trainer name and id strings for Raylib drawing
     char trainer_name[15];
-    create_trainer_name_str(trainer, trainer_name, showGender);
+    create_trainer_name_str(trainer, trainer_name, show_gender);
     char trainer_id[11];
     create_trainer_id_str(trainer, trainer_id);
-    int current_trainer_index = trainerSelection[0].trainer_id == trainer->trainer_id ? 0 : trainerSelection[1].trainer_id == trainer->trainer_id ? 1
+    int current_trainer_index = trainer_selection[0].trainer_id == trainer->trainer_id ? 0 : trainer_selection[1].trainer_id == trainer->trainer_id ? 1
                                                                                                                                                   : -1;
-    bool tr1_active = trainerSelection[0].pkmn_party_index != -1 && current_trainer_index == 0;
-    bool tr2_active = trainerSelection[1].pkmn_party_index != -1 && current_trainer_index == 1;
+    bool tr1_active = trainer_selection[0].pkmn_party_index != -1 && current_trainer_index == 0;
+    bool tr2_active = trainer_selection[1].pkmn_party_index != -1 && current_trainer_index == 1;
 
     static int16_t grow_x[2] = {0};
     static float scale_width[2] = {1.0f};
@@ -86,12 +86,19 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
     shadow_text(trainer_name, x, y, 20, WHITE);
     shadow_text(trainer_id, x, y + 30, 20, WHITE);
 
+    int text_pos_x = trainer_selection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10;
+    int warn_text_pos_x = trainer_selection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 - 40;
+    int stat_text_pos_x = trainer_selection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80;
+    int dv_text_pos_x = trainer_selection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140;
+    bool is_panel_out = (current_trainer_index == 0 && scale_width[0] > 2.0f) || (current_trainer_index == 1 && grow_x[1] > 200);
     // Draw the pokemon buttons
     for (int party_index = 0; party_index < party_count; party_index++)
     {
         enum eligible_trade_status trade_status = E_TRADE_STATUS_ELIGIBLE;
-        trade_status = check_trade_eligibility(trainer, party_index);
-        is_valid_trade[current_trainer_index] = trade_status == E_TRADE_STATUS_ELIGIBLE;
+        if (!is_same_generation)
+        {
+           trade_status = check_trade_eligibility(trainer, party_index);
+        }
 
         char pokemon_nickname[11] = "\0";
         if (trainer_generation == SAVE_GENERATION_1)
@@ -103,93 +110,103 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
             pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[party_index], pokemon_nickname, 10);
         }
 
-        draw_pkmn_button((Rectangle){x - 10, y + 70 + (party_index * 30), 200, 30}, party_index, pokemon_nickname, current_trainer_index != -1 && (trainerSelection[current_trainer_index].pkmn_party_index == party_index));
-        if (trade_status == E_TRADE_STATUS_GEN2_PKMN && (tr1_active || tr2_active))
-            shadow_text("Gen 2 only ", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 275, 20, WHITE);
-        else if (trade_status == E_TRADE_STATUS_GEN2_MOVE)
-            shadow_text("Gen 2 move ", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 275, 20, WHITE);
-        else if (trade_status == E_TRADE_STATUS_HM_MOVE)
-            shadow_text("HM move", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 275, 20, WHITE);
-
+        draw_pkmn_button((Rectangle){x - 10, y + 70 + (party_index * 30), 200, 30}, party_index, pokemon_nickname, current_trainer_index != -1 && (trainer_selection[current_trainer_index].pkmn_party_index == party_index));
+        
+        if (trainer_selection[current_trainer_index].pkmn_party_index == party_index && trade_status == E_TRADE_STATUS_GEN2_PKMN && is_panel_out)
+        {
+            shadow_text("Gen 2 only pokemon", warn_text_pos_x, container_rec.y + 275, 20, WHITE);
+            is_valid_trade[current_trainer_index] = false;
+        }
+        else if (trainer_selection[current_trainer_index].pkmn_party_index == party_index && trade_status == E_TRADE_STATUS_GEN2_MOVE && is_panel_out)
+        {
+            shadow_text("Gen 2 only move", warn_text_pos_x, container_rec.y + 275, 20, WHITE);
+            is_valid_trade[current_trainer_index] = false;
+        }       
+        else if (trainer_selection[current_trainer_index].pkmn_party_index == party_index && trade_status == E_TRADE_STATUS_HM_MOVE && is_panel_out)
+        {
+            shadow_text("Pokemon has HM move", warn_text_pos_x, container_rec.y + 275, 20, WHITE);
+            is_valid_trade[current_trainer_index] = false;
+        }
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){x - 10, y + 70 + (party_index * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (trainerSelection[current_trainer_index].pkmn_party_index != party_index)
+            if (trainer_selection[current_trainer_index].pkmn_party_index != party_index)
             {
-                trainerSelection[current_trainer_index].pkmn_party_index = party_index;
+                trainer_selection[current_trainer_index].pkmn_party_index = party_index;
             }
             else
             {
-                trainerSelection[current_trainer_index].pkmn_party_index = -1;
+                trainer_selection[current_trainer_index].pkmn_party_index = -1;
             }
         }
     }
 
     // Draw the selected pokemon nickname
-    if (current_trainer_index != -1 && trainerSelection[current_trainer_index].pkmn_party_index != -1 && ((current_trainer_index == 0 && scale_width[0] > 2.0f) || (current_trainer_index == 1 && grow_x[1] > 200)))
+    if (current_trainer_index != -1 && trainer_selection[current_trainer_index].pkmn_party_index != -1 && is_panel_out)
     {
         // Name of the pokemon selected from list
         static char selected_pokemon_nickname[11];
         if (trainer_generation == SAVE_GENERATION_1)
         {
-            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[trainerSelection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, 10);
-
+            pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[trainer_selection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, 10);
+            struct pksav_gen1_party_pokemon party_pkmn = trainer->pokemon_party.gen1_pokemon_party.party[trainer_selection[current_trainer_index].pkmn_party_index];
             // Draw level
-            shadow_text(TextFormat("Level %u", trainer->pokemon_party.gen1_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.level), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 40, 20, WHITE);
-            shadow_text("Stats", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 60 : container_rec.x + container_rec.width / 2 + 60, container_rec.y + 70, 20, WHITE);
-            shadow_text("DVs", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 70, 20, WHITE);
+            shadow_text(TextFormat("Level %u", party_pkmn.party_data.level), text_pos_x, container_rec.y + 40, 20, WHITE);
+            shadow_text("Stats", trainer_selection[current_trainer_index].trainer_index ? container_rec.x + 60 : container_rec.x + container_rec.width / 2 + 60, container_rec.y + 70, 20, WHITE);
+            shadow_text("DVs", dv_text_pos_x, container_rec.y + 70, 20, WHITE);
             // Draw stats
-            shadow_text("HP:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 100, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen1_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.max_hp)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 100, 20, WHITE);
-            shadow_text("Atk:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 130, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen1_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.atk)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 130, 20, WHITE);
-            shadow_text("Def:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 160, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen1_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.def)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 160, 20, WHITE);
-            shadow_text("Spd:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 190, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen1_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.spd)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 190, 20, WHITE);
-            shadow_text("Spcl:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 220, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen1_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.spcl)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 220, 20, WHITE);
+            shadow_text("HP:", text_pos_x, container_rec.y + 100, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.max_hp)), stat_text_pos_x, container_rec.y + 100, 20, WHITE);
+            shadow_text("Atk:", text_pos_x, container_rec.y + 130, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.atk)), stat_text_pos_x, container_rec.y + 130, 20, WHITE);
+            shadow_text("Def:", text_pos_x, container_rec.y + 160, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.def)), stat_text_pos_x, container_rec.y + 160, 20, WHITE);
+            shadow_text("Spd:", text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spd)), stat_text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text("Spcl:", text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spcl)), stat_text_pos_x, container_rec.y + 220, 20, WHITE);
 
             // Draw DVs inline with stats
             uint8_t pkmn_dv[PKSAV_NUM_GB_IVS];
-            pksav_get_gb_IVs(&trainer->pokemon_party.gen1_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].pc_data.iv_data, pkmn_dv, sizeof(pkmn_dv));
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_HP]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 100, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_ATTACK]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 130, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_DEFENSE]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 160, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPEED]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 190, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPECIAL]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 220, 20, WHITE);
+            pksav_get_gb_IVs(&party_pkmn.pc_data.iv_data, pkmn_dv, sizeof(pkmn_dv));
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_HP]), dv_text_pos_x, container_rec.y + 100, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_ATTACK]), dv_text_pos_x, container_rec.y + 130, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_DEFENSE]), dv_text_pos_x, container_rec.y + 160, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPEED]), dv_text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPECIAL]), dv_text_pos_x, container_rec.y + 220, 20, WHITE);
         }
         else if (trainer_generation == SAVE_GENERATION_2)
         {
-            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[trainerSelection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, 10);
+            pksav_gen2_import_text(trainer->pokemon_party.gen2_pokemon_party.nicknames[trainer_selection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, 10);
+            struct pksav_gen2_party_pokemon party_pkmn = trainer->pokemon_party.gen2_pokemon_party.party[trainer_selection[current_trainer_index].pkmn_party_index];
             // Draw level
-            shadow_text(TextFormat("Level %u", trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].pc_data.level), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 40, 20, WHITE);
-            shadow_text("Stats", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 60 : container_rec.x + container_rec.width / 2 + 60, container_rec.y + 70, 20, WHITE);
-            shadow_text("IVs", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 70, 20, WHITE);
+            shadow_text(TextFormat("Level %u", party_pkmn.pc_data.level), text_pos_x, container_rec.y + 40, 20, WHITE);
+            shadow_text("Stats", trainer_selection[current_trainer_index].trainer_index ? container_rec.x + 60 : container_rec.x + container_rec.width / 2 + 60, container_rec.y + 70, 20, WHITE);
+            shadow_text("IVs", dv_text_pos_x, container_rec.y + 70, 20, WHITE);
             // Draw stats
-            shadow_text("HP:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 100, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.max_hp)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 100, 20, WHITE);
-            shadow_text("Atk:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 130, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.atk)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 130, 20, WHITE);
-            shadow_text("Def:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 160, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.def)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 160, 20, WHITE);
-            shadow_text("Spd:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 190, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.spd)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 190, 20, WHITE);
-            shadow_text("Sp.A:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 220, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.spatk)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 220, 20, WHITE);
-            shadow_text("Sp.D:", trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 250, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].party_data.spdef)), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 80 : container_rec.x + container_rec.width / 2 + 80, container_rec.y + 250, 20, WHITE);
+            shadow_text("HP:", text_pos_x, container_rec.y + 100, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.max_hp)), stat_text_pos_x, container_rec.y + 100, 20, WHITE);
+            shadow_text("Atk:", text_pos_x, container_rec.y + 130, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.atk)), stat_text_pos_x, container_rec.y + 130, 20, WHITE);
+            shadow_text("Def:", text_pos_x, container_rec.y + 160, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.def)), stat_text_pos_x, container_rec.y + 160, 20, WHITE);
+            shadow_text("Spd:", text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spd)), stat_text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text("Sp.A:", text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spatk)), stat_text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text("Sp.D:", text_pos_x, container_rec.y + 250, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spdef)), stat_text_pos_x, container_rec.y + 250, 20, WHITE);
 
             // Draw DVs
             uint8_t pkmn_dv[PKSAV_NUM_GB_IVS];
-            pksav_get_gb_IVs(&trainer->pokemon_party.gen2_pokemon_party.party[trainerSelection[current_trainer_index].pkmn_party_index].pc_data.iv_data, pkmn_dv, sizeof(pkmn_dv));
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_HP]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 100, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_ATTACK]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 130, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_DEFENSE]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 160, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPEED]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 190, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPECIAL]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 220, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPECIAL]), trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 140 : container_rec.x + container_rec.width / 2 + 140, container_rec.y + 250, 20, WHITE);
+            pksav_get_gb_IVs(&party_pkmn.pc_data.iv_data, pkmn_dv, sizeof(pkmn_dv));
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_HP]), dv_text_pos_x, container_rec.y + 100, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_ATTACK]), dv_text_pos_x, container_rec.y + 130, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_DEFENSE]), dv_text_pos_x, container_rec.y + 160, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPEED]), dv_text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPECIAL]), dv_text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPECIAL]), dv_text_pos_x, container_rec.y + 250, 20, WHITE);
         }
         // Draw nickname
-        shadow_text(selected_pokemon_nickname, trainerSelection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10, container_rec.y + 10, 20, WHITE);
+        shadow_text(selected_pokemon_nickname, text_pos_x, container_rec.y + 10, 20, WHITE);
     }
 }
