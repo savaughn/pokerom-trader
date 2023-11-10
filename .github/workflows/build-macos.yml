@@ -25,7 +25,7 @@ jobs:
         cd deps/pksav/
         mkdir build
         cd build
-        cmake ..
+        cmake .. -DPKSAV_STATIC=ON
         make 
 
     - name: Build raylib
@@ -41,17 +41,6 @@ jobs:
     - name: Run cppcheck
       run: |
         cppcheck --std=c11 --enable=all --inconclusive --suppress=missingInclude --suppress=missingIncludeSystem --suppress=unusedFunction src/ || true
-
-    - name: Bundle Executable with Library
-      run: |
-        # Copy libpksav.dylib to the same directory as the executable
-        cp deps/pksav/build/lib/libpksav.dylib build/
-        cp deps/raylib/src/libraylib.a build/
-
-        # Update the library path in the executable
-        install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/pksav/build/lib/libpksav.dylib @rpath/libpksav.dylib build/pokeromtrader
-        install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/raylib/src/libraylib.a @rpath/libraylib.a build/pokeromtrader
-        install_name_tool -add_rpath @executable_path/../Frameworks build/pokeromtrader
     
     - name: Copy assets
       run: |
@@ -80,7 +69,7 @@ jobs:
         cd deps/pksav/
         mkdir build
         cd build
-        cmake ..
+        cmake .. -DPKSAV_STATIC=ON
         make 
 
     - name: Build raylib
@@ -96,18 +85,6 @@ jobs:
     - name: Run cppcheck
       run: |
         cppcheck --std=c11 --enable=all --inconclusive --suppress=missingInclude --suppress=missingIncludeSystem --suppress=unusedFunction src/ || true
-
-
-    - name: Bundle Executable with Library
-      run: |
-        # Copy libpksav.dylib to the same directory as the executable
-        cp deps/pksav/build/lib/libpksav.dylib build/
-        cp deps/raylib/src/libraylib.a build/
-
-        # Update the library path in the executable
-        install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/pksav/build/lib/libpksav.dylib @rpath/libpksav.dylib build/pokeromtrader
-        install_name_tool -change /Users/runner/work/pokerom-trader/pokerom-trader/deps/raylib/src/libraylib.a @rpath/libraylib.a build/pokeromtrader
-        install_name_tool -add_rpath @executable_path/../Frameworks build/pokeromtrader
 
     - name: Copy assets
       run: |
@@ -136,7 +113,6 @@ jobs:
         # You can access the downloaded artifact in the current directory
         BUILD_DIR="build"
         MACOS_DESTINATION="${BUILD_DIR}/macos/PokeromTrader.app/Contents/MacOS"
-        MACOS_FRAMEWORKS_DESTINATION="${BUILD_DIR}/macos/PokeromTrader.app/Contents/Frameworks"
         APP_BUNDLE_EXECUTABLE="pokeromtrader"
         APP_BUNDLE_ID="com.yourcompany.pokeromtrader"
         APP_BUNDLE_NAME="PokeromTrader"
@@ -147,12 +123,9 @@ jobs:
         
         # Create the directory structure
         mkdir -p "${MACOS_DESTINATION}"
-        mkdir -p "${MACOS_FRAMEWORKS_DESTINATION}"
-        
+
         # Copy the executable to the .app bundle
         cp "${{ github.workspace }}/pokeromtrader" "${MACOS_DESTINATION}/pokeromtrader"
-        cp "${{ github.workspace }}/libpksav.dylib" "${MACOS_FRAMEWORKS_DESTINATION}/libpksav.dylib"
-        cp "${{ github.workspace }}/libraylib.a" "${MACOS_FRAMEWORKS_DESTINATION}/libraylib.a"
 
         # Copy assets
         mkdir -p "${MACOS_DESTINATION}/../Resources"
@@ -177,7 +150,7 @@ jobs:
     - name: Upload macOS Release
       uses: actions/upload-artifact@v2
       with:
-        name: "pokeromtrader-arm64"  # Specify a name for your macOS release
+        name: "pokeromtrader-macos-arm64"  # Specify a name for your macOS release
         path: build/macos
 
   bundle_macos_x64:
@@ -196,7 +169,6 @@ jobs:
         # You can access the downloaded artifact in the current directory
         BUILD_DIR="build"
         MACOS_DESTINATION="${BUILD_DIR}/macos/PokeromTrader.app/Contents/MacOS"
-        MACOS_FRAMEWORKS_DESTINATION="${BUILD_DIR}/macos/PokeromTrader.app/Contents/Frameworks"
         APP_BUNDLE_EXECUTABLE="pokeromtrader"
         APP_BUNDLE_ID="com.yourcompany.pokeromtrader"
         APP_BUNDLE_NAME="PokeromTrader"
@@ -207,11 +179,9 @@ jobs:
         
         # Create the directory structure
         mkdir -p "${MACOS_DESTINATION}"
-        mkdir -p "${MACOS_FRAMEWORKS_DESTINATION}"
         
         # Copy the executable to the .app bundle
         cp "${{ github.workspace }}/pokeromtrader" "${MACOS_DESTINATION}/pokeromtrader"
-        cp "${{ github.workspace }}/libpksav.dylib" "${MACOS_FRAMEWORKS_DESTINATION}/libpksav.dylib"
 
         # Copy assets
         mkdir -p "${MACOS_DESTINATION}/../Resources"
@@ -236,5 +206,5 @@ jobs:
     - name: Upload macOS Release
       uses: actions/upload-artifact@v2
       with:
-        name: "pokeromtrader-x64"  # Specify a name for your macOS release
+        name: "pokeromtrader-macos-x64"
         path: build/macos 

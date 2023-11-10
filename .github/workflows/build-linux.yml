@@ -27,7 +27,7 @@ jobs:
         cd deps/pksav/
         mkdir build
         cd build
-        cmake ..
+        cmake .. -DPKSAV_STATIC=ON
         make 
 
     - name: Build raylib
@@ -40,12 +40,6 @@ jobs:
       run: |
         make
 
-    - name: Bundle Executable with Library
-      run: |
-        # Copy libpksav.so to the same directory as the executable
-        mkdir -p build/lib
-        cp deps/pksav/build/lib/libpksav.so build/lib/
-
     - name: Bundle Assets
       run: |
         # Copy assets to the same directory as the executable
@@ -55,5 +49,5 @@ jobs:
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: pokeromtrader-artifacts-linux  # Specify a name for your artifacts
-        path: build/  # Specify the directory containing your build artifacts
+        name: pokeromtrader-artifacts-linux
+        path: build/

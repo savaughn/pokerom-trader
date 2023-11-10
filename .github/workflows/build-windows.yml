@@ -37,12 +37,7 @@ jobs:
 
     - name: Build Project
       run: |
-        make PLATFORM=PLATFORM_DESKTOP
-
-    - name: Bundle Executable with Library
-      run: |
-        # Copy libpksav.a to the same directory as the executable
-        cp deps/pksav/build/lib/libpksav.a build/
+        make
 
     - name: Copy assets
       run: |
@@ -51,5 +46,5 @@ jobs:
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: pokeromtrader-artifacts-windows  # Specify a name for your artifacts
-        path: build/  # Specify the directory containing your build artifacts
+        name: pokeromtrader-artifacts-windows
+        path: build/

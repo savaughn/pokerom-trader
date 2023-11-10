@@ -30,9 +30,9 @@ PLATFORM              ?= PLATFORM_DESKTOP
 
 # Define project variables
 PROJECT_NAME          ?= pokeromtrader
-PROJECT_VERSION       := 0.6.1
+PROJECT_VERSION       := 0.6.2
 # prerelease or release
-PROJECT_VERSION_TYPE  ?= release
+PROJECT_VERSION_TYPE  ?= prerelease
 PROJECT_BUILD_PATH    ?= .
 
 RAYLIB_PATH           ?= deps/raylib
@@ -115,7 +115,7 @@ endif
 # TODO: Do we really need this?
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),LINUX)
-        RAYLIB_PREFIX  ?= ../raylib
+        RAYLIB_PREFIX  ?= deps/raylib
         RAYLIB_PATH     = $(realpath $(RAYLIB_PREFIX))
     endif
 endif
@@ -174,15 +174,6 @@ endif
 # Define default make program: MAKE
 #------------------------------------------------------------------------------------------------
 MAKE ?= make
-
-# ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-#     ifeq ($(PLATFORM_OS),WINDOWS)
-#         MAKE = mingw32-make
-#     endif
-# endif
-# ifeq ($(PLATFORM),PLATFORM_ANDROID)
-#     MAKE = mingw32-make
-# endif
 
 # Define compiler flags: CFLAGS
 #------------------------------------------------------------------------------------------------
