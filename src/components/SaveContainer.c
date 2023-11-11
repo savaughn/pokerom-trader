@@ -88,9 +88,9 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
 
     // draw save name
     DrawLine(container_rec.x + 130, container_rec.y + container_rec.height - 30, container_rec.width + container_rec.x, container_rec.y + container_rec.height - 30, BLACK);
-    char save_name_text[39] = "\0";
-    strncpy(save_name_text, save_name, 32);
-    if (strlen(save_name) > 32)
+    char save_name_text[41] = "\0";
+    strncpy(save_name_text, save_name, 34);
+    if (strlen(save_name) > 34)
     {
         strcat(save_name_text, "...sav");
     }
