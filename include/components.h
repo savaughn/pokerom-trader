@@ -24,6 +24,7 @@ void draw_corrupted_save(const char *save_name, const int y_offset, const int in
 void draw_pokeball_scroll(float scroll_position, float transparency);
 void draw_pokeball(int pos_x, int pos_y, int scale);
 bool draw_toast_message(char *message, enum E_TOAST_DURATION duration, enum E_TOAST_TYPE type);
+void reset_toast_message(void);
 bool draw_save_icon(int pos_x, int pos_y, bool is_visible);
 
 #endif // COMPONENTS_H

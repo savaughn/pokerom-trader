@@ -64,6 +64,11 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
                 trainerSelection[0].pkmn_party_index = -1;
                 trainerSelection[1].pkmn_party_index = -1;
 
+                if (show_trade_toast)
+                {
+                    reset_toast_message();
+                }
+
                 if (*is_same_generation)
                 {
                     pksavhelper_error = swap_pkmn_at_index_between_saves(save_player1, save_player2, selected_index_trainer1, selected_index_trainer2);
@@ -112,6 +117,8 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
                 trainerSelection[0].pkmn_party_index = -1;
                 trainerSelection[1].pkmn_party_index = -1;
                 reset_details_panel();
+                reset_toast_message();
+                show_trade_toast = false;
                 *current_screen = SCREEN_FILE_SELECT;
 
                 ui_selection = BUTTON_NONE;

@@ -173,6 +173,9 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                     ui_selection = E_UI_NONE;
                     y_offset = 75;
                     banner_position_offset = 0;
+
+                    reset_toast_message();
+                    show_duplicate_toast = false;
                 }
                 else
                 {
@@ -192,6 +195,9 @@ void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_pa
                 selected_saves_index[1] = -1;
                 trainer1->trainer_id = 0;
                 trainer2->trainer_id = 0;
+
+                reset_toast_message();
+                show_duplicate_toast = false;
 
                 // reset save files
                 for (int i = 0; i < MAX_FILE_PATH_COUNT; i++)
