@@ -28,7 +28,7 @@ static int no_dir_err = 0;
 void draw_about(GameScreen *current_screen, bool is_build_prerelease);
 void draw_legal(GameScreen *current_screen);
 void draw_settings(struct SaveFileData *save_file_data, GameScreen *current_screen, Texture2D *settings_texture);
-void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name, bool show_gender);
+void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name);
 void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id_out);
 void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_screen, Texture2D *settings_texture);
 void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname, bool selected);

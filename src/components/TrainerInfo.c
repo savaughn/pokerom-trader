@@ -37,7 +37,7 @@ void animate_details_panel(int16_t *grow_x, float *scale_width, uint8_t current_
 }
 
 // Draws the trainers name, id, and party pokemon in pokemon buttons
-void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainer_selection[2], bool show_gender, bool is_same_generation, bool is_valid_trade[2])
+void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainer_selection[2], bool is_same_generation, bool is_valid_trade[2])
 {
     // Get trainer generation 1 or 2
     SaveGenerationType trainer_generation = trainer->trainer_generation;
