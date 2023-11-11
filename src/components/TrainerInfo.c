@@ -2,6 +2,17 @@
 #include "pksavhelper.h"
 #include <stdio.h>
 
+static int16_t grow_x[2] = {0};
+static float scale_width[2] = {1.0f};
+
+void reset_details_panel(void)
+{
+    grow_x[0] = 0;
+    grow_x[1] = 0;
+    scale_width[0] = 1.0f;
+    scale_width[1] = 1.0f;
+}
+
 void animate_details_panel(int16_t *grow_x, float *scale_width, uint8_t current_trainer_index, bool tr1_active, bool tr2_active)
 {
     const uint8_t min_grow_x = 0;
@@ -52,9 +63,6 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
     bool tr1_active = trainer_selection[0].pkmn_party_index != -1 && current_trainer_index == 0;
     bool tr2_active = trainer_selection[1].pkmn_party_index != -1 && current_trainer_index == 1;
 
-    static int16_t grow_x[2] = {0};
-    static float scale_width[2] = {1.0f};
-
     animate_details_panel(grow_x, scale_width, current_trainer_index, tr1_active, tr2_active);
 
     // Details Panel Rectangle
@@ -83,8 +91,8 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
         party_count = trainer->pokemon_party.gen2_pokemon_party.count;
     }
 
-    shadow_text(trainer_name, x, y, 20, WHITE);
-    shadow_text(trainer_id, x, y + 30, 20, WHITE);
+    shadow_text(trainer_name, x - 7, y, 20, WHITE);
+    shadow_text(trainer_id, x - 7, y + 30, 20, WHITE);
 
     int text_pos_x = trainer_selection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 + 10;
     int warn_text_pos_x = trainer_selection[current_trainer_index].trainer_index ? container_rec.x + 10 : container_rec.x + container_rec.width / 2 - 40;

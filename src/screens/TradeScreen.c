@@ -111,6 +111,7 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
                 trainer2->trainer_id = 0;
                 trainerSelection[0].pkmn_party_index = -1;
                 trainerSelection[1].pkmn_party_index = -1;
+                reset_details_panel();
                 *current_screen = SCREEN_FILE_SELECT;
 
                 ui_selection = BUTTON_NONE;
