@@ -88,7 +88,9 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
 
     // draw save name
     DrawLine(container_rec.x + 130, container_rec.y + container_rec.height - 30, container_rec.width + container_rec.x, container_rec.y + container_rec.height - 30, BLACK);
-    shadow_text(save_name, (container_rec.width - 135) / 2 + container_rec.x + 135 - MeasureText(save_name, 20) / 2, container_rec.y + container_rec.height - 25, 20, WHITE);
+    char save_name_text[39] = "\0";
+    strncpy(save_name_text, save_name, 38);
+    shadow_text(save_name_text, (container_rec.width - 135) / 2 + container_rec.x + 135 - MeasureText(save_name_text, 20) / 2, container_rec.y + container_rec.height - 25, 20, WHITE);
 
     // draw border
     DrawRectangleLinesEx((Rectangle){container_rec.x - 4, container_rec.y - 4, container_rec.width + 8, container_rec.height + 8}, 1, BLACK);
