@@ -111,7 +111,7 @@ static const size_t CRYSTAL_OFFSETS[] =
     0x200B, // Player name
     0x2021, // Rival name
     0x2037, // Daylight savings
-    0x2054, // Time played
+    0x2053, // Time played
     0x206A, // Player palette
     0x23DC, // Money
     0x23DF, // Mom's money

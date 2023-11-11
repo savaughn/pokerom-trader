@@ -12,10 +12,13 @@
 #define MOVE_INDEX_HM05 127
 #define MOVE_INDEX_HM06 165
 
+#define TRAINER_NAME_TEXT_MAX 7
+#define PKMN_NAME_TEXT_MAX 10
+
 struct pkmn_evolution_pair_data
 {
-    char species_name[11];
-    char evolution_name[11];
+    char species_name[PKMN_NAME_TEXT_MAX + 1];
+    char evolution_name[PKMN_NAME_TEXT_MAX + 1];
     uint8_t species_index;
     uint8_t evolution_index;
     uint8_t evolution_item;

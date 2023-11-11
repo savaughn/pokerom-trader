@@ -29,15 +29,10 @@ void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname, bool se
 }
 
 // Concantenate the trainer's name and id into a string for Raylib to draw
-void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name, bool show_gender)
+void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name)
 {
     strcpy(trainer_name, "NAME/");
     strcat(trainer_name, trainer->trainer_name);
-    if (trainer->trainer_generation == SAVE_GENERATION_2 && show_gender)
-    {
-        strcat(trainer_name, " ");
-        strcat(trainer_name, trainer->trainer_gender == PKSAV_GEN2_GENDER_FEMALE ? "F" : "M");
-    }
 }
 
 // Concantenate the trainer's id into a string for Raylib to draw
