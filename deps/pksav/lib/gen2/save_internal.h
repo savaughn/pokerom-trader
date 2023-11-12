@@ -30,7 +30,8 @@ struct pksav_gen2_save_internal
 
 enum pksav_gen2_field
 {
-    PKSAV_GEN2_DAYCARE_DATA = 0,
+    PKSAV_GEN2_MAILBOX_DATA = 0,
+    PKSAV_GEN2_DAYCARE_DATA,
     PKSAV_GEN2_OPTIONS,
     PKSAV_GEN2_TEXTBOX_FRAME_INDEX,
     PKSAV_GEN2_GBPRINTER_BRIGHTNESS,
@@ -61,11 +62,12 @@ enum pksav_gen2_field
     PKSAV_GEN2_POKEMON_PC_FIRST_HALF,
     PKSAV_GEN2_POKEMON_PC_SECOND_HALF,
     PKSAV_GEN2_CHECKSUM1,
-    PKSAV_GEN2_CHECKSUM2
+    PKSAV_GEN2_CHECKSUM2,
 };
 
 static const size_t GS_OFFSETS[] =
 {
+    0x0A0B, // Mailbox data
     0x1306, // Daycare data
     0x2000, // Options
     0x2002, // Text box frame index
@@ -102,6 +104,7 @@ static const size_t GS_OFFSETS[] =
 
 static const size_t CRYSTAL_OFFSETS[] =
 {
+    0x0A0B,  // Mailbox data
     0x1C82, // Daycare data
     0x2000, // Options
     0x2002, // Text box frame index
@@ -133,7 +136,7 @@ static const size_t CRYSTAL_OFFSETS[] =
     0x4000, // Pokemon PC (first half)
     0x6000, // Pokemon PC (second half)
     0x2D0D, // Checksum 1
-    0x1F0D  // Checksum 2
+    0x1F0D, // Checksum 2
 };
 
 #ifdef __cplusplus
