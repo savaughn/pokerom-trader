@@ -226,6 +226,9 @@ static void _pksav_gen2_set_save_pointers(
 
     p_internal->p_checksum2 = (uint16_t *)&p_buffer[p_offsets[PKSAV_GEN2_CHECKSUM2]];
 
+    // Mailbox
+    p_gen2_save->p_mailbox = (struct pksav_gen2_mailbox *)(&p_buffer[p_offsets[PKSAV_GEN2_MAILBOX_DATA]]);
+
     // Options
     struct pksav_gen2_options *p_options = &p_gen2_save->options;
 
@@ -253,9 +256,6 @@ static void _pksav_gen2_set_save_pointers(
 
     p_pokemon_storage->p_party = (struct pksav_gen2_pokemon_party *)(&p_buffer[p_offsets[PKSAV_GEN2_POKEMON_PARTY]]);
 
-    // Mailbox
-    p_gen2_save->p_mailbox = (struct pksav_gen2_mailbox *)(&p_buffer[p_offsets[PKSAV_GEN2_MAILBOX_DATA]]);
-
     for (size_t box_index = 0; box_index < 7; ++box_index)
     {
         size_t offset = p_offsets[PKSAV_GEN2_POKEMON_PC_FIRST_HALF] +
@@ -274,6 +274,12 @@ static void _pksav_gen2_set_save_pointers(
     p_pokemon_storage->p_box_names = (struct pksav_gen2_pokemon_box_names *)(&p_buffer[p_offsets[PKSAV_GEN2_PC_BOX_NAMES]]);
     p_pokemon_storage->p_current_box_num = &p_buffer[p_offsets[PKSAV_GEN2_CURRENT_BOX_NUM]];
     p_pokemon_storage->p_current_box = (struct pksav_gen2_pokemon_box *)(&p_buffer[p_offsets[PKSAV_GEN2_CURRENT_BOX]]);
+    
+    // Party mail loop initialization
+    for (size_t party_index = 0; party_index < PKSAV_STANDARD_POKEMON_PARTY_SIZE; party_index++)
+    {
+        p_pokemon_storage->p_party_mail[party_index] = (struct pksav_gen2_mail_msg *)(&p_buffer[p_offsets[PKSAV_GEN2_PARTY_MAIL_DATA] + (party_index * MAIL_STRUCT_LENGTH)]);
+    }
 
     // Pokédex lists
     struct pksav_gen2_pokedex_lists *p_pokedex_lists = &p_gen2_save->pokedex_lists;
