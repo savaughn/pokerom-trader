@@ -63,7 +63,7 @@ enum pksav_gen2_field
     PKSAV_GEN2_POKEMON_PC_FIRST_HALF,
     PKSAV_GEN2_POKEMON_PC_SECOND_HALF,
     PKSAV_GEN2_CHECKSUM1,
-    PKSAV_GEN2_CHECKSUM2,
+    PKSAV_GEN2_CHECKSUM2
 };
 
 static const size_t GS_OFFSETS[] =
@@ -139,7 +139,7 @@ static const size_t CRYSTAL_OFFSETS[] =
     0x4000, // Pokemon PC (first half)
     0x6000, // Pokemon PC (second half)
     0x2D0D, // Checksum 1
-    0x1F0D, // Checksum 2
+    0x1F0D  // Checksum 2
 };
 
 #ifdef __cplusplus

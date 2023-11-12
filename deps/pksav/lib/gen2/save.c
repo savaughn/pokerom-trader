@@ -204,7 +204,7 @@ static void _pksav_gen2_set_save_pointers(
 
     // Internal
     p_gen2_save->p_internal = calloc(sizeof(struct pksav_gen2_save_internal), 1);
-    struct _pksav_gen2_save_internal *p_internal = p_gen2_save->p_internal;
+    struct pksav_gen2_save_internal *p_internal = p_gen2_save->p_internal;
     p_internal->p_raw_save = p_buffer;
     switch (p_gen2_save->save_type)
     {
@@ -225,7 +225,6 @@ static void _pksav_gen2_set_save_pointers(
     p_internal->p_checksum1 = (uint16_t *)&p_buffer[p_offsets[PKSAV_GEN2_CHECKSUM1]];
 
     p_internal->p_checksum2 = (uint16_t *)&p_buffer[p_offsets[PKSAV_GEN2_CHECKSUM2]];
-
     // Mailbox
     p_gen2_save->p_mailbox = (struct pksav_gen2_mailbox *)(&p_buffer[p_offsets[PKSAV_GEN2_MAILBOX_DATA]]);
 
@@ -274,7 +273,6 @@ static void _pksav_gen2_set_save_pointers(
     p_pokemon_storage->p_box_names = (struct pksav_gen2_pokemon_box_names *)(&p_buffer[p_offsets[PKSAV_GEN2_PC_BOX_NAMES]]);
     p_pokemon_storage->p_current_box_num = &p_buffer[p_offsets[PKSAV_GEN2_CURRENT_BOX_NUM]];
     p_pokemon_storage->p_current_box = (struct pksav_gen2_pokemon_box *)(&p_buffer[p_offsets[PKSAV_GEN2_CURRENT_BOX]]);
-    
     // Party mail loop initialization
     for (size_t party_index = 0; party_index < PKSAV_STANDARD_POKEMON_PARTY_SIZE; party_index++)
     {
@@ -311,7 +309,7 @@ static void _pksav_gen2_set_save_pointers(
     p_misc_fields->p_rival_name = &p_buffer[p_offsets[PKSAV_GEN2_RIVAL_NAME]];
     p_misc_fields->p_money_with_mom = &p_buffer[p_offsets[PKSAV_GEN2_MONEY_WITH_MOM]];
     p_misc_fields->p_mom_money_policy = &p_buffer[p_offsets[PKSAV_GEN2_MOM_MONEY_POLICY]];
-    p_misc_fields->p_casino_coins = &p_buffer[p_offsets[PKSAV_GEN2_CASINO_COINS]];    
+    p_misc_fields->p_casino_coins = &p_buffer[p_offsets[PKSAV_GEN2_CASINO_COINS]];
 }
 
 static enum pksav_error _pksav_gen2_load_save_from_buffer(
@@ -340,7 +338,7 @@ static enum pksav_error _pksav_gen2_load_save_from_buffer(
                 p_buffer);
 
             // Internal
-            struct _pksav_gen2_save_internal *p_internal = p_gen2_save_out->p_internal;
+            struct pksav_gen2_save_internal *p_internal = p_gen2_save_out->p_internal;
             p_internal->is_buffer_ours = is_buffer_ours;
         }
         else
@@ -416,7 +414,7 @@ enum pksav_error pksav_gen2_save_save(
 
     enum pksav_error error = PKSAV_ERROR_NONE;
 
-    struct _pksav_gen2_save_internal *p_internal = p_gen2_save->p_internal;
+    struct pksav_gen2_save_internal *p_internal = p_gen2_save->p_internal;
     pksav_gen2_get_save_checksums(
         p_gen2_save->save_type,
         p_internal->p_raw_save,
@@ -439,7 +437,7 @@ enum pksav_error pksav_gen2_free_save(
         return PKSAV_ERROR_NULL_POINTER;
     }
 
-    struct _pksav_gen2_save_internal *p_internal = p_gen2_save->p_internal;
+    struct pksav_gen2_save_internal *p_internal = p_gen2_save->p_internal;
     if (p_internal->is_buffer_ours)
     {
         free(p_internal->p_raw_save);

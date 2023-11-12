@@ -13,14 +13,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-// Effort values (EVs)
-
-#define PKSAV_MIN_GB_EV (0)
-#define PKSAV_MAX_GB_EV (UINT16_MAX)
-
-#define PKSAV_MIN_EV (0)
-#define PKSAV_MAX_EV (UINT8_MAX)
-
 enum pksav_gen1_stat
 {
     PKSAV_GEN1_STAT_ATTACK,
@@ -41,6 +33,14 @@ enum pksav_gen2_stat
     PKSAV_GEN2_STAT_HP,
     PKSAV_GEN2_STAT_COUNT
 };
+
+// Effort values (EVs)
+
+#define PKSAV_MIN_GB_EV (0)
+#define PKSAV_MAX_GB_EV (UINT16_MAX)
+
+#define PKSAV_MIN_EV (0)
+#define PKSAV_MAX_EV (UINT8_MAX)
 
 // Individual values (IVs)
 
