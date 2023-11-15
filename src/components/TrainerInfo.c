@@ -21,7 +21,7 @@ void animate_details_panel(int16_t *grow_x, float *scale_width, uint8_t current_
     const float max_scale = 2.1825f;
     const float min_scale = 1.0f;
     const float scale_rate = 0.286f;
-    
+
     if (tr2_active)
     {
         grow_x[1] += grow_rate;
@@ -48,7 +48,7 @@ void animate_details_panel(int16_t *grow_x, float *scale_width, uint8_t current_
 }
 
 // Draws the trainers name, id, and party pokemon in pokemon buttons
-void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct TrainerSelection trainer_selection[2], bool is_same_generation, bool is_valid_trade[2])
+void draw_trainer_info(struct trainer_info *trainer, int x, int y, struct TrainerSelection trainer_selection[2], bool is_same_generation, bool is_valid_trade[2])
 {
     // Get trainer generation 1 or 2
     SaveGenerationType trainer_generation = trainer->trainer_generation;
@@ -119,8 +119,17 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
         }
 
         draw_pkmn_button((Rectangle){x - 10, y + 70 + (party_index * 30), 200, 30}, party_index, pokemon_nickname, current_trainer_index != -1 && (trainer_selection[current_trainer_index].pkmn_party_index == party_index));
-        
-        if (trainer_selection[current_trainer_index].pkmn_party_index == party_index && trade_status == E_TRADE_STATUS_GEN2_PKMN && is_panel_out)
+        if (trainer_generation == SAVE_GENERATION_2 && trainer->trainer_mail[party_index].item_id != 0)
+        {
+            draw_mail_icon(x + MeasureText(pokemon_nickname, 20) + 5, y + 75 + (party_index * 30));
+        }
+
+        if (trainer_selection[current_trainer_index].pkmn_party_index == party_index && trade_status == E_TRADE_STATUS_MAIL && is_panel_out)
+        {
+            shadow_text("Pokemon has mail", warn_text_pos_x, container_rec.y + 275, 20, WHITE);
+            is_valid_trade[current_trainer_index] = false;
+        }
+        else if (trainer_selection[current_trainer_index].pkmn_party_index == party_index && trade_status == E_TRADE_STATUS_GEN2_PKMN && is_panel_out)
         {
             shadow_text("Gen 2 only pokemon", warn_text_pos_x, container_rec.y + 275, 20, WHITE);
             is_valid_trade[current_trainer_index] = false;
@@ -129,7 +138,7 @@ void draw_trainer_info(struct TrainerInfo *trainer, int x, int y, struct Trainer
         {
             shadow_text("Gen 2 only move", warn_text_pos_x, container_rec.y + 275, 20, WHITE);
             is_valid_trade[current_trainer_index] = false;
-        }       
+        }
         else if (trainer_selection[current_trainer_index].pkmn_party_index == party_index && trade_status == E_TRADE_STATUS_HM_MOVE && is_panel_out)
         {
             shadow_text("Pokemon has HM move", warn_text_pos_x, container_rec.y + 275, 20, WHITE);

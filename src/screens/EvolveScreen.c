@@ -1,7 +1,7 @@
 #include "raylibhelper.h"
 #include "pksavfilehelper.h"
 
-void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *trainer, GameScreen *current_screen)
+void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *trainer, GameScreen *current_screen)
 {
     SaveGenerationType save_generation_type = pkmn_save->save_generation_type;
     static enum ui_selections

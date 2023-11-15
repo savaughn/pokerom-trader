@@ -29,14 +29,14 @@ void draw_pkmn_button(Rectangle rect, int index, char *pokemon_nickname, bool se
 }
 
 // Concantenate the trainer's name and id into a string for Raylib to draw
-void create_trainer_name_str(const struct TrainerInfo *trainer, char *trainer_name)
+void create_trainer_name_str(const struct trainer_info *trainer, char *trainer_name)
 {
     strcpy(trainer_name, "NAME/");
     strcat(trainer_name, trainer->trainer_name);
 }
 
 // Concantenate the trainer's id into a string for Raylib to draw
-void create_trainer_id_str(const struct TrainerInfo *trainer, char *trainer_id)
+void create_trainer_id_str(const struct trainer_info *trainer, char *trainer_id)
 {
     char id_str[6];
     strcpy(trainer_id, "IDNo ");
@@ -196,9 +196,9 @@ void draw_top_banner(const char *text, const int *banner_position_offset)
 }
 
 void draw_raylib_screen_loop(
-    struct SaveFileData *save_file_data,
-    struct TrainerInfo *trainer1,
-    struct TrainerInfo *trainer2,
+    struct save_file_data *save_file_data,
+    struct trainer_info *trainer1,
+    struct trainer_info *trainer2,
     struct TrainerSelection trainerSelection[2],
     char *player1_save_path,
     char *player2_save_path,

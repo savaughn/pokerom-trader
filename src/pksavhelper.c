@@ -93,7 +93,7 @@ void swap_party_pkmn_at_indices(struct pksav_gen2_save *save, uint8_t pkmn_party
 }
 
 // Extracts the trainer info from the save file and updates the trainer struct
-void create_trainer(PokemonSave *pkmn_save, struct TrainerInfo *trainer)
+void create_trainer(PokemonSave *pkmn_save, struct trainer_info *trainer)
 {
     SaveGenerationType save_generation_type = pkmn_save->save_generation_type;
 
@@ -139,6 +139,12 @@ void create_trainer(PokemonSave *pkmn_save, struct TrainerInfo *trainer)
         // Update the trainer's pokemon party
         trainer->pokemon_party.gen2_pokemon_party = *pkmn_save->save.gen2_save.pokemon_storage.p_party;
         trainer->trainer_generation = SAVE_GENERATION_2;
+
+        // update party mail
+        for (int i = 0; i < 6; i++)
+        {
+            trainer->trainer_mail[i] = pkmn_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[i];
+        }
         break;
     }
     default:
@@ -389,6 +395,7 @@ void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.spatk = pksav_bigendian16(pkmn_stats[PKSAV_GEN2_STAT_SPATK]);
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.spdef = pksav_bigendian16(pkmn_stats[PKSAV_GEN2_STAT_SPDEF]);
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.max_hp = pksav_bigendian16(pkmn_stats[PKSAV_GEN2_STAT_HP]);
+        pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.current_hp = pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.max_hp;
     }
 }
 
@@ -397,7 +404,7 @@ bool is_move_HM(uint8_t move_index)
     return move_index == MOVE_INDEX_HM01 || move_index == MOVE_INDEX_HM02 || move_index == MOVE_INDEX_HM03 || move_index == MOVE_INDEX_HM04 || move_index == MOVE_INDEX_HM05 || move_index == MOVE_INDEX_HM06;
 }
 
-enum eligible_trade_status check_trade_eligibility(struct TrainerInfo *trainer, uint8_t pkmn_party_index)
+enum eligible_trade_status check_trade_eligibility(struct trainer_info *trainer, uint8_t pkmn_party_index)
 {
     // All Gen1 saves are eligible for trade except with HM moves
     if (trainer->trainer_generation == SAVE_GENERATION_1)
@@ -411,6 +418,11 @@ enum eligible_trade_status check_trade_eligibility(struct TrainerInfo *trainer, 
             }
         }
         return E_TRADE_STATUS_ELIGIBLE;
+    }
+
+    if (trainer->trainer_mail[pkmn_party_index].item_id != 0)
+    {
+        return E_TRADE_STATUS_MAIL;
     }
 
     // Prevent Gen2 only pkmn from going to Gen1
@@ -774,6 +786,16 @@ pksavhelper_error swap_pkmn_at_index_between_saves(PokemonSave *player1_save, Po
         }
         player1_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index1][strlen(tmp_otname2)] = 0x50;
         player2_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index2][strlen(tmp_otname1)] = 0x50;
+    }
+
+    // Swap mail
+    if (player1_save->save_generation_type == SAVE_GENERATION_2 && player2_save->save_generation_type == SAVE_GENERATION_2)
+    {
+        struct pksav_gen2_mail_msg tmp_party_mail = player1_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[pkmn_party_index1];
+        player1_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[pkmn_party_index1] = player2_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[pkmn_party_index2];
+        player1_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail_backup[pkmn_party_index1] = player2_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[pkmn_party_index2];
+        player2_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[pkmn_party_index2] = tmp_party_mail;
+        player2_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail_backup[pkmn_party_index2] = tmp_party_mail;
     }
 
     // Generate random DVs and assign them to the traded pokemen

@@ -88,6 +88,48 @@ struct pksav_gen2_pokedex_lists
     uint8_t* p_owned;
 };
 
+
+#define MAIL_STRUCT_LENGTH  0x2f
+#define MAILBOX_CAPACITY    10
+#define MAIL_MSG_LENGTH     0x20
+
+// Pack alignment on mail structs
+#pragma pack(push, 1)
+// Native format for all mail messages
+struct pksav_gen2_mail_msg
+{
+    char message[MAIL_MSG_LENGTH + 1]; // read/set with pksav_gen2_import_text/pksav_gen2_export_text with num_chars 32
+    char author_name[8];           // read/set with pksav_gen2_import_text/pksav_gen2_export_text with num_chars 7
+    char author_nationality[2];    // Unused
+    uint16_t author_id;            // read/set with pksav_bigendian16
+    uint8_t portrait_pokemon_id;
+    uint8_t item_id;
+};
+
+/**
+ * @brief Native format for sPartyMail starting at 0x0600
+ * 
+ * This struct is used to store the mail attached to a party pokemon. Both
+ * the party mail and backup must be updated together. Otherwise, the game
+ * will clear the party mail.
+ */
+struct pksav_gen2_party_mail
+{
+    struct pksav_gen2_mail_msg party_mail[6];
+    struct pksav_gen2_mail_msg party_mail_backup[6];
+};
+
+/**
+ * @brief Native format for sMailbox starting at 0x0834
+ * Player's mail stored in player's item PC.
+*/
+struct pksav_gen2_mailbox
+{
+    uint8_t message_count;
+    struct pksav_gen2_mail_msg mail[MAILBOX_CAPACITY];
+};
+#pragma pack(pop)
+
 struct pksav_gen2_pokemon_storage
 {
     struct pksav_gen2_pokemon_party* p_party;
@@ -120,6 +162,13 @@ struct pksav_gen2_pokemon_storage
      * switched out when the current box is changed.
      */
     struct pksav_gen2_pokemon_box* p_current_box;
+
+    /*!
+     * @brief A pointer to party pokemon mail.
+     *
+     * Each party pokemon can have a mail attached to it.
+     */
+    struct pksav_gen2_party_mail* p_party_mail;
 };
 
 struct pksav_gen2_item_storage
@@ -236,6 +285,8 @@ struct pksav_gen2_save
     struct pksav_gen2_daycare_data* p_daycare_data;
 
     struct pksav_gen2_misc_fields misc_fields;
+
+    struct pksav_gen2_mailbox *p_mailbox;
 
     void* p_internal;
 };

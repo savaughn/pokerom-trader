@@ -64,7 +64,7 @@ typedef enum {
     SCREEN_LEGAL
 } GameScreen;
 
-struct SaveFileData {
+struct save_file_data {
     // current saves file directory string
     char save_dir[MAX_FILE_PATH_CHAR];
     // array of saves file paths in the current saves file directory
@@ -91,7 +91,7 @@ typedef struct {
     SaveGeneration save;
 } PokemonSave;
 
-struct TrainerInfo
+struct trainer_info
 {
     char trainer_name[8];
     uint16_t trainer_id;
@@ -99,6 +99,7 @@ struct TrainerInfo
     uint8_t trainer_badges[2];
     union PokemonPartyData pokemon_party;
     SaveGenerationType trainer_generation;
+    struct pksav_gen2_mail_msg trainer_mail[6];
 };
 
 enum E_LOG_MESSAGE_TYPE

@@ -236,6 +236,8 @@ static void _pksav_gen2_set_save_pointers(
     p_internal->p_checksum2 = (uint16_t*)&p_buffer[
                                   p_offsets[PKSAV_GEN2_CHECKSUM2]
                               ];
+    // Mailbox
+    p_gen2_save->p_mailbox = (struct pksav_gen2_mailbox *)(&p_buffer[p_offsets[PKSAV_GEN2_MAILBOX_DATA]]);
 
     // Options
     struct pksav_gen2_options* p_options = &p_gen2_save->options;
@@ -300,6 +302,9 @@ static void _pksav_gen2_set_save_pointers(
     p_pokemon_storage->p_current_box = (struct pksav_gen2_pokemon_box*)(
                                            &p_buffer[p_offsets[PKSAV_GEN2_CURRENT_BOX]]
                                        );
+
+    // Party mail
+    p_pokemon_storage->p_party_mail = (struct pksav_gen2_party_mail*)(&p_buffer[p_offsets[PKSAV_GEN2_PARTY_MAIL_DATA]]);
 
     // Pokédex lists
     struct pksav_gen2_pokedex_lists* p_pokedex_lists = &p_gen2_save->pokedex_lists;

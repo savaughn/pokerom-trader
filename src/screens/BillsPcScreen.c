@@ -1,7 +1,7 @@
 #include "raylibhelper.h"
 
 // Draw Bill's PC for moving PC pokemon to party or between boxes
-void draw_bills_pc(PokemonSave *pkmn_save, char *save_path, struct TrainerInfo *trainer, struct TrainerSelection *trainerSelection, GameScreen *current_screen)
+void draw_bills_pc(PokemonSave *pkmn_save, char *save_path, struct trainer_info *trainer, struct TrainerSelection *trainerSelection, GameScreen *current_screen)
 {
     // Update
     int save_generation = pkmn_save->save_generation_type;

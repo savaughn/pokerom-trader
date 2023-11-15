@@ -27,7 +27,7 @@ jobs:
         cd deps/pksav/
         mkdir build
         cd build
-        cmake .. -DPKSAV_STATIC=ON -G "Unix Makefiles"
+        cmake .. -DPKSAV_STATIC=ON -G "Unix Makefiles" -DPKSAV_ENABLE_TESTS=OFF -DPKSAV_ENABLE_DOCS=OFF
         make
 
     - name: Build raylib

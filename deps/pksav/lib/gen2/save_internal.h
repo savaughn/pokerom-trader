@@ -30,7 +30,10 @@ struct pksav_gen2_save_internal
 
 enum pksav_gen2_field
 {
-    PKSAV_GEN2_DAYCARE_DATA = 0,
+    PKSAV_GEN2_PARTY_MAIL_DATA = 0,
+    PKSAV_GEN2_PARTY_MAIL_BACKUP_DATA,
+    PKSAV_GEN2_MAILBOX_DATA,
+    PKSAV_GEN2_DAYCARE_DATA,
     PKSAV_GEN2_OPTIONS,
     PKSAV_GEN2_TEXTBOX_FRAME_INDEX,
     PKSAV_GEN2_GBPRINTER_BRIGHTNESS,
@@ -66,6 +69,9 @@ enum pksav_gen2_field
 
 static const size_t GS_OFFSETS[] =
 {
+    0x0600, // Party Mail data
+    0x071A, // Party Mail backup data
+    0x0834, // Mailbox data
     0x1306, // Daycare data
     0x2000, // Options
     0x2002, // Text box frame index
@@ -102,6 +108,9 @@ static const size_t GS_OFFSETS[] =
 
 static const size_t CRYSTAL_OFFSETS[] =
 {
+    0x0600, // Party Mail data
+    0x071A, // Party Mail backup data
+    0x0834, // Mailbox data
     0x1C82, // Daycare data
     0x2000, // Options
     0x2002, // Text box frame index

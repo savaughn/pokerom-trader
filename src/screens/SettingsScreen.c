@@ -4,7 +4,7 @@
 static bool show_delete_modal = false;
 static bool was_data_deleted = false;
 static bool show_reset_modal = false;
-static struct SaveFileData *_save_file_data = NULL;
+static struct save_file_data *_save_file_data = NULL;
 
 void on_delete_modal_cancel(void)
 {
@@ -35,7 +35,7 @@ void on_reset_modal_submit(void)
     show_reset_modal = false;
 }
 
-void draw_settings(struct SaveFileData *save_file_data, GameScreen *current_screen, Texture2D *settings_texture)
+void draw_settings(struct save_file_data *save_file_data, GameScreen *current_screen, Texture2D *settings_texture)
 {
     _save_file_data = save_file_data;
     const Color settings_text_color = BLACK;

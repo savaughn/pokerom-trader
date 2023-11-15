@@ -7,7 +7,7 @@ static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT] = {
         .save_generation_type = SAVE_GENERATION_NONE,
     }};
 
-void draw_file_select_single(struct SaveFileData *save_file_data, PokemonSave *pkmn_save, char *player_save_path, struct TrainerInfo *trainer, struct TrainerSelection *trainerSelection, enum single_player_menu_types menu_type, GameScreen *current_screen)
+void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave *pkmn_save, char *player_save_path, struct trainer_info *trainer, struct TrainerSelection *trainerSelection, enum single_player_menu_types menu_type, GameScreen *current_screen)
 {
     static int selected_saves_index = -1;
     bool has_selected_save = selected_saves_index != -1;

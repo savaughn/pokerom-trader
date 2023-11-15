@@ -5,3 +5,10 @@
 # or copy at http://opensource.org/licenses/MIT)
 #
 
+# FIND_PACKAGE(VALGRIND)
+
+# # Test dependencies
+# ADD_SUBDIRECTORY(Unity)
+
+# # Tests
+# ADD_SUBDIRECTORY(unit-tests)
