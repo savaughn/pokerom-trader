@@ -40,6 +40,24 @@ enum eligible_trade_status
     E_TRADE_STATUS_MAIL
 };
 
+#define LEFTOVERS 146
+#define BITTER_BERRY 83
+#define BERRY 173
+#define GOLD_BERRY 174
+
+static const uint8_t trade_catch_rate_to_item[251] = {
+    [25] = LEFTOVERS,
+    [45] = BITTER_BERRY,
+    [50] = GOLD_BERRY,
+    [90] = BERRY,
+    [100] = BERRY,
+    [120] = BERRY,
+    [135] = BERRY,
+    [190] = BERRY,
+    [195] = BERRY,
+    [220] = BERRY,
+    [250] = BERRY};
+
 // Pokémon Evolution Pair Lookup Table
 static const struct pkmn_evolution_pair_data pkmn_evolution_pairs_gen1[SI_HAUNTER + 1] = {
     [SI_KADABRA] = {.species_name = "KADABRA", .evolution_name = "ALAKAZAM", .species_index = SI_KADABRA, .evolution_index = SI_ALAKAZAM},
