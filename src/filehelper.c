@@ -23,7 +23,7 @@
 char *resolved_path = NULL;
 char *absolute_path = NULL;
 #ifdef _WIN32
-int get_save_files(struct SaveFileData *save_data)
+int get_save_files(struct save_file_data *save_data)
 {
     // Get .sav files from save folder
     char save_dir[MAX_FILE_PATH_CHAR];
@@ -324,7 +324,7 @@ int delete_app_data(void)
     return 0;
 }
 
-void init_settings_from_config(struct SaveFileData *save_file_data)
+void init_settings_from_config(struct save_file_data *save_file_data)
 {
     // Read and save the saves file directory from config.ini
     struct config_data config_data = read_key_from_config();

@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build_x64:
+  build_macos_x64:
     # if: false  # This workflow is disabled
     runs-on: macos-latest
     strategy:
@@ -53,7 +53,7 @@ jobs:
         name: "pokeromtrader-artifacts-x64"
         path: build/  # Specify the directory containing your build artifacts
 
-  build_arm64:
+  build_macos_arm64:
     # if: false  # This workflow is disabled
     runs-on: macos-latest
     strategy:
@@ -99,7 +99,7 @@ jobs:
 
   bundle_macos_arm64:
     runs-on: macos-latest
-    needs: build_arm64  # Ensure that the 'build' job is completed before this one starts
+    needs: build_macos_arm64  # Ensure that the 'build' job is completed before this one starts
 
     steps:
     - name: Download Build Artifact
@@ -155,7 +155,7 @@ jobs:
 
   bundle_macos_x64:
     runs-on: macos-latest
-    needs: build_x64  # Ensure that the 'build' job is completed before this one starts
+    needs: build_macos_x64  # Ensure that the 'build' job is completed before this one starts
 
     steps:
     - name: Download Build Artifact
