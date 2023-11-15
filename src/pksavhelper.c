@@ -776,6 +776,16 @@ pksavhelper_error swap_pkmn_at_index_between_saves(PokemonSave *player1_save, Po
         player2_save->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index2][strlen(tmp_otname1)] = 0x50;
     }
 
+    // Swap mail
+    if (player1_save->save_generation_type == SAVE_GENERATION_2 && player2_save->save_generation_type == SAVE_GENERATION_2)
+    {
+        struct pksav_gen2_mail_msg tmp_party_mail = player1_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[pkmn_party_index1];
+        player1_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[pkmn_party_index1] = player2_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[pkmn_party_index2];
+        player1_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail_backup[pkmn_party_index1] = player2_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[pkmn_party_index2];
+        player2_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[pkmn_party_index2] = tmp_party_mail;
+        player2_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail_backup[pkmn_party_index2] = tmp_party_mail;
+    }
+
     // Generate random DVs and assign them to the traded pokemen
     update_pkmn_DVs(player1_save, pkmn_party_index1);
     update_pkmn_DVs(player2_save, pkmn_party_index2);
