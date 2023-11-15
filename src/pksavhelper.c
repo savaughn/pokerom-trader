@@ -93,7 +93,7 @@ void swap_party_pkmn_at_indices(struct pksav_gen2_save *save, uint8_t pkmn_party
 }
 
 // Extracts the trainer info from the save file and updates the trainer struct
-void create_trainer(PokemonSave *pkmn_save, struct TrainerInfo *trainer)
+void create_trainer(PokemonSave *pkmn_save, struct trainer_info *trainer)
 {
     SaveGenerationType save_generation_type = pkmn_save->save_generation_type;
 
@@ -139,6 +139,12 @@ void create_trainer(PokemonSave *pkmn_save, struct TrainerInfo *trainer)
         // Update the trainer's pokemon party
         trainer->pokemon_party.gen2_pokemon_party = *pkmn_save->save.gen2_save.pokemon_storage.p_party;
         trainer->trainer_generation = SAVE_GENERATION_2;
+
+        // update party mail
+        for (int i = 0; i < 6; i++)
+        {
+            trainer->trainer_mail[i] = pkmn_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[i];
+        }
         break;
     }
     default:
@@ -398,7 +404,7 @@ bool is_move_HM(uint8_t move_index)
     return move_index == MOVE_INDEX_HM01 || move_index == MOVE_INDEX_HM02 || move_index == MOVE_INDEX_HM03 || move_index == MOVE_INDEX_HM04 || move_index == MOVE_INDEX_HM05 || move_index == MOVE_INDEX_HM06;
 }
 
-enum eligible_trade_status check_trade_eligibility(struct TrainerInfo *trainer, uint8_t pkmn_party_index)
+enum eligible_trade_status check_trade_eligibility(struct trainer_info *trainer, uint8_t pkmn_party_index)
 {
     // All Gen1 saves are eligible for trade except with HM moves
     if (trainer->trainer_generation == SAVE_GENERATION_1)
@@ -412,6 +418,11 @@ enum eligible_trade_status check_trade_eligibility(struct TrainerInfo *trainer, 
             }
         }
         return E_TRADE_STATUS_ELIGIBLE;
+    }
+
+    if (trainer->trainer_mail[pkmn_party_index].item_id != 0)
+    {
+        return E_TRADE_STATUS_MAIL;
     }
 
     // Prevent Gen2 only pkmn from going to Gen1

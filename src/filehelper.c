@@ -348,7 +348,7 @@ void init_settings_from_config(struct SaveFileData *save_file_data)
 
 #else
 
-int get_save_files(struct SaveFileData *save_data)
+int get_save_files(struct save_file_data *save_data)
 {
     DIR *dir;
     struct dirent *entry;
@@ -742,7 +742,7 @@ void write_to_log(const char *msg, const uint8_t message_type)
     fclose(fp);
 }
 
-void init_settings_from_config(struct SaveFileData *save_file_data)
+void init_settings_from_config(struct save_file_data *save_file_data)
 {
     // Read and save the saves file directory from config.ini
     char *config_save_path = read_key_from_config("SAVE_FILE_DIR");

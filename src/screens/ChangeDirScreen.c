@@ -6,7 +6,7 @@
 #include <sys/errno.h>
 #endif
 
-void draw_change_dir(struct SaveFileData *save_file_data, GameScreen *current_screen, Texture2D *settings_texture)
+void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_screen, Texture2D *settings_texture)
 {
     static bool editing_text = false;
     static char input_text[MAX_FILE_PATH_CHAR];

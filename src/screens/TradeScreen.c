@@ -1,7 +1,7 @@
 #include "raylibhelper.h"
 #include "pksavfilehelper.h"
 
-void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *player1_save_path, char *player2_save_path, struct TrainerSelection trainerSelection[2], struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, bool *is_same_generation, GameScreen *current_screen, Texture2D *trade_texture)
+void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *player1_save_path, char *player2_save_path, struct TrainerSelection trainerSelection[2], struct trainer_info *trainer1, struct trainer_info *trainer2, bool *is_same_generation, GameScreen *current_screen, Texture2D *trade_texture)
 {
     // Update
     int selected_index_trainer1 = trainerSelection[0].pkmn_party_index;

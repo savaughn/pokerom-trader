@@ -13,12 +13,12 @@ extern char *resolved_path;
 extern char *absolute_path;
 
 // Function to get save files in a directory
-int get_save_files(struct SaveFileData *save_data);
+int get_save_files(struct save_file_data *save_data);
 // free global pointers
 void free_filehelper_pointers(void);
 int write_key_to_config(const char *key, const char *value);
 int delete_app_data(void);
-void init_settings_from_config(struct SaveFileData *save_file_data);
+void init_settings_from_config(struct save_file_data *save_file_data);
 void write_to_log(const char *msg, const uint8_t message_type);
 #ifdef _WIN32
 struct config_data

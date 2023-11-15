@@ -115,7 +115,7 @@ void draw_evolution_arrow_animation(void)
     frame_counter++;
 }
 
-void draw_main_menu(struct SaveFileData *save_file_data, GameScreen *current_screen, bool *should_close_window, Texture2D *textures)
+void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_screen, bool *should_close_window, Texture2D *textures)
 {
     BeginDrawing();
     ClearBackground(RED);

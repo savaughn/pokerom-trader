@@ -20,7 +20,7 @@ static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT] = {
  * @param is_same_generation Whether the save files are the same generation
  * @return void
  */
-void draw_file_select(struct SaveFileData *save_file_data, char *player1_save_path, char *player2_save_path, struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, struct TrainerSelection trainerSelection[2], PokemonSave *pkmn_save_player1, PokemonSave *pkmn_save_player2, GameScreen *current_screen, bool *is_same_generation)
+void draw_file_select(struct save_file_data *save_file_data, char *player1_save_path, char *player2_save_path, struct trainer_info *trainer1, struct trainer_info *trainer2, struct TrainerSelection trainerSelection[2], PokemonSave *pkmn_save_player1, PokemonSave *pkmn_save_player2, GameScreen *current_screen, bool *is_same_generation)
 {
     static int selected_saves_index[2] = {-1, -1};
     bool has_selected_two_saves = selected_saves_index[0] != -1 && selected_saves_index[1] != -1;

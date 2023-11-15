@@ -128,7 +128,7 @@ pksavhelper_error save_savefile_to_path(PokemonSave *pkmn_save, char *path)
     return error_none;
 }
 
-void load_display_files(const struct SaveFileData *save_file_data, PokemonSave *pkmn_saves)
+void load_display_files(const struct save_file_data *save_file_data, PokemonSave *pkmn_saves)
 {
     // Load save files once
     for (int i = 0; i < save_file_data->num_saves; i++)
