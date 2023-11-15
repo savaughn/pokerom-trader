@@ -589,7 +589,8 @@ pksavhelper_error swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player
     player_gen1->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index1].pc_data.move_pps[3] = tmp_pokemon_gen2.pc_data.move_pps[3];
 
     // data not found in gen1
-    player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].pc_data.held_item = tmp_pokemon_gen1.pc_data.catch_rate;
+    uint8_t item_override = trade_catch_rate_to_item[tmp_pokemon_gen1.pc_data.catch_rate];
+    player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].pc_data.held_item = item_override ? item_override : tmp_pokemon_gen1.pc_data.catch_rate;
     player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].pc_data.caught_data = (uint16_t)0;
     bool is_reds_pikachu_from_yellow = check_if_reds_pikachu(player_gen1, pkmn_party_index1);
     player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].pc_data.friendship = is_reds_pikachu_from_yellow ? GEN2_FRIENDSHIP_BASE_REDS_PIKACHU : GEN2_FRIENDSHIP_BASE;
