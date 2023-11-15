@@ -3,20 +3,6 @@
 
 void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *player1_save_path, char *player2_save_path, struct TrainerSelection trainerSelection[2], struct TrainerInfo *trainer1, struct TrainerInfo *trainer2, bool *is_same_generation, GameScreen *current_screen, Texture2D *trade_texture)
 {
-    printf("item id: %u\n", save_player1->save.gen2_save.pokemon_storage.p_party_mail[1]->item_id);
-    char message[33];
-    pksav_gen2_import_text(save_player1->save.gen2_save.pokemon_storage.p_party_mail[1]->message, message, 0x20);
-    printf("message: %s\n", message);
-
-    char author_name[9];
-    pksav_gen2_import_text(save_player1->save.gen2_save.pokemon_storage.p_party_mail[1]->author_name, author_name, 8);
-    printf("author name: %s\n", author_name);
-
-    printf("author id: %u\n", pksav_bigendian16(save_player1->save.gen2_save.pokemon_storage.p_party_mail[1]->author_id));
-    printf("portrait pokemon id: %u\n", save_player1->save.gen2_save.pokemon_storage.p_party_mail[1]->portrait_pokemon_id);
-    printf("item id: %u\n", save_player1->save.gen2_save.pokemon_storage.p_party_mail[1]->item_id);
-
-    printf("message add: %u\n", &save_player1->save.gen2_save.pokemon_storage.p_party_mail[1]->message);
     // Update
     int selected_index_trainer1 = trainerSelection[0].pkmn_party_index;
     int selected_index_trainer2 = trainerSelection[1].pkmn_party_index;
