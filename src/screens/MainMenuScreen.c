@@ -11,15 +11,23 @@ enum main_menu_buttons
     BUTTON_COUNT
 };
 const uint8_t anim_speed = 45;
-const uint16_t offscreen_x = 300;
+// Entire details pane stays in place
 const Rectangle details_rec = (Rectangle){SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.35, 200, 200};
+// starting position of details pane content offscreen (offset from details_rec.x)
+const uint16_t offscreen_x = 415;
+// offset from details_rec.x
 const uint8_t console_x_offset = 70;
 
+// Details content animation position
 static int16_t anim_from_right[4] = {offscreen_x};
+// which button is currently being animated
 static int8_t active_anim_index = BUTTON_NONE;
+// which button is currently being hovered over
 static int8_t active_hover_index = BUTTON_NONE;
+// which button has been selected
 static int8_t selected_main_menu_index = BUTTON_NONE;
 
+// Update which details pane animation should be displayed
 void set_active_animation(const uint8_t selection)
 {
     if (selection >= BUTTON_COUNT)
@@ -39,12 +47,28 @@ void reset_anim_pos(uint8_t index)
     anim_from_right[index] = offscreen_x;
 }
 
+void reset_all_anim_pos(void)
+{
+    for (int i = BUTTON_TRADE; i < BUTTON_COUNT; i++)
+    {
+        reset_anim_pos(i);
+    }
+}
+
+// move details pane content left/right
 void slide_animate_details_pane(uint8_t button_selection)
 {
+    // Move left until at details_rec.x
     if (active_hover_index == button_selection && anim_from_right[button_selection] >= 0)
+    {
         anim_from_right[button_selection] -= anim_speed;
+    }
+    // Move right until offscreen when not hovered
     if (active_hover_index == BUTTON_NONE)
+    {
         anim_from_right[button_selection] += anim_speed;
+    }
+    // if offscreen clear active animation
     if (anim_from_right[button_selection] > offscreen_x)
     {
         active_anim_index = BUTTON_NONE;
@@ -52,6 +76,7 @@ void slide_animate_details_pane(uint8_t button_selection)
     }
 }
 
+// Arrow animation on trade details content
 void draw_trade_arrow_animation(void)
 {
     static uint8_t frame_counter = 0;
@@ -91,26 +116,33 @@ void draw_trade_arrow_animation(void)
     frame_counter++;
 }
 
+// Arrow animation on evolve details content
 void draw_evolution_arrow_animation(void)
 {
     static uint8_t frame_counter = 0;
+    // Controls when each animation frame is drawn
     static uint8_t arrow_anim_index = 0;
 
+    // show bottom rectangle
     if (arrow_anim_index > 0)
         DrawRectangle(details_rec.x + anim_from_right[BUTTON_EVOLVE] + 200, details_rec.y + 190, 50, 10, BLACK);
+    // show middle rectangle
     if (arrow_anim_index > 1)
         DrawRectangle(details_rec.x + anim_from_right[BUTTON_EVOLVE] + 200, details_rec.y + 170, 50, 15, BLACK);
+    // show top triangle
     if (arrow_anim_index > 2)
         DrawTriangle(
             (Vector2){details_rec.x + anim_from_right[BUTTON_EVOLVE] + 200, details_rec.y + 165},
             (Vector2){details_rec.x + anim_from_right[BUTTON_EVOLVE] + 250, details_rec.y + 165},
             (Vector2){details_rec.x + anim_from_right[BUTTON_EVOLVE] + 225, details_rec.y + 140}, BLACK);
 
+    // Control animation speed
     if (frame_counter % 15 == 0)
     {
         arrow_anim_index++;
         frame_counter = 0;
     }
+    // clamp animation index
     arrow_anim_index %= 4;
     frame_counter++;
 }
@@ -121,13 +153,18 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
     ClearBackground(RED);
     draw_background_grid();
     
+    // Details Pane background
     DrawCircle(SCREEN_WIDTH * 1.15, SCREEN_HEIGHT * 1.725, 800, BLACK);
     DrawCircle(SCREEN_WIDTH * 1.15, SCREEN_HEIGHT * 1.725, 730, WHITE);
 
-    const int rec_height_offset = 50;
-    const int text_size = 30;
-    const Vector2 details_text = (Vector2){details_rec.x - 100, SCREEN_HEIGHT - 30};
+    // Start position of menu buttons
     const Vector2 text_position_start = (Vector2){75, 200};
+    // Button height offset from start position
+    const int rec_height_offset = 50;
+    // Menu button text size
+    const int text_size = 30;
+    // Text at bottom of details pane
+    const Vector2 details_text = (Vector2){details_rec.x - 100, SCREEN_HEIGHT - 30};
 
     static int rand_pokeball_index = -1;
     static enum selected_console_texture {
@@ -270,7 +307,8 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
             {
                 no_dir_err = get_save_files(save_file_data);
                 *current_screen = SCREEN_FILE_SELECT;
-                reset_anim_pos(BUTTON_TRADE);
+                reset_all_anim_pos();
+                clear_active_animation();
             }
             break;
         }
@@ -281,7 +319,8 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
             {
                 no_dir_err = get_save_files(save_file_data);
                 *current_screen = SCREEN_EVOLVE_FILE_SELECT;
-                reset_anim_pos(BUTTON_EVOLVE);
+                reset_all_anim_pos();
+                clear_active_animation();
             }
             break;
         }
@@ -291,7 +330,8 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
             if (active_hover_index == BUTTON_SETTINGS)
             {
                 *current_screen = SCREEN_SETTINGS;
-                reset_anim_pos(BUTTON_SETTINGS);
+                reset_all_anim_pos();
+                clear_active_animation();
             }
             break;
         }
@@ -301,7 +341,8 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
             if (active_hover_index == BUTTON_QUIT)
             {
                 *should_close_window = true;
-                reset_anim_pos(BUTTON_QUIT);
+                reset_all_anim_pos();
+                clear_active_animation();
             }
             break;
         }
