@@ -5,6 +5,12 @@ static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT] = {
     [0 ... MAX_FILE_PATH_COUNT - 1] = {
         .save_generation_type = SAVE_GENERATION_NONE,
     }};
+static uint8_t save_file_count = 0;
+
+void free_trade_saves(void)
+{
+    free_pkmn_saves(pkmn_saves, &save_file_count);
+}
 
 /**
  * @brief Draw the file select screen
@@ -36,6 +42,7 @@ void draw_file_select(struct save_file_data *save_file_data, char *player1_save_
     static int y_offset = 75;
     static int banner_position_offset = 0;
     static bool show_duplicate_toast = false;
+    save_file_count = save_file_data->num_saves;
 
     BeginDrawing();
     ClearBackground(RED);
@@ -52,7 +59,7 @@ void draw_file_select(struct save_file_data *save_file_data, char *player1_save_
         static int mouses_down_index = -1;
 
         // Load save files once
-        load_display_files(save_file_data, pkmn_saves);
+        load_display_files(save_file_data, pkmn_saves, &save_file_count);
 
         // Update and draw save files
         for (int i = 0; i < save_file_data->num_saves; i++)
@@ -165,15 +172,10 @@ void draw_file_select(struct save_file_data *save_file_data, char *player1_save_
                     *current_screen = SCREEN_TRADE;
                     selected_saves_index[0] = -1;
                     selected_saves_index[1] = -1;
-                    // reset save files
-                    for (int i = 0; i < MAX_FILE_PATH_COUNT; i++)
-                    {
-                        pkmn_saves[i].save_generation_type = SAVE_GENERATION_NONE;
-                    }
+                    free_trade_saves();
                     ui_selection = E_UI_NONE;
                     y_offset = 75;
                     banner_position_offset = 0;
-
                     reset_toast_message();
                     show_duplicate_toast = false;
                 }
@@ -199,11 +201,7 @@ void draw_file_select(struct save_file_data *save_file_data, char *player1_save_
                 reset_toast_message();
                 show_duplicate_toast = false;
 
-                // reset save files
-                for (int i = 0; i < MAX_FILE_PATH_COUNT; i++)
-                {
-                    pkmn_saves[i].save_generation_type = SAVE_GENERATION_NONE;
-                }
+                free_trade_saves();
                 ui_selection = E_UI_NONE;
                 y_offset = 75;
                 banner_position_offset = 0;
@@ -222,11 +220,7 @@ void draw_file_select(struct save_file_data *save_file_data, char *player1_save_
                 trainer1->trainer_id = 0;
                 trainer2->trainer_id = 0;
 
-                // reset save files
-                for (int i = 0; i < MAX_FILE_PATH_COUNT; i++)
-                {
-                    pkmn_saves[i].save_generation_type = SAVE_GENERATION_NONE;
-                }
+                free_trade_saves();
                 ui_selection = E_UI_NONE;
                 y_offset = 75;
                 banner_position_offset = 0;

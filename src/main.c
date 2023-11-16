@@ -1,6 +1,7 @@
 #include "common.h"
 #include "filehelper.h"
 #include "raylibhelper.h"
+#include "pksavfilehelper.h"
 
 int main(int argc, char *argv[])
 {
@@ -10,8 +11,6 @@ int main(int argc, char *argv[])
     PokemonSave pkmn_save_player2;
     struct save_file_data save_file_data = {
         .num_saves = 0,
-        .save_dir = NULL,
-        .saves_file_path = { NULL }
     };
 
     init_settings_from_config(&save_file_data);
@@ -40,6 +39,9 @@ int main(int argc, char *argv[])
         &pkmn_save_player2);
 
     free_filehelper_pointers();
+    // free allocated save file data
+    free_trade_saves();
+    free_evolve_saves();
 
     return 0;
 }

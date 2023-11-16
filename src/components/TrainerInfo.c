@@ -13,7 +13,7 @@ void reset_details_panel(void)
     scale_width[1] = 1.0f;
 }
 
-void animate_details_panel(int16_t *grow_x, float *scale_width, uint8_t current_trainer_index, bool tr1_active, bool tr2_active)
+void animate_details_panel(uint8_t current_trainer_index, bool tr1_active, bool tr2_active)
 {
     const uint8_t min_grow_x = 0;
     const uint8_t max_grow_x = 207;
@@ -63,7 +63,7 @@ void draw_trainer_info(struct trainer_info *trainer, int x, int y, struct Traine
     bool tr1_active = trainer_selection[0].pkmn_party_index != -1 && current_trainer_index == 0;
     bool tr2_active = trainer_selection[1].pkmn_party_index != -1 && current_trainer_index == 1;
 
-    animate_details_panel(grow_x, scale_width, current_trainer_index, tr1_active, tr2_active);
+    animate_details_panel(current_trainer_index, tr1_active, tr2_active);
 
     // Details Panel Rectangle
     Rectangle container_rec;

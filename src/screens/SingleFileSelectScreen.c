@@ -6,6 +6,12 @@ static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT] = {
     [0 ... MAX_FILE_PATH_COUNT - 1] = {
         .save_generation_type = SAVE_GENERATION_NONE,
     }};
+static uint8_t save_file_count = 0;
+
+void free_evolve_saves(void)
+{
+    free_pkmn_saves(pkmn_saves, &save_file_count);
+}
 
 void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave *pkmn_save, char *player_save_path, struct trainer_info *trainer, struct TrainerSelection *trainerSelection, enum single_player_menu_types menu_type, GameScreen *current_screen)
 {
@@ -37,7 +43,7 @@ void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave 
         static int mouses_down_index = -1;
 
         // Load save files for selection display
-        load_display_files(save_file_data, pkmn_saves);
+        load_display_files(save_file_data, pkmn_saves, &save_file_count);
 
         // Update and draw save files
         for (int i = 0; i < save_file_data->num_saves; i++)
@@ -137,6 +143,7 @@ void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave 
             {
                 *current_screen = SCREEN_MAIN_MENU;
                 selected_saves_index = -1;
+                free_evolve_saves();
             }
             ui_selection = E_UI_NONE;
             break;
@@ -147,6 +154,7 @@ void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave 
                 trainerSelection->pkmn_party_index = -1;
                 *current_screen = SCREEN_FILE_EDIT;
                 selected_saves_index = -1;
+                free_evolve_saves();
             }
             ui_selection = E_UI_NONE;
             break;
@@ -167,11 +175,7 @@ void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave 
                 if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE && pkmn_save->save_generation_type != SAVE_GENERATION_CORRUPTED)
                     *current_screen = SCREEN_EVOLVE;
 
-                // reset save files
-                for (int i = 0; i < MAX_FILE_PATH_COUNT; i++)
-                {
-                    pkmn_saves[i].save_generation_type = SAVE_GENERATION_NONE;
-                }
+                free_evolve_saves();
                 ui_selection = E_UI_NONE;
                 y_offset = 75;
                 banner_position_offset = 0;
