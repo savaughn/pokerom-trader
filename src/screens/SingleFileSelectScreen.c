@@ -175,7 +175,6 @@ void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave 
                 if (menu_type == SINGLE_PLAYER_MENU_TYPE_EVOLVE && pkmn_save->save_generation_type != SAVE_GENERATION_CORRUPTED)
                     *current_screen = SCREEN_EVOLVE;
 
-                free_evolve_saves();
                 ui_selection = E_UI_NONE;
                 y_offset = 75;
                 banner_position_offset = 0;
