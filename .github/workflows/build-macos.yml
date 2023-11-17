@@ -128,8 +128,8 @@ jobs:
         cp "${{ github.workspace }}/pokeromtrader" "${MACOS_DESTINATION}/pokeromtrader"
 
         # Copy assets
-        mkdir -p "${MACOS_DESTINATION}/../Resources"
-        cp "${{ github.workspace }}/assets" "${MACOS_DESTINATION}/../Resources"
+        mkdir -p "${MACOS_DESTINATION}/../Resources/assets"
+        cp -r "${{ github.workspace }}/assets/images" "${MACOS_DESTINATION}/../Resources/assets"
         cp "${{ github.workspace }}/assets/icon.icns" "${MACOS_DESTINATION}/../Resources"
         
         # Create Info.plist file
@@ -187,8 +187,8 @@ jobs:
         cp "${{ github.workspace }}/pokeromtrader" "${MACOS_DESTINATION}/pokeromtrader"
 
         # Copy assets
-        mkdir -p "${MACOS_DESTINATION}/../Resources"
-        cp "${{ github.workspace }}/assets" "${MACOS_DESTINATION}/../Resources"
+        mkdir -p "${MACOS_DESTINATION}/../Resources/assets"
+        cp -r "${{ github.workspace }}/assets/images" "${MACOS_DESTINATION}/../Resources/assets"
         cp "${{ github.workspace }}/assets/icon.icns" "${MACOS_DESTINATION}/../Resources"
         
         # Create Info.plist file
