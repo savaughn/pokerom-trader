@@ -172,7 +172,6 @@ void draw_file_select(struct save_file_data *save_file_data, char *player1_save_
                     *current_screen = SCREEN_TRADE;
                     selected_saves_index[0] = -1;
                     selected_saves_index[1] = -1;
-                    free_trade_saves();
                     ui_selection = E_UI_NONE;
                     y_offset = 75;
                     banner_position_offset = 0;
