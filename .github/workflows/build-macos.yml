@@ -142,6 +142,8 @@ jobs:
         echo "    <string>${APP_BUNDLE_ID}</string>" >> "${INFO_PLIST}"
         echo '    <key>CFBundleName</key>' >> "${INFO_PLIST}"
         echo "    <string>${APP_BUNDLE_NAME}</string>" >> "${INFO_PLIST}"
+        echo "    <key>CFBundleIconFile</key>" >> "${INFO_PLIST}"
+        echo "    <string>icon</string>" >> "${INFO_PLIST}"
         echo '</dict>' >> "${INFO_PLIST}"
         echo '</plist>' >> "${INFO_PLIST}"
         
@@ -198,6 +200,8 @@ jobs:
         echo "    <string>${APP_BUNDLE_ID}</string>" >> "${INFO_PLIST}"
         echo '    <key>CFBundleName</key>' >> "${INFO_PLIST}"
         echo "    <string>${APP_BUNDLE_NAME}</string>" >> "${INFO_PLIST}"
+        echo "    <key>CFBundleIconFile</key>" >> "${INFO_PLIST}"
+        echo "    <string>icon</string>" >> "${INFO_PLIST}"
         echo '</dict>' >> "${INFO_PLIST}"
         echo '</plist>' >> "${INFO_PLIST}"
         
