@@ -98,13 +98,16 @@ void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave 
         }
 
         handle_list_scroll(&y_offset, save_file_data->num_saves, corrupted_count, &mouses_down_index, &is_moving_scroll, &banner_position_offset);
-
-        draw_top_banner("Select a save file to access your party", &banner_position_offset);
-        // Bottom bar
-        DrawRectangleRec(bottom_bar_rec, WHITE);
-        DrawLineEx((Vector2){bottom_bar_rec.x, bottom_bar_rec.y}, (Vector2){bottom_bar_rec.width, bottom_bar_rec.y}, 15, BLACK);
-        DrawText("Evolve >", evolve_button_rec.x + 15, evolve_button_rec.y + 10, 20, has_selected_save ? ui_selection == E_UI_EVOLVE ? LIGHTGRAY : BLACK : LIGHTGRAY);
     }
+    
+    // Top Banner
+    draw_top_banner("Select a save file to access your party", &banner_position_offset);
+
+    // Bottom bar
+    DrawRectangleRec(bottom_bar_rec, WHITE);
+    DrawLineEx((Vector2){bottom_bar_rec.x, bottom_bar_rec.y}, (Vector2){bottom_bar_rec.width, bottom_bar_rec.y}, 15, BLACK);
+    DrawText("Evolve >", evolve_button_rec.x + 15, evolve_button_rec.y + 10, 20, has_selected_save ? ui_selection == E_UI_EVOLVE ? LIGHTGRAY : BLACK : LIGHTGRAY);
+
     // Back button
     const Rectangle back_button_rec = (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y + 8, BUTTON_WIDTH, BUTTON_HEIGHT};
     DrawText("< Back", back_button_rec.x + 15, back_button_rec.y + 10, 20, ui_selection == E_UI_BACK ? LIGHTGRAY : BLACK);
