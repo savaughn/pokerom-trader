@@ -308,7 +308,7 @@ void draw_raylib_screen_loop(
             draw_file_select_single(save_file_data, pkmn_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_EVOLVE, &current_screen);
             break;
         case SCREEN_EVOLVE:
-            draw_evolve(pkmn_save_player1, player1_save_path, trainer1, &current_screen);
+            draw_evolve(pkmn_save_player1, player1_save_path, trainer1, &current_screen, &textures[T_EVOLVE]);
             break;
         case SCREEN_ABOUT:
             draw_about(&current_screen, is_build_prerelease);

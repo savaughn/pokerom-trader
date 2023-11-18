@@ -91,6 +91,7 @@ enum eligible_evolution_status check_trade_evolution_gen2(PokemonSave *pkmn_save
 void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 void generate_random_number_step(void);
 void update_pkmn_DVs(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
+void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 bool get_is_random_DVs_disabled(void);
 void set_is_random_DVs_disabled(bool is_disabled);
 bool get_is_item_required(void);
