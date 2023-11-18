@@ -128,8 +128,9 @@ jobs:
         cp "${{ github.workspace }}/pokeromtrader" "${MACOS_DESTINATION}/pokeromtrader"
 
         # Copy assets
-        mkdir -p "${MACOS_DESTINATION}/../Resources"
-        cp -r "${{ github.workspace }}/assets" "${MACOS_DESTINATION}/../Resources"
+        mkdir -p "${MACOS_DESTINATION}/../Resources/assets"
+        cp -r "${{ github.workspace }}/assets/images" "${MACOS_DESTINATION}/../Resources/assets"
+        cp "${{ github.workspace }}/assets/icon.icns" "${MACOS_DESTINATION}/../Resources"
         
         # Create Info.plist file
         echo '<?xml version="1.0" encoding="UTF-8"?>' > "${INFO_PLIST}"
@@ -142,6 +143,8 @@ jobs:
         echo "    <string>${APP_BUNDLE_ID}</string>" >> "${INFO_PLIST}"
         echo '    <key>CFBundleName</key>' >> "${INFO_PLIST}"
         echo "    <string>${APP_BUNDLE_NAME}</string>" >> "${INFO_PLIST}"
+        echo "    <key>CFBundleIconFile</key>" >> "${INFO_PLIST}"
+        echo "    <string>icon</string>" >> "${INFO_PLIST}"
         echo '</dict>' >> "${INFO_PLIST}"
         echo '</plist>' >> "${INFO_PLIST}"
         
@@ -184,8 +187,9 @@ jobs:
         cp "${{ github.workspace }}/pokeromtrader" "${MACOS_DESTINATION}/pokeromtrader"
 
         # Copy assets
-        mkdir -p "${MACOS_DESTINATION}/../Resources"
-        cp -r "${{ github.workspace }}/assets" "${MACOS_DESTINATION}/../Resources"
+        mkdir -p "${MACOS_DESTINATION}/../Resources/assets"
+        cp -r "${{ github.workspace }}/assets/images" "${MACOS_DESTINATION}/../Resources/assets"
+        cp "${{ github.workspace }}/assets/icon.icns" "${MACOS_DESTINATION}/../Resources"
         
         # Create Info.plist file
         echo '<?xml version="1.0" encoding="UTF-8"?>' > "${INFO_PLIST}"
@@ -198,6 +202,8 @@ jobs:
         echo "    <string>${APP_BUNDLE_ID}</string>" >> "${INFO_PLIST}"
         echo '    <key>CFBundleName</key>' >> "${INFO_PLIST}"
         echo "    <string>${APP_BUNDLE_NAME}</string>" >> "${INFO_PLIST}"
+        echo "    <key>CFBundleIconFile</key>" >> "${INFO_PLIST}"
+        echo "    <string>icon</string>" >> "${INFO_PLIST}"
         echo '</dict>' >> "${INFO_PLIST}"
         echo '</plist>' >> "${INFO_PLIST}"
         
