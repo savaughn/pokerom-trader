@@ -827,9 +827,6 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
         pkmn_save->save.gen1_save.pokemon_storage.p_party->species[pkmn_party_index] = evolution_index;
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species = evolution_index;
 
-        // Calculates and updates stats
-        update_pkmn_stats(pkmn_save, pkmn_party_index);
-
         // Get the pokemon's nickname
         char pkmn_save_nickname[PKMN_NAME_TEXT_MAX + 1] = "\0";
         pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index], pkmn_save_nickname, PKMN_NAME_TEXT_MAX);
@@ -852,8 +849,6 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.catch_rate = pkmn_base_stats_gen1[evolution_index].catch_rate;
         // Update condition to none
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.condition = PKSAV_GB_CONDITION_NONE;
-        // Update health to max hp
-        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.current_hp = pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.max_hp;
         // TODO: Update moves based on learn set and level
         // engine/pokemon/evos_moves.asm
         // pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.moves;
@@ -863,18 +858,15 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
         // Get the species index of the pokemon being evolved
         uint8_t pkmn_species_index = pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index];
         // Get the data for the pokemon's evolution
-        char evolution_name[PKMN_NAME_TEXT_MAX + 1];
+        char evolution_name[PKMN_NAME_TEXT_MAX + 1] = "\0";
         strcpy(evolution_name, pkmn_evolution_pairs_gen2[pkmn_species_index].evolution_name);
-        char species_name[PKMN_NAME_TEXT_MAX + 1];
+        char species_name[PKMN_NAME_TEXT_MAX + 1] = "\0";
         strcpy(species_name, pkmn_evolution_pairs_gen2[pkmn_species_index].species_name);
         uint8_t evolution_index = pkmn_evolution_pairs_gen2[pkmn_species_index].evolution_index;
 
         // Update species index to evolution index to access evolution base stats
         pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index] = evolution_index;
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species = evolution_index;
-
-        // Calculates and updates stats
-        update_pkmn_stats(pkmn_save, pkmn_party_index);
 
         // Get the pokemon's nickname
         char pkmn_save_nickname[PKMN_NAME_TEXT_MAX + 1] = "\0";
@@ -893,8 +885,6 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
 
         // Update condition to none
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.condition = PKSAV_CONDITION_NONE;
-        // Update health to max hp
-        pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.current_hp = pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.max_hp;
         // TODO: Update moves based on learn set and level
         // engine/pokemon/evos_moves.asm
         // pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.moves;

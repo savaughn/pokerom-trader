@@ -83,6 +83,8 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
     const int TRAINER_NAME_X = 50;
     const int TRAINER_NAME_Y = 115;
     static bool is_trade_eligible = false;
+    static bool show_evolve_toast = false;
+    static bool show_saving_icon = false;
 
     int party_count = 0;
     if (save_generation_type == SAVE_GENERATION_1)
@@ -275,8 +277,13 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
                 update_seen_owned_pkmn(pkmn_save, selected_index);
                 // Generates and assigns random dvs on simulated trade back to OT
                 update_pkmn_DVs(pkmn_save, selected_index);
+                // Update stats based on new dvs
+                update_pkmn_stats(pkmn_save, selected_index);
                 // Finalize pkmn data changes
+                show_saving_icon = true;
                 save_savefile_to_path(pkmn_save, save_path);
+                // Refresh trainer data
+                create_trainer(pkmn_save, trainer);
 
                 selected_index = NONE;
                 is_trade_eligible = false;
@@ -300,6 +307,11 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
         default:
             break;
         }
+    }
+
+    if (show_saving_icon)
+    {
+        show_saving_icon = draw_save_icon(SCREEN_WIDTH - 50, 10, show_saving_icon);
     }
 
     EndDrawing();
