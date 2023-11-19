@@ -1,6 +1,7 @@
 # Pokerom Trader - Pokémon Save File Trading GUI
 
-![Pokerom Trader](https://user-images.githubusercontent.com/25937456/277514322-288a8da9-fb6f-4ae1-8adb-00ccaed6683d.gif)
+![main_menu](https://github.com/savaughn/pokerom-trader/assets/25937456/78ef12ba-b04c-471d-a1b2-36bc55ab731e)
+
 #
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/savaughn/pokerom-trader)](https://github.com/savaughn/pokerom-trader/releases) [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/savaughn/pokerom-trader/build-macos.yml?branch=main)](https://github.com/savaughn/pokerom-trader/actions) [![GitHub issues](https://img.shields.io/github/issues/savaughn/pokerom-trader)](https://github.com/savaughn/pokerom-trader/issues) [![GitHub](https://img.shields.io/github/license/savaughn/pokerom-trader)](https://github.com/savaughn/pokerom-trader/blob/main/LICENSE) [![GitHub all releases](https://img.shields.io/github/downloads/savaughn/pokerom-trader/total)](https://github.com/savaughn/pokerom-trader/releases)
 
@@ -16,7 +17,7 @@ There is no backup system implemented yet. Make backup saves before using this o
 - Bill's PC - Allows a user to view and manage their Pokémon boxes and party (in progress)
 
 ### Settings 
-![settings menu](https://user-images.githubusercontent.com/25937456/277552973-c1d28185-c347-463c-bf33-b7b782f6f32e.png)
+![settings menu](https://user-images.githubusercontent.com/25937456/284032112-e4d14a96-731e-4255-88a3-2acabdd73b94.png)
 - Change save files folder with absolute path to folder
   - Default is ~/Library/PokeromTrader/saves (MacOS)
   - Default is ~/.pokeromtrader/ (Linux)
@@ -47,6 +48,7 @@ There is no backup system implemented yet. Make backup saves before using this o
 
 ## What's not working
 - See [issues tab](https://github.com/savaughn/pokerom-trader/issues) for current bugs 
+- No JP Region support
 
 ## Discord
 https://discord.gg/JUzzegS3AP
