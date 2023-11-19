@@ -90,3 +90,13 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Disclaimer
 Pokerom Trader is an unofficial application and is not affiliated with or endorsed by Nintendo, Game Freak, Creatures, The Pokémon Company, or any related entities. Pokémon and Pokémon character names are trademarks of Nintendo, Game Freak, Creatures, and The Pokémon Company. All trademarks, character names, and other intellectual property used in this application are used for identification and informational purposes only. The use of these names and marks is believed to qualify as fair use under trademark law. Pokerom Trader is not endorsed by or affiliated with any of the aforementioned entities. Pokerom Trader is provided "as is" without warranty of any kind, and the developers make no warranties, express or implied, regarding the accuracy or completeness of the content provided in this application.
+
+## Demos
+### Trade
+
+![trade_demo](https://github.com/savaughn/pokerom-trader/assets/25937456/d33ebe5f-d3ab-4b58-b67e-9cc4a8c7633f)
+
+### Evolve
+
+![evolve_demo](https://github.com/savaughn/pokerom-trader/assets/25937456/4e97170c-d3ed-44ee-9fe5-19c5c25792ee)
+
