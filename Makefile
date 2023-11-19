@@ -32,7 +32,7 @@ PLATFORM              ?= PLATFORM_DESKTOP
 PROJECT_NAME          ?= pokeromtrader
 PROJECT_VERSION       := 0.8.0
 # prerelease or release
-PROJECT_VERSION_TYPE  ?= prerelease
+PROJECT_VERSION_TYPE  ?= release
 PROJECT_BUILD_PATH    ?= .
 
 RAYLIB_PATH           ?= deps/raylib
@@ -48,7 +48,7 @@ RAYLIB_LIB_PATH       ?= /usr/local/lib
 RAYLIB_LIBTYPE        ?= STATIC
 
 # Build mode for project: DEBUG or RELEASE
-BUILD_MODE            ?= DEBUG
+BUILD_MODE            ?= RELEASE
 
 # Use Wayland display server protocol on Linux desktop (by default it uses X11 windowing system)
 # NOTE: This variable is only used for PLATFORM_OS: LINUX
