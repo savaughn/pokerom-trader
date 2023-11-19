@@ -101,15 +101,15 @@ void draw_file_select(struct save_file_data *save_file_data, char *player1_save_
         }
 
         handle_list_scroll(&y_offset, save_file_data->num_saves, corrupted_count, &mouses_down_index, &is_moving_scroll, &banner_position_offset);
-
-        // Top Banner
-        draw_top_banner("Select two save files to trade between", &banner_position_offset);
-
-        // Bottom bar
-        DrawRectangleRec(bottom_bar_rec, WHITE);
-        DrawLineEx((Vector2){bottom_bar_rec.x, bottom_bar_rec.y}, (Vector2){bottom_bar_rec.width, bottom_bar_rec.y}, 15, BLACK);
-        DrawText("Trade >", trade_button_rec.x + 15, trade_button_rec.y + 10, 20, has_selected_two_saves ? ui_selection == E_UI_TRADE ? LIGHTGRAY : BLACK : LIGHTGRAY);
     }
+
+    // Top Banner
+    draw_top_banner("Select two save files to trade between", &banner_position_offset);
+
+    // Bottom bar
+    DrawRectangleRec(bottom_bar_rec, WHITE);
+    DrawLineEx((Vector2){bottom_bar_rec.x, bottom_bar_rec.y}, (Vector2){bottom_bar_rec.width, bottom_bar_rec.y}, 15, BLACK);
+    DrawText("Trade >", trade_button_rec.x + 15, trade_button_rec.y + 10, 20, has_selected_two_saves ? ui_selection == E_UI_TRADE ? LIGHTGRAY : BLACK : LIGHTGRAY);
 
     // Back button
     const Rectangle back_button_rec = (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y + 8, BUTTON_WIDTH, BUTTON_HEIGHT};

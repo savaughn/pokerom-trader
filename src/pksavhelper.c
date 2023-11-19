@@ -52,18 +52,15 @@ pksavhelper_error update_seen_owned_pkmn(PokemonSave *pkmn_save, uint8_t pokemon
             error_handler(pksav_error, "Error setting owned pokedex bit");
         }
     }
-    if (pksav_error != PKSAV_ERROR_NONE)
-    {
-        return error_update_pokedex;
-    }
-    return error_none;
+
+    return pksav_error == PKSAV_ERROR_NONE ? error_none : error_update_pokedex;
 }
 
 void swap_party_pkmn_at_indices(struct pksav_gen2_save *save, uint8_t pkmn_party_index1, uint8_t pkmn_party_index2)
 {
     // swap nickname
-    char tmp_nickname1[PKMN_NAME_TEXT_MAX + 1];
-    char tmp_nickname2[PKMN_NAME_TEXT_MAX + 1];
+    char tmp_nickname1[PKMN_NAME_TEXT_MAX + 1] = "\0";
+    char tmp_nickname2[PKMN_NAME_TEXT_MAX + 1] = "\0";
     pksav_gen2_import_text(save->pokemon_storage.p_party->nicknames[pkmn_party_index1], tmp_nickname1, PKMN_NAME_TEXT_MAX);
     pksav_gen2_import_text(save->pokemon_storage.p_party->nicknames[pkmn_party_index2], tmp_nickname2, PKMN_NAME_TEXT_MAX);
     pksav_gen2_export_text(tmp_nickname2, save->pokemon_storage.p_party->nicknames[pkmn_party_index1], PKMN_NAME_TEXT_MAX);
@@ -82,8 +79,8 @@ void swap_party_pkmn_at_indices(struct pksav_gen2_save *save, uint8_t pkmn_party
     save->pokemon_storage.p_party->species[pkmn_party_index2] = tmp_species;
 
     // swap otnames
-    char tmp_otname1[TRAINER_NAME_TEXT_MAX + 1];
-    char tmp_otname2[TRAINER_NAME_TEXT_MAX + 1];
+    char tmp_otname1[TRAINER_NAME_TEXT_MAX + 1] = "\0";
+    char tmp_otname2[TRAINER_NAME_TEXT_MAX + 1] = "\0";
     pksav_gen2_import_text(save->pokemon_storage.p_party->otnames[pkmn_party_index1], tmp_otname1, TRAINER_NAME_TEXT_MAX);
     pksav_gen2_import_text(save->pokemon_storage.p_party->otnames[pkmn_party_index2], tmp_otname2, TRAINER_NAME_TEXT_MAX);
     pksav_gen2_export_text(tmp_otname2, save->pokemon_storage.p_party->otnames[pkmn_party_index1], TRAINER_NAME_TEXT_MAX);
@@ -102,7 +99,7 @@ void create_trainer(PokemonSave *pkmn_save, struct trainer_info *trainer)
     case SAVE_GENERATION_1:
     {
         // Trainer name
-        char trainer_name[TRAINER_NAME_TEXT_MAX + 1];
+        char trainer_name[TRAINER_NAME_TEXT_MAX + 1] = "\0";
         pksav_gen1_import_text(pkmn_save->save.gen1_save.trainer_info.p_name, trainer_name, TRAINER_NAME_TEXT_MAX);
 
         // Trainer Id
@@ -122,7 +119,7 @@ void create_trainer(PokemonSave *pkmn_save, struct trainer_info *trainer)
     case SAVE_GENERATION_2:
     {
         // Trainer name
-        char trainer_name[TRAINER_NAME_TEXT_MAX + 1];
+        char trainer_name[TRAINER_NAME_TEXT_MAX + 1] = "\0";
         pksav_gen2_import_text(pkmn_save->save.gen2_save.trainer_info.p_name, trainer_name, TRAINER_NAME_TEXT_MAX);
 
         // Update the trainer struct
@@ -362,6 +359,7 @@ void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.spd = pksav_bigendian16(pkmn_stats[PKSAV_GEN1_STAT_SPEED]);
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.spcl = pksav_bigendian16(pkmn_stats[PKSAV_GEN1_STAT_SPECIAL]);
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.max_hp = pksav_bigendian16(pkmn_stats[PKSAV_GEN1_STAT_HP]);
+        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.current_hp = pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.max_hp;
     }
     else
     {
@@ -453,9 +451,9 @@ enum eligible_trade_status check_trade_eligibility(struct trainer_info *trainer,
 
 bool check_if_reds_pikachu(const PokemonSave *pkmn_save, const uint8_t pkmn_party_index)
 {
-    char tmp_otname_pkmn[PKMN_NAME_TEXT_MAX + 1];
+    char tmp_otname_pkmn[PKMN_NAME_TEXT_MAX + 1] = "\0";
     pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index], tmp_otname_pkmn, PKMN_NAME_TEXT_MAX);
-    char tmp_otname_trainer[PKMN_NAME_TEXT_MAX + 1];
+    char tmp_otname_trainer[PKMN_NAME_TEXT_MAX + 1] = "\0";
     pksav_gen1_import_text(pkmn_save->save.gen1_save.trainer_info.p_name, tmp_otname_trainer, PKMN_NAME_TEXT_MAX);
     return pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species == SI_PIKACHU &&                                 // Is a Pikachu
            pkmn_save->save.gen1_save.save_type == PKSAV_GEN1_SAVE_TYPE_YELLOW &&                                                                       // Is from Yellow
@@ -487,8 +485,8 @@ pksavhelper_error swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player
     }
 
     // swap nickname
-    char tmp_nickname1[PKMN_NAME_TEXT_MAX + 1];
-    char tmp_nickname2[PKMN_NAME_TEXT_MAX + 1];
+    char tmp_nickname1[PKMN_NAME_TEXT_MAX + 1] = "\0";
+    char tmp_nickname2[PKMN_NAME_TEXT_MAX + 1] = "\0";
     pksav_error = pksav_gen1_import_text(player_gen1->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index1], tmp_nickname1, PKMN_NAME_TEXT_MAX);
     if (pksav_error != PKSAV_ERROR_NONE)
     {
@@ -610,8 +608,8 @@ pksavhelper_error swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player
     player_gen2->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index2] = species_gen1_to_gen2[tmp_species_gen1];
 
     // swap otnames
-    char tmp_otname_gen1[TRAINER_NAME_TEXT_MAX + 1];
-    char tmp_otname_gen2[TRAINER_NAME_TEXT_MAX + 1];
+    char tmp_otname_gen1[TRAINER_NAME_TEXT_MAX + 1] = "\0";
+    char tmp_otname_gen2[TRAINER_NAME_TEXT_MAX + 1] = "\0";
     pksav_error = pksav_gen1_import_text(player_gen1->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index1], tmp_otname_gen1, TRAINER_NAME_TEXT_MAX);
     if (pksav_error != PKSAV_ERROR_NONE)
     {
@@ -654,8 +652,8 @@ pksavhelper_error swap_pkmn_at_index_between_saves(PokemonSave *player1_save, Po
     enum pksav_error pksav_error;
 
     // swap nickname
-    char tmp_nickname1[PKMN_NAME_TEXT_MAX + 1];
-    char tmp_nickname2[PKMN_NAME_TEXT_MAX + 1];
+    char tmp_nickname1[PKMN_NAME_TEXT_MAX + 1] = "\0";
+    char tmp_nickname2[PKMN_NAME_TEXT_MAX + 1] = "\0";
     if (player1_save->save_generation_type == SAVE_GENERATION_1)
     {
         pksav_error = pksav_gen1_import_text(player1_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index1], tmp_nickname1, PKMN_NAME_TEXT_MAX);
@@ -736,8 +734,8 @@ pksavhelper_error swap_pkmn_at_index_between_saves(PokemonSave *player1_save, Po
     }
 
     // swap otnames
-    char tmp_otname1[TRAINER_NAME_TEXT_MAX + 1];
-    char tmp_otname2[TRAINER_NAME_TEXT_MAX + 1];
+    char tmp_otname1[TRAINER_NAME_TEXT_MAX + 1] = "\0";
+    char tmp_otname2[TRAINER_NAME_TEXT_MAX + 1] = "\0";
     if (player1_save->save_generation_type == SAVE_GENERATION_1)
     {
         pksav_error = pksav_gen1_import_text(player1_save->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index1], tmp_otname1, TRAINER_NAME_TEXT_MAX);
@@ -819,9 +817,9 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
         uint8_t pkmn_species_index = pkmn_save->save.gen1_save.pokemon_storage.p_party->species[pkmn_party_index];
 
         // Get the data for the pokemon's evolution
-        char evolution_name[PKMN_NAME_TEXT_MAX + 1];
+        char evolution_name[PKMN_NAME_TEXT_MAX + 1] = "\0";
         strcpy(evolution_name, pkmn_evolution_pairs_gen1[pkmn_species_index].evolution_name);
-        char species_name[PKMN_NAME_TEXT_MAX + 1];
+        char species_name[PKMN_NAME_TEXT_MAX + 1] = "\0";
         strcpy(species_name, pkmn_evolution_pairs_gen1[pkmn_species_index].species_name);
         uint8_t evolution_index = pkmn_evolution_pairs_gen1[pkmn_species_index].evolution_index;
 
@@ -829,11 +827,8 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
         pkmn_save->save.gen1_save.pokemon_storage.p_party->species[pkmn_party_index] = evolution_index;
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species = evolution_index;
 
-        // Calculates and updates stats
-        update_pkmn_stats(pkmn_save, pkmn_party_index);
-
         // Get the pokemon's nickname
-        char pkmn_save_nickname[PKMN_NAME_TEXT_MAX + 1];
+        char pkmn_save_nickname[PKMN_NAME_TEXT_MAX + 1] = "\0";
         pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[pkmn_party_index], pkmn_save_nickname, PKMN_NAME_TEXT_MAX);
 
         // Check if pokemon does not have custom nickname
@@ -854,8 +849,6 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.catch_rate = pkmn_base_stats_gen1[evolution_index].catch_rate;
         // Update condition to none
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.condition = PKSAV_GB_CONDITION_NONE;
-        // Update health to max hp
-        pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.current_hp = pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.max_hp;
         // TODO: Update moves based on learn set and level
         // engine/pokemon/evos_moves.asm
         // pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.moves;
@@ -865,9 +858,9 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
         // Get the species index of the pokemon being evolved
         uint8_t pkmn_species_index = pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index];
         // Get the data for the pokemon's evolution
-        char evolution_name[PKMN_NAME_TEXT_MAX + 1];
+        char evolution_name[PKMN_NAME_TEXT_MAX + 1] = "\0";
         strcpy(evolution_name, pkmn_evolution_pairs_gen2[pkmn_species_index].evolution_name);
-        char species_name[PKMN_NAME_TEXT_MAX + 1];
+        char species_name[PKMN_NAME_TEXT_MAX + 1] = "\0";
         strcpy(species_name, pkmn_evolution_pairs_gen2[pkmn_species_index].species_name);
         uint8_t evolution_index = pkmn_evolution_pairs_gen2[pkmn_species_index].evolution_index;
 
@@ -875,11 +868,8 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
         pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index] = evolution_index;
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.species = evolution_index;
 
-        // Calculates and updates stats
-        update_pkmn_stats(pkmn_save, pkmn_party_index);
-
         // Get the pokemon's nickname
-        char pkmn_save_nickname[PKMN_NAME_TEXT_MAX + 1];
+        char pkmn_save_nickname[PKMN_NAME_TEXT_MAX + 1] = "\0";
         pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[pkmn_party_index], pkmn_save_nickname, PKMN_NAME_TEXT_MAX);
 
         // Check if pokemon does not have custom nickname
@@ -895,8 +885,6 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
 
         // Update condition to none
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.condition = PKSAV_CONDITION_NONE;
-        // Update health to max hp
-        pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.current_hp = pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.max_hp;
         // TODO: Update moves based on learn set and level
         // engine/pokemon/evos_moves.asm
         // pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.moves;

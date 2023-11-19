@@ -142,7 +142,8 @@ typedef enum {
     error_swap_pkmn,
     error_update_save,
     error_update_pokedex,
-    error_update_files
+    error_update_files,
+    error_evolve_pkmn,
 } pksavhelper_error;
 
 #endif // COMMON_H

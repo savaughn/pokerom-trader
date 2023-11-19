@@ -174,17 +174,18 @@ void update_selected_indexes_with_selection(int *selected_saves_index, int *mous
 
 void draw_no_save_files(char *save_path)
 {
-    ClearBackground(RAYWHITE);
+    ClearBackground(RED);
+    DrawRectangle(20, 150, SCREEN_WIDTH - 40, SCREEN_HEIGHT - 300, (Color){0,0,0,50});
     if (no_dir_err)
     {
         Vector2 text_center = SCREEN_CENTER("Save folder doesn't exist!", 20);
-        DrawText("Save folder doesn't exist!", text_center.x, text_center.y, 20, BLACK);
+        shadow_text("Save folder doesn't exist!", text_center.x, text_center.y, 20, WHITE);
     }
     else
     {
-        DrawText("No save files found in save folder", 190, 200, 20, BLACK);
+        shadow_text("No save files found in save folder", 190, 200, 20, WHITE);
     }
-    DrawText(TextFormat("%s", save_path), SCREEN_CENTER(save_path, 20).x, 275, 20, BLACK);
+    shadow_text(TextFormat("%s", save_path), SCREEN_CENTER(save_path, 20).x, 275, 20, WHITE);
 }
 
 void draw_top_banner(const char *text, const int *banner_position_offset)
@@ -307,7 +308,7 @@ void draw_raylib_screen_loop(
             draw_file_select_single(save_file_data, pkmn_save_player1, player1_save_path, trainer1, &trainerSelection[0], SINGLE_PLAYER_MENU_TYPE_EVOLVE, &current_screen);
             break;
         case SCREEN_EVOLVE:
-            draw_evolve(pkmn_save_player1, player1_save_path, trainer1, &current_screen);
+            draw_evolve(pkmn_save_player1, player1_save_path, trainer1, &current_screen, &textures[T_EVOLVE]);
             break;
         case SCREEN_ABOUT:
             draw_about(&current_screen, is_build_prerelease);

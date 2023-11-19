@@ -21,8 +21,8 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
     DrawTextureEx(*trade_texture, (Vector2){50, 10}, 0, 0.4, WHITE);
 
     bool is_valid_trade[2] = {true, true};
-    draw_trainer_info(trainer1, 25, (SCREEN_HEIGHT - 100)/2 - 75, trainerSelection, *is_same_generation, is_valid_trade);
-    draw_trainer_info(trainer2, SCREEN_WIDTH - 178, (SCREEN_HEIGHT - 100)/2-75, trainerSelection, *is_same_generation, is_valid_trade);
+    draw_trainer_info(trainer1, 25, (SCREEN_HEIGHT - 100) / 2 - 75, trainerSelection, *is_same_generation, is_valid_trade);
+    draw_trainer_info(trainer2, SCREEN_WIDTH - 178, (SCREEN_HEIGHT - 100) / 2 - 75, trainerSelection, *is_same_generation, is_valid_trade);
     bool can_submit_trade = trainerSelection[0].pkmn_party_index != -1 && trainerSelection[1].pkmn_party_index != -1 && is_valid_trade[0] == true && is_valid_trade[1] == true;
 
     // Bottom bar
@@ -51,7 +51,7 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
             ui_selection = BUTTON_NONE;
         }
     }
-    
+
     static pksavhelper_error pksavhelper_error = error_none;
     if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && ui_selection != BUTTON_NONE)
     {
@@ -151,7 +151,7 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
         default:
             break;
         }
-        
+
         show_trade_toast = !draw_toast_message(toast_message, TOAST_SHORT, TOAST_INFO);
     }
     else

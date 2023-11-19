@@ -161,7 +161,7 @@ void draw_trainer_info(struct trainer_info *trainer, int x, int y, struct Traine
     if (current_trainer_index != -1 && trainer_selection[current_trainer_index].pkmn_party_index != -1 && is_panel_out)
     {
         // Name of the pokemon selected from list
-        static char selected_pokemon_nickname[PKMN_NAME_TEXT_MAX + 1] = "\0";
+        char selected_pokemon_nickname[PKMN_NAME_TEXT_MAX + 1] = "\0";
         if (trainer_generation == SAVE_GENERATION_1)
         {
             pksav_gen1_import_text(trainer->pokemon_party.gen1_pokemon_party.nicknames[trainer_selection[current_trainer_index].pkmn_party_index], selected_pokemon_nickname, PKMN_NAME_TEXT_MAX);
