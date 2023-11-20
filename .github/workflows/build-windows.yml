@@ -41,9 +41,10 @@ jobs:
 
     - name: Copy assets
       run: |
-        cp assets/icon.ico build/icon.ico
-        cp assets/pkrom.rc.data build/pkrom.rc.data
-        cp -r assets/images build/
+        mkdir -p build/assets
+        cp assets/icon.ico build/assets/icon.ico
+        cp assets/pkrom.rc.data build/assets/pkrom.rc.data
+        cp -r assets/images build/assets
       
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v2
