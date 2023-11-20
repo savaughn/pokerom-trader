@@ -78,7 +78,7 @@ void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_
     DrawCircle(SCREEN_WIDTH * -0.7, SCREEN_HEIGHT * -1, 1380, BLACK);
     DrawCircle(SCREEN_WIDTH * -0.7, SCREEN_HEIGHT * -1, 1350, COLOR_PKMN_RED);
 
-    DrawTextureEx(*settings_texture, (Vector2){50, 50}, 0, 0.8, WHITE);
+    DrawTextureEx(*settings_texture, (Vector2){50, 35}, 0, 1, WHITE);
     DrawText("Specify folder name containing saves", 50, SCREEN_HEIGHT / 2 - 50, 25, BLACK);
 
     // Draw the input box

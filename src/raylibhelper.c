@@ -45,29 +45,6 @@ void create_trainer_id_str(const struct trainer_info *trainer, char *trainer_id)
     strcat(trainer_id, id_str);
 }
 
-#if defined(__APPLE__)
-void get_mac_resource_images_path(void)
-{
-    // Get the path to the bundle's resources directory
-    CFBundleRef bundle = CFBundleGetMainBundle();
-    CFURLRef resources_url = CFBundleCopyResourcesDirectoryURL(bundle);
-    char resources_path[PATH_MAX];
-    if (!CFURLGetFileSystemRepresentation(resources_url, true, (UInt8 *)resources_path, PATH_MAX))
-    {
-        fprintf(stderr, "Error: could not get resources directory path\n");
-        exit(EXIT_FAILURE);
-    }
-    CFRelease(resources_url);
-
-    // Change the current working directory to the resources directory
-    if (chdir(resources_path) != 0)
-    {
-        fprintf(stderr, "Error: could not change working directory to resources directory\n");
-        exit(EXIT_FAILURE);
-    }
-}
-#endif
-
 void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_count, int *mouses_down_index, bool *is_moving_scroll, int *banner_position_offset)
 {
     const uint8_t box_height = 93;
@@ -216,15 +193,12 @@ void draw_raylib_screen_loop(
     Texture2D textures[19] = {
         [0 ... 18] = {
             .id = 0}};
-
-    char error_message[100] = "Something went wrong";
-
-#if defined(__APPLE__)
-    if (CI_BUILD)
-    {
-        get_mac_resource_images_path();
-    }
-#endif
+    const struct texture_data *texture_data[5] = {
+        &evolve_data,
+        &logo_data,
+        &quit_data,
+        &settings_data,
+        &trade_data};
 
     // while textures are loading
     int texture_load_loop_limit = 3;
@@ -236,60 +210,19 @@ void draw_raylib_screen_loop(
         DrawText("Loading Textures...", 20, 20, 20, WHITE);
         EndDrawing();
 
-        if (textures[T_LOGO].id == 0)
+        for (uint8_t i = T_EVOLVE; i < T_CONSOLE_0; i++)
         {
-            Image logo = {0};
-            logo.format = FORMAT;
-            logo.height = LOGO_HEIGHT;
-            logo.width = LOGO_WIDTH;
-            logo.data = logo_texture_data;
-            logo.mipmaps = 1;
+            if (textures[i].id == 0)
+            {
+                Image img = {0};
+                img.format = FORMAT;
+                img.height = texture_data[i]->height;
+                img.width = texture_data[i]->width;
+                img.data = texture_data[i]->data;
+                img.mipmaps = 1;
 
-            textures[T_LOGO] = LoadTextureFromImage(logo);
-        }
-        if (textures[T_TRADE].id == 0)
-        {
-            Image trade = {0};
-            trade.format = FORMAT;
-            trade.height = TRADE_HEIGHT;
-            trade.width = TRADE_WIDTH;
-            trade.data = trade_texture_data;
-            trade.mipmaps = 1;
-
-            textures[T_TRADE] = LoadTextureFromImage(trade);
-        }
-        if (textures[T_EVOLVE].id == 0)
-        {
-            Image evolve = {0};
-            evolve.format = FORMAT;
-            evolve.height = EVOLVE_HEIGHT;
-            evolve.width = EVOLVE_WIDTH;
-            evolve.data = evolve_texture_data;
-            evolve.mipmaps = 1;
-
-            textures[T_EVOLVE] = LoadTextureFromImage(evolve);
-        }
-        if (textures[T_SETTINGS].id == 0)
-        {
-            Image settings = {0};
-            settings.format = FORMAT;
-            settings.height = SETTINGS_HEIGHT;
-            settings.width = SETTINGS_WIDTH;
-            settings.data = settings_texture_data;
-            settings.mipmaps = 1;
-
-            textures[T_SETTINGS] = LoadTextureFromImage(settings);
-        }
-        if (textures[T_QUIT].id == 0)
-        {
-            Image quit = {0};
-            quit.format = FORMAT;
-            quit.height = QUIT_HEIGHT;
-            quit.width = QUIT_WIDTH;
-            quit.data = quit_texture_data;
-            quit.mipmaps = 1;
-
-            textures[T_QUIT] = LoadTextureFromImage(quit);
+                textures[i] = LoadTextureFromImage(img);
+            }
         }
 
         for (int i = T_CONSOLE_0; i < T_POKEBALL_0; i++)
@@ -323,11 +256,6 @@ void draw_raylib_screen_loop(
         }
 
         texture_loop_count++;
-        if (texture_loop_count >= texture_load_loop_limit)
-        {
-            current_screen = SCREEN_ERROR;
-            strcpy(error_message, "Failed to load textures. Is asset folder with exe?");
-        }
     }
 
     while (!should_close_window && !WindowShouldClose())
@@ -370,7 +298,7 @@ void draw_raylib_screen_loop(
         default:
             BeginDrawing();
             ClearBackground(BACKGROUND_COLOR);
-            DrawText(error_message, SCREEN_CENTER(error_message, 20).x, SCREEN_CENTER(error_message, 20).y, 20, BLACK);
+            DrawText("Something went wrong", SCREEN_CENTER("Something went wrong", 20).x, SCREEN_CENTER("Something went wrong", 20).y, 20, BLACK);
             DrawText("Press ESC key to exit!", SCREEN_CENTER("Press ESC key to exit!", 20).x, SCREEN_CENTER("Press ESC key to exit!", 20).x + 50, 20, BLACK);
             EndDrawing();
             // Escape key to close window
