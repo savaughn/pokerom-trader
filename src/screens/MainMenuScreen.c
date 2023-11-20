@@ -237,7 +237,7 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
         // Evolve texture logo
         DrawTextureEx(textures[T_EVOLVE], (Vector2){details_rec.x + anim_from_right[BUTTON_EVOLVE], details_rec.y + 25}, 0, 1, WHITE);
         // Pokeball texture
-        DrawTextureEx(textures[rand_pokeball_index], (Vector2){details_rec.x + anim_from_right[BUTTON_EVOLVE] + 15, details_rec.y + 80}, 0, 1, WHITE);
+        DrawTextureEx(textures[rand_pokeball_index], (Vector2){details_rec.x + anim_from_right[BUTTON_EVOLVE] + 15, details_rec.y + 80}, 0, 2, WHITE);
         // Arrow animation
         draw_evolution_arrow_animation();
         // Bottom details text

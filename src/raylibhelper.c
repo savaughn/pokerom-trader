@@ -2,6 +2,7 @@
 #include "filehelper.h"
 #include "pksavhelper.h"
 #include "pksavfilehelper.h"
+#include "textures.h"
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
 #endif
@@ -10,7 +11,7 @@ void draw_background_grid(void)
 {
     int line_count_v = SCREEN_HEIGHT / 10;
     int line_count_h = SCREEN_WIDTH / 10;
-    
+
     // draw line grid color_pkmn_red
     for (int i = 0; i < line_count_v; i++)
     {
@@ -175,7 +176,7 @@ void update_selected_indexes_with_selection(int *selected_saves_index, int *mous
 void draw_no_save_files(char *save_path)
 {
     ClearBackground(RED);
-    DrawRectangle(20, 150, SCREEN_WIDTH - 40, SCREEN_HEIGHT - 300, (Color){0,0,0,50});
+    DrawRectangle(20, 150, SCREEN_WIDTH - 40, SCREEN_HEIGHT - 300, (Color){0, 0, 0, 50});
     if (no_dir_err)
     {
         Vector2 text_center = SCREEN_CENTER("Save folder doesn't exist!", 20);
@@ -237,37 +238,87 @@ void draw_raylib_screen_loop(
 
         if (textures[T_LOGO].id == 0)
         {
-            textures[T_LOGO] = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
+            Image logo = {0};
+            logo.format = FORMAT;
+            logo.height = LOGO_HEIGHT;
+            logo.width = LOGO_WIDTH;
+            logo.data = logo_texture_data;
+            logo.mipmaps = 1;
+
+            textures[T_LOGO] = LoadTextureFromImage(logo);
         }
         if (textures[T_TRADE].id == 0)
         {
-            textures[T_TRADE] = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
+            Image trade = {0};
+            trade.format = FORMAT;
+            trade.height = TRADE_HEIGHT;
+            trade.width = TRADE_WIDTH;
+            trade.data = trade_texture_data;
+            trade.mipmaps = 1;
+
+            textures[T_TRADE] = LoadTextureFromImage(trade);
         }
         if (textures[T_EVOLVE].id == 0)
         {
-            textures[T_EVOLVE] = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
+            Image evolve = {0};
+            evolve.format = FORMAT;
+            evolve.height = EVOLVE_HEIGHT;
+            evolve.width = EVOLVE_WIDTH;
+            evolve.data = evolve_texture_data;
+            evolve.mipmaps = 1;
+
+            textures[T_EVOLVE] = LoadTextureFromImage(evolve);
         }
         if (textures[T_SETTINGS].id == 0)
         {
-            textures[T_SETTINGS] = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
+            Image settings = {0};
+            settings.format = FORMAT;
+            settings.height = SETTINGS_HEIGHT;
+            settings.width = SETTINGS_WIDTH;
+            settings.data = settings_texture_data;
+            settings.mipmaps = 1;
+
+            textures[T_SETTINGS] = LoadTextureFromImage(settings);
         }
         if (textures[T_QUIT].id == 0)
         {
-            textures[T_QUIT] = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
+            Image quit = {0};
+            quit.format = FORMAT;
+            quit.height = QUIT_HEIGHT;
+            quit.width = QUIT_WIDTH;
+            quit.data = quit_texture_data;
+            quit.mipmaps = 1;
+
+            textures[T_QUIT] = LoadTextureFromImage(quit);
         }
 
         for (int i = T_CONSOLE_0; i < T_POKEBALL_0; i++)
         {
             if (textures[i].id == 0)
             {
-                textures[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/Pixel_Fantasy_Icons_Consoles/Consoles/console_%d.png", i - T_CONSOLE_0)));
+                Image console = {0};
+                console.format = FORMAT;
+                console.height = CONSOLE_HEIGHT;
+                console.width = CONSOLE_WIDTH;
+                console.data = console_data[i - T_CONSOLE_0];
+                console.mipmaps = 1;
+
+                textures[i] = LoadTextureFromImage(console);
             }
         }
+
         for (int i = T_POKEBALL_0; i < T_POKEBALL_3 + 1; i++)
         {
             if (textures[i].id == 0)
             {
-                textures[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/pokeballs_MPR/ball_%d.png", i - T_POKEBALL_0)));
+                Image pokeball = {0};
+                pokeball.format = FORMAT;
+                pokeball.height = BALL_HEIGHT;
+                pokeball.width = BALL_WIDTH;
+                pokeball.data = ball_data[i - T_POKEBALL_0];
+                pokeball.mipmaps = 1;
+
+                textures[i] = LoadTextureFromImage(pokeball);
             }
         }
 
