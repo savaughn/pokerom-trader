@@ -58,7 +58,7 @@ void draw_settings(struct save_file_data *save_file_data, GameScreen *current_sc
     DrawCircle(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 3.5, 1350, BLACK);
     DrawCircle(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 3.5, 1320, WHITE);
 
-    DrawTextureEx(*settings_texture, (Vector2){50, 50}, 0, 0.4, WHITE);
+    DrawTextureEx(*settings_texture, (Vector2){50, 50}, 0, 0.8, WHITE);
     // Toggle for random ivs on trade boolean
     DrawText("Disable random DVs on trade", 50, start_y - 25, 20, settings_text_color);
     // Checkbox for random ivs on trade

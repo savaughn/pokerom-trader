@@ -73,7 +73,7 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
     BeginDrawing();
     ClearBackground(RED);
     draw_background_grid();
-    DrawTextureEx(*evolve_texture, (Vector2){50, 10}, 0, 0.4, WHITE);
+    DrawTextureEx(*evolve_texture, (Vector2){50, 10}, 0, 0.8, WHITE);
 
     const int NONE = -1;
     static int selected_index = NONE;

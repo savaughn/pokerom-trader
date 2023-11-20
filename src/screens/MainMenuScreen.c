@@ -175,7 +175,7 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
     } rand_console[CONSOLE_COUNT] = {CONSOLE_NONE};
 
     // Draw image pkrom_trader_logo header
-    DrawTextureEx(textures[T_LOGO], (Vector2){50, 50}, 0, 0.62, WHITE);
+    DrawTextureEx(textures[T_LOGO], (Vector2){50, 50}, 0, 1, WHITE);
 
     // On Hover/Click Trade button
     if (draw_menu_button(text_position_start.x, text_position_start.y, "Trade", text_size))
@@ -196,7 +196,7 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
         // Move left/right
         slide_animate_details_pane(BUTTON_TRADE);
         // Trade texture logo
-        DrawTextureEx(textures[T_TRADE], (Vector2){details_rec.x + anim_from_right[BUTTON_TRADE], details_rec.y + 25}, 0, 0.5, WHITE);
+        DrawTextureEx(textures[T_TRADE], (Vector2){details_rec.x + anim_from_right[BUTTON_TRADE], details_rec.y + 25}, 0, 1, WHITE);
         // Left console texture
         DrawTextureEx(textures[rand_console[CONSOLE_LEFT]], (Vector2){details_rec.x + anim_from_right[BUTTON_TRADE] - 40, details_rec.y + 150}, 0, 3, WHITE);
         // Arrow animation
@@ -235,7 +235,7 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
         // Move left/right
         slide_animate_details_pane(BUTTON_EVOLVE);
         // Evolve texture logo
-        DrawTextureEx(textures[T_EVOLVE], (Vector2){details_rec.x + anim_from_right[BUTTON_EVOLVE], details_rec.y + 25}, 0, 0.5, WHITE);
+        DrawTextureEx(textures[T_EVOLVE], (Vector2){details_rec.x + anim_from_right[BUTTON_EVOLVE], details_rec.y + 25}, 0, 1, WHITE);
         // Pokeball texture
         DrawTextureEx(textures[rand_pokeball_index], (Vector2){details_rec.x + anim_from_right[BUTTON_EVOLVE] + 15, details_rec.y + 80}, 0, 0.25, WHITE);
         // Arrow animation
@@ -263,7 +263,7 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
         // Move left/right
         slide_animate_details_pane(BUTTON_SETTINGS);
         // Draw settings texture logo
-        DrawTextureEx(textures[T_SETTINGS], (Vector2){details_rec.x + anim_from_right[BUTTON_SETTINGS] - 25, details_rec.y + 100}, 0, 0.5, WHITE);
+        DrawTextureEx(textures[T_SETTINGS], (Vector2){details_rec.x + anim_from_right[BUTTON_SETTINGS] - 25, details_rec.y + 100}, 0, 1, WHITE);
         // Bottom details text
         DrawText("Change trade and evolution settings", details_text.x + anim_from_right[BUTTON_SETTINGS] + 40, details_text.y, 20, BLACK);
     }
@@ -285,7 +285,7 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
         // Move left/right
         slide_animate_details_pane(BUTTON_QUIT);
         // Draw quit texture logo
-        DrawTextureEx(textures[T_QUIT], (Vector2){details_rec.x + anim_from_right[BUTTON_QUIT], details_rec.y + 100}, 0, 0.5, WHITE);
+        DrawTextureEx(textures[T_QUIT], (Vector2){details_rec.x + anim_from_right[BUTTON_QUIT], details_rec.y + 100}, 0, 1, WHITE);
         // Bottom details text
         DrawText("Quit Pokerom Trader", details_text.x + anim_from_right[BUTTON_QUIT] + 80, details_text.y, 20, BLACK);
     }
