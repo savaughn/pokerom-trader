@@ -25,8 +25,8 @@ jobs:
         cd deps/pksav/
         mkdir build
         cd build
-        cmake .. -DPKSAV_STATIC=ON -DPKSAV_ENABLE_TESTS=OFF -DPKSAV_ENABLE_DOCS=OFF
-        make 
+        cmake .. -DPKSAV_STATIC=ON -DPKSAV_ENABLE_TESTS=OFF -DPKSAV_ENABLE_DOCS=OFF -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --config "Release"
 
     - name: Build raylib
       run: |

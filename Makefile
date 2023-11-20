@@ -30,9 +30,9 @@ PLATFORM              ?= PLATFORM_DESKTOP
 
 # Define project variables
 PROJECT_NAME          ?= pokeromtrader
-PROJECT_VERSION       := 0.8.0
+PROJECT_VERSION       := 0.9.0
 # prerelease or release
-PROJECT_VERSION_TYPE  ?= release
+PROJECT_VERSION_TYPE  ?= prerelease
 PROJECT_BUILD_PATH    ?= .
 
 RAYLIB_PATH           ?= deps/raylib
@@ -201,7 +201,7 @@ else
             CFLAGS += -Os
         endif
     else
-        CFLAGS += -s -O2
+        CFLAGS += -O2
     endif
 endif
 

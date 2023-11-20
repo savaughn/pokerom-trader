@@ -27,7 +27,7 @@ jobs:
         cd deps/pksav/
         mkdir build
         cd build
-        cmake .. -DPKSAV_STATIC=ON -G "Unix Makefiles" -DPKSAV_ENABLE_TESTS=OFF -DPKSAV_ENABLE_DOCS=OFF
+        cmake .. -DPKSAV_STATIC=ON -G "Unix Makefiles" -DPKSAV_ENABLE_TESTS=OFF -DPKSAV_ENABLE_DOCS=OFF -DPKSAV_ENABLE_APPS=OFF -DPKSAV_ENABLE_LIBRARY=OFF -DCMAKE_BUILD_TYPE=Release
         make
 
     - name: Build raylib
@@ -41,7 +41,10 @@ jobs:
 
     - name: Copy assets
       run: |
-        cp -r assets build
+        mkdir -p build/assets
+        cp assets/icon.ico build/assets/icon.ico
+        cp assets/pkrom.rc.data build/assets/pkrom.rc.data
+        cp -r assets/images build/assets
       
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v2

@@ -25,8 +25,6 @@
 #include <pksav/gen1.h>
 #include <pksav/gen2.h>
 #include <pksav/gba.h>
-#include <pksav/gen4/text.h>
-#include <pksav/gen5/text.h>
 
 #include <pksav/math/base256.h>
 #include <pksav/math/bcd.h>
