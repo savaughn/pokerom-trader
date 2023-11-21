@@ -44,7 +44,6 @@ jobs:
       run: |
         # Copy assets to the same directory as the executable
         mkdir -p build/assets
-        cp -r assets/images build/assets/images
 
     - name: Publish Build Artifacts
       uses: actions/upload-artifact@v2

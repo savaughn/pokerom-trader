@@ -18,7 +18,7 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
     ClearBackground(RED);
     draw_background_grid();
 
-    DrawTextureEx(*trade_texture, (Vector2){50, 10}, 0, 0.4, WHITE);
+    DrawTextureEx(*trade_texture, (Vector2){50, 10}, 0, 0.8, WHITE);
 
     bool is_valid_trade[2] = {true, true};
     draw_trainer_info(trainer1, 25, (SCREEN_HEIGHT - 100) / 2 - 75, trainerSelection, *is_same_generation, is_valid_trade);
