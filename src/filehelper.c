@@ -141,7 +141,6 @@ void create_default_config(void)
     LPCSTR ini = config_path;
     WritePrivateProfileStringA("app", "SAVE_FILE_DIR", saves_dir, ini);
     WritePrivateProfileStringA("app", "DISABLE_RANDOM_IVS_ON_TRADE", "false", ini);
-    WritePrivateProfileStringA("app", "ITEM_REQUIRED_EVOLUTIONS", "true", ini);
 }
 struct config_data read_key_from_config(void)
 {
@@ -164,13 +163,10 @@ struct config_data read_key_from_config(void)
     char disable_random_ivs_on_trade[MAX_FILE_PATH_CHAR];
     GetPrivateProfileString("app", "DISABLE_RANDOM_IVS_ON_TRADE", 0, disable_random_ivs_on_trade, MAX_FILE_PATH_CHAR, ini);
 
-    char item_required_evolutions[MAX_FILE_PATH_CHAR];
-    GetPrivateProfileString("app", "ITEM_REQUIRED_EVOLUTIONS", 0, item_required_evolutions, MAX_FILE_PATH_CHAR, ini);
 
     return (struct config_data){
         .save_file_dir = save_file_str,
         .disable_random_ivs_on_trade = disable_random_ivs_on_trade,
-        .item_required_evolutions = item_required_evolutions,
     };
 }
 void write_to_log(const char *msg, const uint8_t message_type)
@@ -341,7 +337,6 @@ void init_settings_from_config(struct save_file_data *save_file_data)
     }
 
     set_is_random_DVs_disabled(strcmp(config_data.disable_random_ivs_on_trade, "false"));
-    set_is_item_required(strcmp(config_data.item_required_evolutions, "false"));
 
     free(save_file_dir);
 }
@@ -535,8 +530,6 @@ void create_default_config(bool overwrite)
     fputs(default_key, fp);
     fputs("\n", fp);
     fputs("DISABLE_RANDOM_IVS_ON_TRADE=false", fp);
-    fputs("\n", fp);
-    fputs("ITEM_REQUIRED_EVOLUTIONS=true", fp);
 
     fclose(fp);
 }
