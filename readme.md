@@ -58,8 +58,8 @@ https://discord.gg/JUzzegS3AP
 | Windows           | ✅ | \<UserProfile\>\\Documents\\PokeromTrader\\saves
 | Linux amd64       | ✅ |~/.pokeromtrader/saves
 | Linux arm64       | ✅ |~/.pokeromtrader/saves
-| MacOS x86_64      | ✅  |~/Library/PokeromTrader/saves 
-| MacOS arm64       | ✅  |~/Library/PokeromTrader/saves 
+| MacOS x86_64      | ✅  |~/Library/Application Support/PokeromTrader/saves 
+| MacOS arm64       | ✅  |~/Library/Application Support/PokeromTrader/saves 
 | iOS               | ❌  |
 | Android           | ❌  |
 

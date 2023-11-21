@@ -13,7 +13,7 @@
 #endif
 
 #ifdef __APPLE__
-#define USR_DATA_DIR "/Library/PokeromTrader"
+#define USR_DATA_DIR "/Library/Application Support/PokeromTrader"
 #elif _WIN32
 #define USR_DATA_DIR "\\Documents\\PokeromTrader"
 #else
