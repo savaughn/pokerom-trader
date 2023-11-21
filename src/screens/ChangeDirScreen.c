@@ -22,7 +22,7 @@ void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_
         SCREEN_BUTTON_CLEAR
     };
     static int selected_index = SCREEN_BUTTON_NONE;
-    const Rectangle input_box_rec = (Rectangle){50, SCREEN_HEIGHT / 2 +5, SCREEN_WIDTH - 100, 40};
+    const Rectangle input_box_rec = (Rectangle){50, SCREEN_HEIGHT / 2 + 5, SCREEN_WIDTH - 100, 40};
     const uint8_t input_text_size = 15;
 
     text_size = strlen(input_text);
@@ -138,10 +138,9 @@ void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_
         }
     }
 
+    static bool has_pressed_clear = false;
     if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
     {
-        static bool has_pressed_clear = false;
-
         switch (selected_index)
         {
         case SCREEN_BUTTON_BACK:
@@ -189,5 +188,17 @@ void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_
         default:
             break;
         }
+    }
+
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        if (has_pressed_clear)
+        {
+            strcpy(input_text, input_text_backup);
+        }
+        has_pressed_clear = false;
+        *current_screen = SCREEN_SETTINGS;
+        has_shown_placeholder = false;
+        selected_index = SCREEN_BUTTON_NONE;
     }
 }

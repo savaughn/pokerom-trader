@@ -54,4 +54,10 @@ void draw_legal(GameScreen *current_screen)
         }
     }
     EndDrawing();
+
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        *current_screen = SCREEN_ABOUT;
+        selected_index = SCREEN_BUTTON_NONE;
+    }
 }

@@ -240,4 +240,21 @@ void draw_file_select(struct save_file_data *save_file_data, char *player1_save_
     }
 
     EndDrawing();
+
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        *current_screen = SCREEN_MAIN_MENU;
+        selected_saves_index[0] = -1;
+        selected_saves_index[1] = -1;
+        trainer1->trainer_id = 0;
+        trainer2->trainer_id = 0;
+
+        reset_toast_message();
+        show_duplicate_toast = false;
+
+        free_trade_saves();
+        ui_selection = E_UI_NONE;
+        y_offset = 75;
+        banner_position_offset = 0;
+    }
 }

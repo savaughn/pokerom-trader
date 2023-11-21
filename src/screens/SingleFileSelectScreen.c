@@ -191,4 +191,11 @@ void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave 
     }
 
     EndDrawing();
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        *current_screen = SCREEN_MAIN_MENU;
+        selected_saves_index = -1;
+        ui_selection = E_UI_NONE;
+        free_evolve_saves();
+    }
 }
