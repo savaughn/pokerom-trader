@@ -77,9 +77,8 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
 
     const int NONE = -1;
     static int selected_index = NONE;
-    static enum eligible_trade_status trade_eligible = E_EVO_STATUS_ELIGIBLE;
+    static enum eligible_evolution_status evolve_eligible = E_EVO_STATUS_ELIGIBLE;
     char pokemon_nickname[PKMN_NAME_TEXT_MAX + 1] = "\0";
-    int eligible_pokemon_count = 0;
     const int TRAINER_NAME_X = 50;
     const int TRAINER_NAME_Y = 115;
     static bool is_trade_eligible = false;
@@ -121,19 +120,15 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
     {
         if (save_generation_type == SAVE_GENERATION_1)
         {
-            trade_eligible = check_trade_evolution_gen1(pkmn_save, i);
-            eligible_pokemon_count++;
+            evolve_eligible = check_trade_evolution_gen1(pkmn_save, i);
             pksav_gen1_import_text(pkmn_save->save.gen1_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, PKMN_NAME_TEXT_MAX);
-            draw_pkmn_button((Rectangle){TRAINER_NAME_X, TRAINER_NAME_Y + 75 + (i * 30), 200, 30}, i, pokemon_nickname, selected_index == i || trade_eligible == E_EVO_STATUS_NOT_ELIGIBLE);
+            draw_pkmn_button((Rectangle){TRAINER_NAME_X, TRAINER_NAME_Y + 75 + (i * 30), 200, 30}, i, pokemon_nickname, selected_index == i || evolve_eligible == E_EVO_STATUS_NOT_ELIGIBLE);
         }
         else if (save_generation_type == SAVE_GENERATION_2)
         {
-            trade_eligible = check_trade_evolution_gen2(pkmn_save, i);
-            eligible_pokemon_count++;
+            evolve_eligible = check_trade_evolution_gen2(pkmn_save, i);
             pksav_gen2_import_text(pkmn_save->save.gen2_save.pokemon_storage.p_party->nicknames[i], pokemon_nickname, PKMN_NAME_TEXT_MAX);
-            draw_pkmn_button((Rectangle){TRAINER_NAME_X, TRAINER_NAME_Y + 75 + (i * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname, selected_index == i || trade_eligible == E_EVO_STATUS_NOT_ELIGIBLE);
-            if (trade_eligible == E_EVO_STATUS_MISSING_ITEM)
-                shadow_text("Missing required item!", 75 + MeasureText(pokemon_nickname, 20), TRAINER_NAME_Y + 75 + (i * 30), 20, RED);
+            draw_pkmn_button((Rectangle){TRAINER_NAME_X, TRAINER_NAME_Y + 75 + (i * 30), MeasureText(pokemon_nickname, 20) + 10, 30}, i, pokemon_nickname, selected_index == i || evolve_eligible == E_EVO_STATUS_NOT_ELIGIBLE);
         }
         // Selected pokemon button
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){TRAINER_NAME_X, TRAINER_NAME_Y + 75 + (i * 30), 200, 30}) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
@@ -158,7 +153,6 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
     const int x_offset = SCREEN_WIDTH - 400;
 
     int text_pos_x = container_rec.x + x_offset + 70;
-    int warn_text_pos_x = container_rec.x + x_offset + 30;
     int stat_text_pos_x = container_rec.x + x_offset + 150;
     int dv_text_pos_x = container_rec.x + x_offset + 210;
 
@@ -287,6 +281,7 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
 
                 selected_index = NONE;
                 is_trade_eligible = false;
+                show_evolve_toast = true;
             }
             else
             {
@@ -312,6 +307,10 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
     if (show_saving_icon)
     {
         show_saving_icon = draw_save_icon(SCREEN_WIDTH - 50, 10, show_saving_icon);
+    }
+    if (show_evolve_toast)
+    {
+        show_evolve_toast = !draw_toast_message("Evolved Successfully!", TOAST_SHORT, TOAST_INFO);
     }
 
     EndDrawing();

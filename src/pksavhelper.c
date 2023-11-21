@@ -165,24 +165,12 @@ enum eligible_evolution_status check_trade_evolution_gen2(PokemonSave *pkmn_save
 {
     // Species index of pokemon being checked
     int species = pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index];
-    // Item held index by pokemon being checked
-    int item = pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.held_item;
-
     struct pkmn_evolution_pair_data evo_pair = pkmn_evolution_pairs_gen2[species];
+    
     // If the pkmn species has an initialized evolution pair
     if (species == evo_pair.species_index)
     {
-        // Pokemon eligible for trade evolution but missing item
-        if (evo_pair.evolution_item != item && get_is_item_required())
-        {
-            return E_EVO_STATUS_MISSING_ITEM;
-        }
-
-        // Pokemon eligible for trade evolution
-        if (evo_pair.evolution_item == item || !get_is_item_required())
-        {
-            return E_EVO_STATUS_ELIGIBLE;
-        }
+        return E_EVO_STATUS_ELIGIBLE;
     }
 
     return E_EVO_STATUS_NOT_ELIGIBLE;
@@ -901,16 +889,4 @@ bool get_is_random_DVs_disabled(void)
 void set_is_random_DVs_disabled(bool is_disabled)
 {
     disable_random_DVs_on_trade = is_disabled;
-}
-
-// Settings getter disable item required for trade
-bool get_is_item_required(void)
-{
-    return item_required_evolutions;
-}
-
-// Settings setter disable item required for trade
-void set_is_item_required(bool is_required)
-{
-    item_required_evolutions = is_required;
 }

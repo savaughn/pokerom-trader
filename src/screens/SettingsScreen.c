@@ -68,15 +68,6 @@ void draw_settings(struct save_file_data *save_file_data, GameScreen *current_sc
     Rectangle checkbox_rec_off = (Rectangle){checkbox_rec_on.x + checkbox_rec_on.width + 5, start_y - 25, 20, 20};
     DrawRectangleLinesEx(checkbox_rec_off, 2, settings_text_color);
     DrawText("OFF", checkbox_rec_off.x + checkbox_rec_off.width + 5, checkbox_rec_off.y, 20, settings_text_color);
-    // Toggle for item override evolutions
-    DrawText("Item required for evolution", 50, start_y, 20, settings_text_color);
-    // Checkbox for item override evolutions
-    DrawText("ON", 385, start_y, 20, settings_text_color);
-    Rectangle checkbox_rec_on_item = (Rectangle){385 + MeasureText("ON", 20) + 5, start_y, 20, 20};
-    DrawRectangleLinesEx(checkbox_rec_on_item, 2, settings_text_color);
-    Rectangle checkbox_rec_off_item = (Rectangle){checkbox_rec_on_item.x + checkbox_rec_on_item.width + 5, start_y, 20, 20};
-    DrawRectangleLinesEx(checkbox_rec_off_item, 2, settings_text_color);
-    DrawText("OFF", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 5, checkbox_rec_off_item.y, 20, settings_text_color);
 
     bool _is_rand_disabled = get_is_random_DVs_disabled();
     if (_is_rand_disabled)
@@ -92,19 +83,6 @@ void draw_settings(struct save_file_data *save_file_data, GameScreen *current_sc
         DrawText("DVs will not be retained (default)", checkbox_rec_off.x + checkbox_rec_off.width + 65, start_y - 25, 16, settings_text_color);
     }
 
-    bool _is_item_required = get_is_item_required();
-    if (_is_item_required)
-    {
-        // Draw filled in square
-        DrawRectangle(checkbox_rec_on_item.x + 3, checkbox_rec_on_item.y + 3, checkbox_rec_on_item.width - 6, checkbox_rec_on_item.height - 6, settings_text_color);
-        DrawText("Items will be required (default)", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, start_y, 16, settings_text_color);
-    }
-    else
-    {
-        // Draw filled in square
-        DrawRectangle(checkbox_rec_off_item.x + 3, checkbox_rec_off_item.y + 3, checkbox_rec_off_item.width - 6, checkbox_rec_off_item.height - 6, settings_text_color);
-        DrawText("Items will not be required", checkbox_rec_off_item.x + checkbox_rec_off_item.width + 65, start_y, 16, settings_text_color);
-    }
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_on))
@@ -117,22 +95,12 @@ void draw_settings(struct save_file_data *save_file_data, GameScreen *current_sc
             set_is_random_DVs_disabled(false);
             write_key_to_config("DISABLE_RANDOM_IVS_ON_TRADE", "false");
         }
-        else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_on_item))
-        {
-            set_is_item_required(true);
-            write_key_to_config("ITEM_REQUIRED_EVOLUTIONS", "true");
-        }
-        else if (CheckCollisionPointRec(GetMousePosition(), checkbox_rec_off_item))
-        {
-            set_is_item_required(false);
-            write_key_to_config("ITEM_REQUIRED_EVOLUTIONS", "false");
-        }
     }
     Rectangle change_dir_rec = (Rectangle){50, start_y + 75, 200, 20};
     DrawText("Change Save Directory", change_dir_rec.x, change_dir_rec.y, 20, selected_index == BUTTON_CHANGE_DIR ? settings_text_color_selected : settings_text_color);
     // Draw reset default config button
     const char *reset_config_text = "Reset to defaults";
-    Rectangle reset_config_rec = (Rectangle){50, start_y + 25, MeasureText(reset_config_text, 20) + 10, 30};
+    Rectangle reset_config_rec = (Rectangle){50, start_y, MeasureText(reset_config_text, 20) + 10, 30};
     DrawText(reset_config_text, reset_config_rec.x, reset_config_rec.y, 20, selected_index == BUTTON_RESET ? settings_text_color_selected : settings_text_color);
 
     const Rectangle about_button_rec = (Rectangle){50, start_y + 100, MeasureText("About Pokerom Trader", 20) + 10, 30};
