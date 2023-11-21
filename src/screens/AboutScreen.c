@@ -20,7 +20,7 @@ void draw_about(GameScreen *current_screen, bool is_build_prerelease)
     DrawText("Pokerom Trader is open source and licensed under the MIT license", x, 250, 20, BLACK);
     DrawText("Pokerom Trader uses the following libraries:", x, 300, 20, BLACK);
     DrawText("raylib - https://www.raylib.com/", x, 325, 20, BLACK);
-    DrawText("pksav - https://github.com/ncorgan/pksav", x, 350, 20, BLACK);
+    DrawText("pksav - https://github.com/savaughn/pksav", x, 350, 20, BLACK);
     DrawText("Legal >", NEXT_BUTTON_X, NEXT_BUTTON_Y, 20, selected_index == SCREEN_BUTTON_NEXT ? LIGHTGRAY : BLACK);
     DrawText("< Back", BACK_BUTTON_X, BACK_BUTTON_Y, 20, selected_index == SCREEN_BUTTON_BACK ? LIGHTGRAY : BLACK);
 
