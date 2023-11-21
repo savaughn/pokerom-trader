@@ -94,8 +94,6 @@ void update_pkmn_DVs(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 bool get_is_random_DVs_disabled(void);
 void set_is_random_DVs_disabled(bool is_disabled);
-bool get_is_item_required(void);
-void set_is_item_required(bool is_required);
 void generate_rand_num_step(SaveGenerationType save_generation_type);
 enum eligible_trade_status check_trade_eligibility(struct trainer_info *trainer, uint8_t pkmn_party_index);
 
