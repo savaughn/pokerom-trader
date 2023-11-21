@@ -45,14 +45,14 @@ void draw_about(GameScreen *current_screen, bool is_build_prerelease)
     {
         switch (selected_index)
         {
-        case 0:
+        case SCREEN_BUTTON_BACK:
             if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){BACK_BUTTON_X - 15, BACK_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
             {
                 *current_screen = SCREEN_SETTINGS;
                 selected_index = SCREEN_BUTTON_NONE;
             }
             break;
-        case 1:
+        case SCREEN_BUTTON_NEXT:
             if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){NEXT_BUTTON_X - 15, NEXT_BUTTON_Y - 30, BUTTON_WIDTH, BUTTON_HEIGHT}))
             {
                 *current_screen = SCREEN_LEGAL;
@@ -62,5 +62,11 @@ void draw_about(GameScreen *current_screen, bool is_build_prerelease)
         default:
             break;
         }
+    }
+
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        *current_screen = SCREEN_SETTINGS;
+        selected_index = SCREEN_BUTTON_NONE;
     }
 }

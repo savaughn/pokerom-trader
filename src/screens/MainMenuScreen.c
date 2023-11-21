@@ -355,4 +355,9 @@ void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_s
 
     // Reset active hover index
     clear_active_animation();
+
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        *should_close_window = true;
+    }
 }

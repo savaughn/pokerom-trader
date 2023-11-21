@@ -164,4 +164,19 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
     }
 
     EndDrawing();
+
+    // ESCAPE nav back to file select
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        trainer1->trainer_id = 0;
+        trainer2->trainer_id = 0;
+        trainerSelection[0].pkmn_party_index = -1;
+        trainerSelection[1].pkmn_party_index = -1;
+        reset_details_panel();
+        reset_toast_message();
+        show_trade_toast = false;
+        *current_screen = SCREEN_FILE_SELECT;
+
+        ui_selection = BUTTON_NONE;
+    }
 }

@@ -203,4 +203,10 @@ void draw_settings(struct save_file_data *save_file_data, GameScreen *current_sc
     }
 
     EndDrawing();
+
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        *current_screen = SCREEN_MAIN_MENU;
+        selected_index = BUTTON_NONE;
+    }
 }

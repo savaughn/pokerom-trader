@@ -35,16 +35,16 @@
 #define SUPPORT_MODULE_RSHAPES          1
 #define SUPPORT_MODULE_RTEXTURES        1
 #define SUPPORT_MODULE_RTEXT            1       // WARNING: It requires SUPPORT_MODULE_RTEXTURES to load sprite font textures
-#define SUPPORT_MODULE_RMODELS          1
-#define SUPPORT_MODULE_RAUDIO           1
+#define SUPPORT_MODULE_RMODELS          0
+#define SUPPORT_MODULE_RAUDIO           0
 
 //------------------------------------------------------------------------------------
 // Module: rcore - Configuration Flags
 //------------------------------------------------------------------------------------
 // Camera module is included (rcamera.h) and multiple predefined cameras are available: free, 1st/3rd person, orbital
-#define SUPPORT_CAMERA_SYSTEM           1
+#define SUPPORT_CAMERA_SYSTEM           0
 // Gestures module is included (rgestures.h) to support gestures detection: tap, hold, swipe, drag
-#define SUPPORT_GESTURES_SYSTEM         1
+#define SUPPORT_GESTURES_SYSTEM         0
 // Mouse gestures are directly mapped like touches and processed by gestures system
 #define SUPPORT_MOUSE_GESTURES          1
 // Reconfigure standard input to receive key inputs, works with SSH connection.

@@ -186,6 +186,7 @@ void draw_raylib_screen_loop(
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pokerom Trader");
     SetTargetFPS(60);
+    SetExitKey(0);
     GameScreen current_screen = SCREEN_MAIN_MENU;
     static bool is_same_generation = true;
     static bool should_close_window = false;

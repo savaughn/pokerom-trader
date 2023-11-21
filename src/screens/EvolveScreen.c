@@ -314,4 +314,11 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
     }
 
     EndDrawing();
+
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        *current_screen = SCREEN_EVOLVE_FILE_SELECT;
+        selected_index = NONE;
+        ui_selection = E_UI_NONE;
+    }
 }
