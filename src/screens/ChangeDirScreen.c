@@ -23,6 +23,7 @@ void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_
     };
     static int selected_index = SCREEN_BUTTON_NONE;
     const Rectangle input_box_rec = (Rectangle){50, SCREEN_HEIGHT / 2 +5, SCREEN_WIDTH - 100, 40};
+    const uint8_t input_text_size = 15;
 
     text_size = strlen(input_text);
     strcpy(input_text_backup, (char *)save_file_data->save_dir);
@@ -86,7 +87,7 @@ void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_
     DrawRectangleLinesEx(input_box_rec, 2, editing_text ? BLACK : DARKGRAY);
 
     // Draw the text inside the input box
-    DrawText(input_text, input_box_rec.x + 10, input_box_rec.y + 10, 20, BLACK);
+    DrawText(input_text, input_box_rec.x + 10, input_box_rec.y + 12, input_text_size, BLACK);
 
     Rectangle clear_button_rec = (Rectangle){SCREEN_WIDTH - MeasureText("Clear input", 20) + 10 - 70, input_box_rec.y + 25 + input_box_rec.height - 5, MeasureText("Clear input", 20) + 10, 30};
     DrawRectangleRec(clear_button_rec, selected_index == SCREEN_BUTTON_CLEAR ? LIGHTGRAY : RED);
@@ -95,8 +96,8 @@ void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_
     // Draw the cursor
     if (editing_text)
     {
-        DrawLine(input_box_rec.x + 12 + MeasureText(input_text, 20), input_box_rec.y + 10,
-                 input_box_rec.x + 12 + MeasureText(input_text, 20), input_box_rec.y + 30, BLACK);
+        DrawLine(input_box_rec.x + 12 + MeasureText(input_text, input_text_size), input_box_rec.y + 10,
+                 input_box_rec.x + 12 + MeasureText(input_text, input_text_size), input_box_rec.y + 30, BLACK);
     }
 
     // Draw the save button
