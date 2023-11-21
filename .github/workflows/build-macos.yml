@@ -129,7 +129,6 @@ jobs:
 
         # Copy assets
         mkdir -p "${MACOS_DESTINATION}/../Resources/assets"
-        cp -r "${{ github.workspace }}/assets/images" "${MACOS_DESTINATION}/../Resources/assets"
         cp "${{ github.workspace }}/assets/icon.icns" "${MACOS_DESTINATION}/../Resources"
         
         # Create Info.plist file
@@ -188,7 +187,6 @@ jobs:
 
         # Copy assets
         mkdir -p "${MACOS_DESTINATION}/../Resources/assets"
-        cp -r "${{ github.workspace }}/assets/images" "${MACOS_DESTINATION}/../Resources/assets"
         cp "${{ github.workspace }}/assets/icon.icns" "${MACOS_DESTINATION}/../Resources"
         
         # Create Info.plist file

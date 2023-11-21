@@ -2,6 +2,7 @@
 #include "filehelper.h"
 #include "pksavhelper.h"
 #include "pksavfilehelper.h"
+#include "textures.h"
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
 #endif
@@ -10,7 +11,7 @@ void draw_background_grid(void)
 {
     int line_count_v = SCREEN_HEIGHT / 10;
     int line_count_h = SCREEN_WIDTH / 10;
-    
+
     // draw line grid color_pkmn_red
     for (int i = 0; i < line_count_v; i++)
     {
@@ -43,29 +44,6 @@ void create_trainer_id_str(const struct trainer_info *trainer, char *trainer_id)
     snprintf(id_str, sizeof(id_str), "%05u", trainer->trainer_id);
     strcat(trainer_id, id_str);
 }
-
-#if defined(__APPLE__)
-void get_mac_resource_images_path(void)
-{
-    // Get the path to the bundle's resources directory
-    CFBundleRef bundle = CFBundleGetMainBundle();
-    CFURLRef resources_url = CFBundleCopyResourcesDirectoryURL(bundle);
-    char resources_path[PATH_MAX];
-    if (!CFURLGetFileSystemRepresentation(resources_url, true, (UInt8 *)resources_path, PATH_MAX))
-    {
-        fprintf(stderr, "Error: could not get resources directory path\n");
-        exit(EXIT_FAILURE);
-    }
-    CFRelease(resources_url);
-
-    // Change the current working directory to the resources directory
-    if (chdir(resources_path) != 0)
-    {
-        fprintf(stderr, "Error: could not change working directory to resources directory\n");
-        exit(EXIT_FAILURE);
-    }
-}
-#endif
 
 void handle_list_scroll(int *y_offset, const int num_saves, const int corrupted_count, int *mouses_down_index, bool *is_moving_scroll, int *banner_position_offset)
 {
@@ -175,7 +153,7 @@ void update_selected_indexes_with_selection(int *selected_saves_index, int *mous
 void draw_no_save_files(char *save_path)
 {
     ClearBackground(RED);
-    DrawRectangle(20, 150, SCREEN_WIDTH - 40, SCREEN_HEIGHT - 300, (Color){0,0,0,50});
+    DrawRectangle(20, 150, SCREEN_WIDTH - 40, SCREEN_HEIGHT - 300, (Color){0, 0, 0, 50});
     if (no_dir_err)
     {
         Vector2 text_center = SCREEN_CENTER("Save folder doesn't exist!", 20);
@@ -215,15 +193,12 @@ void draw_raylib_screen_loop(
     Texture2D textures[19] = {
         [0 ... 18] = {
             .id = 0}};
-
-    char error_message[100] = "Something went wrong";
-
-#if defined(__APPLE__)
-    if (CI_BUILD)
-    {
-        get_mac_resource_images_path();
-    }
-#endif
+    const struct texture_data *texture_data[5] = {
+        &evolve_data,
+        &logo_data,
+        &quit_data,
+        &settings_data,
+        &trade_data};
 
     // while textures are loading
     int texture_load_loop_limit = 3;
@@ -235,48 +210,52 @@ void draw_raylib_screen_loop(
         DrawText("Loading Textures...", 20, 20, 20, WHITE);
         EndDrawing();
 
-        if (textures[T_LOGO].id == 0)
+        for (uint8_t i = T_EVOLVE; i < T_CONSOLE_0; i++)
         {
-            textures[T_LOGO] = LoadTextureFromImage(LoadImage("assets/images/logo-text.png"));
-        }
-        if (textures[T_TRADE].id == 0)
-        {
-            textures[T_TRADE] = LoadTextureFromImage(LoadImage("assets/images/trade.png"));
-        }
-        if (textures[T_EVOLVE].id == 0)
-        {
-            textures[T_EVOLVE] = LoadTextureFromImage(LoadImage("assets/images/evolve.png"));
-        }
-        if (textures[T_SETTINGS].id == 0)
-        {
-            textures[T_SETTINGS] = LoadTextureFromImage(LoadImage("assets/images/settings.png"));
-        }
-        if (textures[T_QUIT].id == 0)
-        {
-            textures[T_QUIT] = LoadTextureFromImage(LoadImage("assets/images/quit.png"));
+            if (textures[i].id == 0)
+            {
+                Image img = {0};
+                img.format = FORMAT;
+                img.height = texture_data[i]->height;
+                img.width = texture_data[i]->width;
+                img.data = texture_data[i]->data;
+                img.mipmaps = 1;
+
+                textures[i] = LoadTextureFromImage(img);
+            }
         }
 
         for (int i = T_CONSOLE_0; i < T_POKEBALL_0; i++)
         {
             if (textures[i].id == 0)
             {
-                textures[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/Pixel_Fantasy_Icons_Consoles/Consoles/console_%d.png", i - T_CONSOLE_0)));
+                Image console = {0};
+                console.format = FORMAT;
+                console.height = CONSOLE_HEIGHT;
+                console.width = CONSOLE_WIDTH;
+                console.data = console_data[i - T_CONSOLE_0];
+                console.mipmaps = 1;
+
+                textures[i] = LoadTextureFromImage(console);
             }
         }
+
         for (int i = T_POKEBALL_0; i < T_POKEBALL_3 + 1; i++)
         {
             if (textures[i].id == 0)
             {
-                textures[i] = LoadTextureFromImage(LoadImage(TextFormat("assets/images/pokeballs_MPR/ball_%d.png", i - T_POKEBALL_0)));
+                Image pokeball = {0};
+                pokeball.format = FORMAT;
+                pokeball.height = BALL_HEIGHT;
+                pokeball.width = BALL_WIDTH;
+                pokeball.data = ball_data[i - T_POKEBALL_0];
+                pokeball.mipmaps = 1;
+
+                textures[i] = LoadTextureFromImage(pokeball);
             }
         }
 
         texture_loop_count++;
-        if (texture_loop_count >= texture_load_loop_limit)
-        {
-            current_screen = SCREEN_ERROR;
-            strcpy(error_message, "Failed to load textures. Is asset folder with exe?");
-        }
     }
 
     while (!should_close_window && !WindowShouldClose())
@@ -319,7 +298,7 @@ void draw_raylib_screen_loop(
         default:
             BeginDrawing();
             ClearBackground(BACKGROUND_COLOR);
-            DrawText(error_message, SCREEN_CENTER(error_message, 20).x, SCREEN_CENTER(error_message, 20).y, 20, BLACK);
+            DrawText("Something went wrong", SCREEN_CENTER("Something went wrong", 20).x, SCREEN_CENTER("Something went wrong", 20).y, 20, BLACK);
             DrawText("Press ESC key to exit!", SCREEN_CENTER("Press ESC key to exit!", 20).x, SCREEN_CENTER("Press ESC key to exit!", 20).x + 50, 20, BLACK);
             EndDrawing();
             // Escape key to close window

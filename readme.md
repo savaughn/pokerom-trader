@@ -17,15 +17,13 @@ There is no backup system implemented yet. Make backup saves before using this o
 - Bill's PC - Allows a user to view and manage their Pokémon boxes and party (in progress)
 
 ### Settings 
-![settings menu](https://user-images.githubusercontent.com/25937456/284032112-e4d14a96-731e-4255-88a3-2acabdd73b94.png)
+![settings_menu](https://github.com/savaughn/pokerom-trader/assets/25937456/72e15dca-461a-40eb-a095-cc8d079976c4)
 - Change save files folder with absolute path to folder
   - Default is ~/Library/PokeromTrader/saves (MacOS)
   - Default is ~/.pokeromtrader/ (Linux)
   - Default is \<UserProfile\>\\Documents\\PokeromTrader\\saves (Windows)
 - Disable Random DVs on trade (default off) when on will retain the dvs of the Pokémon being traded or evolved.
   - The in-game experience always randomizes DVs on trade. This is a bypass of the official experience.
-- Item required for evolution. (default on) when on will require the item to be held by the Pokémon being evolved.
-  - This is a bypass of the official experience.
 - Reset to defaults - Resets all settings to default values
 
 ### Deep Dive
@@ -58,12 +56,12 @@ https://discord.gg/JUzzegS3AP
 | Platform          | Compatibility   | default save folder |
 |-------------------|-----------------|---------|
 | Windows           | ✅ | \<UserProfile\>\\Documents\\PokeromTrader\\saves
-| Linux (built with ubuntu)| ✅ |~/.pokeromtrader/saves
+| Linux amd64       | ✅ |~/.pokeromtrader/saves
+| Linux arm64       | ✅ |~/.pokeromtrader/saves
 | MacOS x86_64      | ✅  |~/Library/PokeromTrader/saves 
 | MacOS arm64       | ✅  |~/Library/PokeromTrader/saves 
 | iOS               | ❌  |
 | Android           | ❌  |
-| Nintendo Switch   | ❌  |
 
 
 Download the latest release from the [releases page](https://github.com/savaughn/pokerom-trader/releases).
