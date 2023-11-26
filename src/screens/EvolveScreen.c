@@ -199,7 +199,7 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
             // Draw level
             shadow_text(TextFormat("Level %u", party_pkmn.pc_data.level), text_pos_x, container_rec.y + 40, 20, WHITE);
             shadow_text("Stats", stat_text_pos_x - 15, container_rec.y + 70, 20, WHITE);
-            shadow_text("IVs", dv_text_pos_x, container_rec.y + 70, 20, WHITE);
+            shadow_text("DVs", dv_text_pos_x, container_rec.y + 70, 20, WHITE);
             // Draw stats
             shadow_text("HP:", text_pos_x, container_rec.y + 100, 20, WHITE);
             shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.max_hp)), stat_text_pos_x, container_rec.y + 100, 20, WHITE);

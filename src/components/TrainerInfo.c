@@ -198,7 +198,7 @@ void draw_trainer_info(struct trainer_info *trainer, int x, int y, struct Traine
             // Draw level
             shadow_text(TextFormat("Level %u", party_pkmn.pc_data.level), text_pos_x, container_rec.y + 40, 20, WHITE);
             shadow_text("Stats", trainer_selection[current_trainer_index].trainer_index ? container_rec.x + 60 : container_rec.x + container_rec.width / 2 + 60, container_rec.y + 70, 20, WHITE);
-            shadow_text("IVs", dv_text_pos_x, container_rec.y + 70, 20, WHITE);
+            shadow_text("DVs", dv_text_pos_x, container_rec.y + 70, 20, WHITE);
             // Draw stats
             shadow_text("HP:", text_pos_x, container_rec.y + 100, 20, WHITE);
             shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.max_hp)), stat_text_pos_x, container_rec.y + 100, 20, WHITE);
