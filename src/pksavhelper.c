@@ -166,7 +166,7 @@ enum eligible_evolution_status check_trade_evolution_gen2(PokemonSave *pkmn_save
     // Species index of pokemon being checked
     int species = pkmn_save->save.gen2_save.pokemon_storage.p_party->species[pkmn_party_index];
     struct pkmn_evolution_pair_data evo_pair = pkmn_evolution_pairs_gen2[species];
-    
+
     // If the pkmn species has an initialized evolution pair
     if (species == evo_pair.species_index)
     {
@@ -199,13 +199,13 @@ uint8_t calculate_stat(uint8_t level, uint8_t base_stat, uint8_t dv, uint16_t st
 /************************************************************************
  * Simulate the random number generation for Generation 1
  */
-uint8_t r_div = 0;
-uint8_t carry_bit = 0;
-uint8_t add_byte = 0;
-uint8_t subtract_byte = 0;
+static uint8_t r_div = 0;
+static uint8_t carry_bit = 0;
+static uint8_t add_byte = 0;
+static uint8_t subtract_byte = 0;
 // Simulated hardware registers
-uint8_t h_random_add = 0; // h_random_add register
-uint8_t h_random_sub = 0; // h_random_sub register
+static uint8_t h_random_add = 0; // h_random_add register
+static uint8_t h_random_sub = 0; // h_random_sub register
 
 // Simulate one step of the random number generation process
 void generate_random_number_step(void)
@@ -254,13 +254,16 @@ void generate_random_number_step_gen2(void)
 
 void generate_rand_num_step(SaveGenerationType save_generation_type)
 {
-    if (save_generation_type == SAVE_GENERATION_1)
+    for (int i = 0; i < rand(); i++)
     {
-        generate_random_number_step();
-    }
-    else
-    {
-        generate_random_number_step_gen2();
+        if (save_generation_type == SAVE_GENERATION_1)
+        {
+            generate_random_number_step();
+        }
+        else
+        {
+            generate_random_number_step_gen2();
+        }
     }
 }
 
