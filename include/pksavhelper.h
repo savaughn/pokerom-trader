@@ -77,9 +77,6 @@ static const struct pkmn_evolution_pair_data pkmn_evolution_pairs_gen2[MAX_SPECI
     [PORYGON] = {.species_name = "PORYGON", .evolution_name = "PORYGON2", .species_index = PORYGON, .evolution_index = PORYGON2, .evolution_item = UPGRADE},
     [SEADRA] = {.species_name = "SEADRA", .evolution_name = "KINGDRA", .species_index = SEADRA, .evolution_index = KINGDRA, .evolution_item = DRAGON_SCALE}};
 
-static bool disable_random_DVs_on_trade = false;
-static bool item_required_evolutions = true;
-
 int error_handler(enum pksav_error error, const char *message);
 void swap_party_pkmn_at_indices(struct pksav_gen2_save *pkmn_save, uint8_t pkmn_index1, uint8_t pkmn_index2); // TODO: Update for cross-generation
 pksavhelper_error swap_pkmn_at_index_between_saves(PokemonSave *player1_save, PokemonSave *player2_save, uint8_t pkmn_party_index1, uint8_t pkmn_party_index2);
@@ -92,8 +89,6 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
 void generate_random_number_step(void);
 void update_pkmn_DVs(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
 void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index);
-bool get_is_random_DVs_disabled(void);
-void set_is_random_DVs_disabled(bool is_disabled);
 void generate_rand_num_step(SaveGenerationType save_generation_type);
 enum eligible_trade_status check_trade_eligibility(struct trainer_info *trainer, uint8_t pkmn_party_index);
 

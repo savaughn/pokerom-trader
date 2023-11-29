@@ -7,33 +7,25 @@
 
 ## Overview
 
-Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the [PKSav](https://github.com/savaughn/pksav) C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon between different save files or Pokémon game versions. This is not another save file editor. This replicates the in-game trading experience resulting in legal pokémon.
-There is no backup system implemented yet. Make backup saves before using this on your own personal files, because this is still very early stage and has not been thoroughly tested. 
+Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the [PKSav](https://github.com/savaughn/pksav) C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon between different save files. This is not another save file editor. This replicates the in-game trading experience resulting in legal pokémon.
+There is no backup system implemented yet. Make backup saves before using this on your own personal files.
+
 ### Features
 - Trade - Allows a user to trade Pokémon between save files
-  - Trade with NPCs - Allows a user to trade Pokémon with NPCs such as gym leaders or Red (future feature)
 - Evolve - A shortcut for evolving Pokémon that only evolve through trading
   - This replicates a trade, the evolution, and a trade back to OT
-- Bill's PC - Allows a user to view and manage their Pokémon boxes and party (in progress)
 
 ### Settings 
-![settings_menu](https://github.com/savaughn/pokerom-trader/assets/25937456/72e15dca-461a-40eb-a095-cc8d079976c4)
+
 - Change save files folder with absolute path to folder
   - Default is ~/Library/PokeromTrader/saves (MacOS)
   - Default is ~/.pokeromtrader/ (Linux)
   - Default is \<UserProfile\>\\Documents\\PokeromTrader\\saves (Windows)
-- Disable Random DVs on trade (default off) when on will retain the dvs of the Pokémon being traded or evolved.
-  - The in-game experience always randomizes DVs on trade. This is a bypass of the official experience.
-- Reset to defaults - Resets all settings to default values
 
 ### Deep Dive
-- DV randomization
-  - Random function is 1:1 with the in-game Random call converted from assembly to C which generates an add byte for both generations.
-  - The add byte is anded with 0xF to get the lower 4 bits of the random byte (i.e. 0 to 15).
-  - The DV for HP is calculated by taking the least significant bit of each DV (attack, defense, speed, special) and concatenating them together into a single byte.
-- Stats calculations
+- Stats calculation on evolution
   - Calculated using formula from [bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Stats).
-  - Based off of the Pokémon's base stats, level, DVs (stored or generated), and EVs all of which are read from the save file sram.
+  - Based off of the Pokémon's base stats, level, DVs, and EVs all of which are read from the save file sram.
 
 ## What's working
 
@@ -47,6 +39,8 @@ There is no backup system implemented yet. Make backup saves before using this o
 ## What's not working
 - See [issues tab](https://github.com/savaughn/pokerom-trader/issues) for current bugs 
 - No JP Region support
+- No Gen 3+ support
+- No support for romhacks that change the save file structure (almost all of them)
 
 ## Discord
 https://discord.gg/JUzzegS3AP
@@ -79,7 +73,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Acknowledgments
 
-- [PKSav](https://github.com/ncorgan/pksav): Thank you to the creators and maintainers of PKSav for providing the library that makes this project possible.
 - [Raylib](www.github.com/raysan5/raylib): Thank you to the creators and maintainers of Raylib for providing the library that makes this project possible.
 - [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Main_Page): Thank you to the creators and maintainers of Bulbapedia for providing the information that makes this project possible.
 - [TextStudio](https://www.textstudio.com/logo/pokemon-3d-text-318): Used their text generator for stylized text.
