@@ -263,16 +263,12 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
         case E_UI_EVOLVE:
             if (CheckCollisionPointRec(GetMousePosition(), evolve_button_rec))
             {
-                // Generates and assigns random dvs for simulated trade to new trainer
-                update_pkmn_DVs(pkmn_save, selected_index);
                 // Evolve pokemon with the simulated new trainer
                 evolve_party_pokemon_at_index(pkmn_save, selected_index);
+                // Update stats
+                update_pkmn_stats(pkmn_save, selected_index);
                 // Update pokedex
                 update_seen_owned_pkmn(pkmn_save, selected_index);
-                // Generates and assigns random dvs on simulated trade back to OT
-                update_pkmn_DVs(pkmn_save, selected_index);
-                // Update stats based on new dvs
-                update_pkmn_stats(pkmn_save, selected_index);
                 // Finalize pkmn data changes
                 show_saving_icon = true;
                 save_savefile_to_path(pkmn_save, save_path);

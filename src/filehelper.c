@@ -336,8 +336,6 @@ void init_settings_from_config(struct save_file_data *save_file_data)
         strcpy((char *)save_file_data->save_dir, "DIR_NOT_SET");
     }
 
-    set_is_random_DVs_disabled(strcmp(config_data.disable_random_ivs_on_trade, "false"));
-
     free(save_file_dir);
 }
 
@@ -748,9 +746,6 @@ void init_settings_from_config(struct save_file_data *save_file_data)
     {
         strcpy((char *)save_file_data->save_dir, "DIR_NOT_SET");
     }
-
-    // Read and save the disable random setting from config.ini
-    set_is_random_DVs_disabled(strcmp(read_key_from_config("DISABLE_RANDOM_IVS_ON_TRADE"), "false"));
 
     // malloc'd from read_key_from_config
     free(config_save_path);

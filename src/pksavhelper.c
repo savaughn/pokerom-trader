@@ -284,15 +284,9 @@ void randomize_dvs(uint8_t *dv_array, SaveGenerationType save_generation_type)
 }
 /*************************************************************************/
 
-// Randomize the DVs of a pokemon on trade
+// Randomize the DVs of a pokemon
 void update_pkmn_DVs(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
 {
-    // From settings menu to prevent changing DVs on trade
-    if (disable_random_DVs_on_trade)
-    {
-        printf("DVs not randomized on trade\n");
-        return;
-    }
     // randomize the dvs on trade except for HP
     uint8_t traded_pkmn_rand_dvs[PKSAV_NUM_GB_IVS] = {0};
     randomize_dvs(traded_pkmn_rand_dvs, pkmn_save->save_generation_type);
@@ -310,12 +304,6 @@ void update_pkmn_DVs(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
 // Calculate and update the pokemon's stats based on its level, base stats, IVs, and EVs
 void update_pkmn_stats(PokemonSave *pkmn_save, uint8_t pkmn_party_index)
 {
-    // From settings menu to prevent changing DVs on trade
-    if (disable_random_DVs_on_trade)
-    {
-        printf("DVs not randomized on trade\n");
-        return;
-    }
     // Get the pokemon's DVs
     uint8_t pkmn_dvs[PKSAV_NUM_GB_IVS];
     pksav_get_gb_IVs(&pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.iv_data, pkmn_dvs, sizeof(pkmn_dvs));
@@ -624,14 +612,6 @@ pksavhelper_error swap_pkmn_at_index_between_saves_cross_gen(PokemonSave *player
     player_gen1->save.gen1_save.pokemon_storage.p_party->otnames[pkmn_party_index1][strlen(tmp_otname_gen2)] = 0x50;
     player_gen2->save.gen2_save.pokemon_storage.p_party->otnames[pkmn_party_index2][strlen(tmp_otname_gen1)] = 0x50;
 
-    // Generate random DVs and assign them to the traded pokemen
-    update_pkmn_DVs(player_gen1, pkmn_party_index1);
-    update_pkmn_DVs(player_gen2, pkmn_party_index2);
-
-    // Update each pokemon's stats based on its level, base stats, DVs, and EVs
-    update_pkmn_stats(player_gen1, pkmn_party_index1);
-    update_pkmn_stats(player_gen2, pkmn_party_index2);
-
     player_gen1->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index1].pc_data.current_hp = player_gen1->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index1].party_data.max_hp;
     player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].party_data.current_hp = player_gen2->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index2].party_data.max_hp;
 
@@ -788,14 +768,6 @@ pksavhelper_error swap_pkmn_at_index_between_saves(PokemonSave *player1_save, Po
         player2_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail_backup[pkmn_party_index2] = tmp_party_mail;
     }
 
-    // Generate random DVs and assign them to the traded pokemen
-    update_pkmn_DVs(player1_save, pkmn_party_index1);
-    update_pkmn_DVs(player2_save, pkmn_party_index2);
-
-    // Update each pokemon's stats based on its level, base stats, DVs, and EVs
-    update_pkmn_stats(player1_save, pkmn_party_index1);
-    update_pkmn_stats(player2_save, pkmn_party_index2);
-
     return error_none;
 }
 
@@ -840,9 +812,6 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.catch_rate = pkmn_base_stats_gen1[evolution_index].catch_rate;
         // Update condition to none
         pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.condition = PKSAV_GB_CONDITION_NONE;
-        // TODO: Update moves based on learn set and level
-        // engine/pokemon/evos_moves.asm
-        // pkmn_save->save.gen1_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.moves;
     }
     else
     {
@@ -876,20 +845,5 @@ void evolve_party_pokemon_at_index(PokemonSave *pkmn_save, uint8_t pkmn_party_in
 
         // Update condition to none
         pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].party_data.condition = PKSAV_CONDITION_NONE;
-        // TODO: Update moves based on learn set and level
-        // engine/pokemon/evos_moves.asm
-        // pkmn_save->save.gen2_save.pokemon_storage.p_party->party[pkmn_party_index].pc_data.moves;
     }
-}
-
-// Settings getter for random DVs on trade
-bool get_is_random_DVs_disabled(void)
-{
-    return disable_random_DVs_on_trade;
-}
-
-// Settings setter for random DVs on trade
-void set_is_random_DVs_disabled(bool is_disabled)
-{
-    disable_random_DVs_on_trade = is_disabled;
 }
