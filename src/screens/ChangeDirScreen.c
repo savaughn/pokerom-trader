@@ -208,7 +208,6 @@ void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_
                 {
                     strcpy((char *)save_file_data->save_dir, input_text);
                     save_file_data->num_saves = 0;
-                    *save_file_data->saves_file_path = NULL;
                     *current_screen = SCREEN_SETTINGS;
                     has_shown_placeholder = false;
                 }

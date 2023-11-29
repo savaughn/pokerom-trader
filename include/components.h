@@ -20,6 +20,7 @@ void draw_confirmation_modal(const char *header_text, const char *body_text, con
 void draw_trainer_info(struct trainer_info *trainer, int x, int y, struct TrainerSelection trainerSelection[2], bool is_same_generation, bool *is_valid_trade);
 void reset_details_panel(void);
 void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle container_rec, bool is_selected);
+void draw_drag_drop_container(Rectangle container_rec);
 void draw_corrupted_save(const char *save_name, const int y_offset, const int index, const int corrupted_count);
 void draw_pokeball_scroll(float scroll_position, float transparency);
 void draw_pokeball(int pos_x, int pos_y, int scale);

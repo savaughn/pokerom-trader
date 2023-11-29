@@ -163,7 +163,10 @@ void draw_no_save_files(char *save_path)
     {
         shadow_text("No save files found in save folder", 190, 200, 20, WHITE);
     }
-    shadow_text(TextFormat("%s", save_path), SCREEN_CENTER(save_path, 20).x, 275, 20, WHITE);
+    shadow_text(TextFormat("%s", save_path), SCREEN_CENTER(save_path, 20).x, 230, 20, WHITE);
+
+    char *text = "Add save files to the save folder or drag and drop save files here!";
+    shadow_text(text, SCREEN_CENTER(text, 20).x, 300, 20, WHITE);
 }
 
 void draw_top_banner(const char *text, const int *banner_position_offset)

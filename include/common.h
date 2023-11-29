@@ -68,7 +68,7 @@ struct save_file_data {
     // current saves file directory string
     char save_dir[MAX_FILE_PATH_CHAR];
     // array of saves file paths in the current saves file directory
-    char *saves_file_path[MAX_FILE_PATH_COUNT];
+    char saves_file_path[MAX_FILE_PATH_COUNT][MAX_FILE_PATH_CHAR];
     int num_saves;
 };
 

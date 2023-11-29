@@ -371,7 +371,7 @@ int get_save_files(struct save_file_data *save_data)
             absolute_path = realpath(full_path, NULL);
             if (absolute_path)
             {
-                save_data->saves_file_path[num_saves] = absolute_path;
+                strcpy(save_data->saves_file_path[num_saves],absolute_path);
                 num_saves++;
             }
         }
