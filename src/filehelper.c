@@ -384,7 +384,7 @@ int write_key_to_config(const char *key, const char *value)
     if (file == NULL)
     {
         perror("Error opening INI file");
-        return 1;
+        return FILE_OP_FAILURE;
     }
 
     // Create a temporary file to store the modified contents.
@@ -393,7 +393,7 @@ int write_key_to_config(const char *key, const char *value)
     {
         perror("Error creating temporary file");
         fclose(file);
-        return 1;
+        return FILE_OP_FAILURE;
     }
 
     char line[1024];
@@ -432,7 +432,7 @@ int write_key_to_config(const char *key, const char *value)
     {
         perror("Error reopening INI file");
         fclose(temp_file);
-        return 1;
+        return FILE_OP_FAILURE;
     }
 
     while (fgets(line, sizeof(line), temp_file) != NULL)
@@ -446,7 +446,7 @@ int write_key_to_config(const char *key, const char *value)
     // Close the INI file.
     fclose(file);
 
-    return 0;
+    return FILE_OP_SUCCESS;
 }
 
 void create_default_config(bool overwrite)

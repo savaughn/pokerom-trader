@@ -25,13 +25,15 @@
 
 typedef int (*Error_Handler)(enum pksav_error, const char *);
 
-enum single_player_menu_types {
+enum single_player_menu_types
+{
     SINGLE_PLAYER_MENU_TYPE_EVOLVE,
     SINGLE_PLAYER_MENU_TYPE_BILLS_PC,
     SINGLE_PLAYER_MENU_TYPE_EXIT
 };
 
-union PokemonPartyData {
+union PokemonPartyData
+{
     struct pksav_gen1_pokemon_party gen1_pokemon_party;
     struct pksav_gen2_pokemon_party gen2_pokemon_party;
 };
@@ -49,7 +51,8 @@ struct TrainerSelection
     int trainer_index;
 };
 
-typedef enum {
+typedef enum
+{
     SCREEN_ERROR = -1,
     SCREEN_FILE_SELECT,
     SCREEN_TRADE,
@@ -64,7 +67,8 @@ typedef enum {
     SCREEN_LEGAL
 } GameScreen;
 
-struct save_file_data {
+struct save_file_data
+{
     // current saves file directory string
     char save_dir[MAX_FILE_PATH_CHAR];
     // array of saves file paths in the current saves file directory
@@ -86,7 +90,8 @@ typedef union
     struct pksav_gen2_save gen2_save;
 } SaveGeneration;
 
-typedef struct {
+typedef struct
+{
     SaveGenerationType save_generation_type;
     SaveGeneration save;
 } PokemonSave;
@@ -108,36 +113,39 @@ enum E_LOG_MESSAGE_TYPE
     E_LOG_MESSAGE_TYPE_INFO
 };
 
-enum textures {
-        T_NONE = -1,
-        T_EVOLVE,
-        T_LOGO,
-        T_QUIT,
-        T_SETTINGS,
-        T_TRADE,
-        T_CONSOLE_0,
-        T_CONSOLE_1,
-        T_CONSOLE_2,
-        T_CONSOLE_3,
-        T_CONSOLE_4,
-        T_CONSOLE_5,
-        T_CONSOLE_6,
-        T_CONSOLE_7,
-        T_CONSOLE_8,
-        T_CONSOLE_9,
-        T_POKEBALL_0,
-        T_POKEBALL_1,
-        T_POKEBALL_2,
-        T_POKEBALL_3,
-        T_COUNT
-    };
-
-enum file_op_results {
-    FILE_OP_SUCCESS = 0,
-    FILE_OP_FAILURE
+enum textures
+{
+    T_NONE = -1,
+    T_EVOLVE,
+    T_LOGO,
+    T_QUIT,
+    T_SETTINGS,
+    T_TRADE,
+    T_CONSOLE_0,
+    T_CONSOLE_1,
+    T_CONSOLE_2,
+    T_CONSOLE_3,
+    T_CONSOLE_4,
+    T_CONSOLE_5,
+    T_CONSOLE_6,
+    T_CONSOLE_7,
+    T_CONSOLE_8,
+    T_CONSOLE_9,
+    T_POKEBALL_0,
+    T_POKEBALL_1,
+    T_POKEBALL_2,
+    T_POKEBALL_3,
+    T_COUNT
 };
 
-typedef enum {
+enum file_op_results
+{
+    FILE_OP_FAILURE = 0,
+    FILE_OP_SUCCESS = 1
+};
+
+typedef enum
+{
     error_none,
     error_swap_pkmn,
     error_update_save,
