@@ -56,7 +56,17 @@ void draw_file_select(struct save_file_data *save_file_data, char *player1_save_
         {
             if (save_file_data->num_saves < MAX_FILE_PATH_COUNT)
             {
+                // swap \\ with / in doprped file paths
+                for (size_t j = 0; j < strlen(dropped_files.paths[i]); j++)
+                {
+                    if (dropped_files.paths[i][j] == '\\')
+                    {
+                        dropped_files.paths[i][j] = '/';
+                    }
+                }
+
                 strcpy(save_file_data->saves_file_path[save_file_data->num_saves], dropped_files.paths[i]);
+                printf("Dropped file: %s\n", dropped_files.paths[i]);
                 save_file_data->num_saves++;
             }
         }
@@ -76,22 +86,17 @@ void draw_file_select(struct save_file_data *save_file_data, char *player1_save_
         load_display_files(save_file_data, pkmn_saves, &save_file_count);
 
         // Update and draw save files
-        for (int i = 0; i < save_file_data->num_saves + 1; i++)
+        for (int i = 0; i < save_file_data->num_saves; i++)
         {
-            if (i == save_file_data->num_saves)
-            {
-                // Draw drag and drop container
-                draw_drag_drop_container((Rectangle){SCREEN_WIDTH / 2 - (SCREEN_WIDTH - 50) / 2, y_offset + (93 * i) - (60 * corrupted_count), SCREEN_WIDTH - 50, 80});
-                break;
-            }
             bool is_corrupted = pkmn_saves[i].save_generation_type == SAVE_GENERATION_CORRUPTED;
+            // bool is_corrupted = false;
             const Rectangle save_file_rec = (Rectangle){SCREEN_WIDTH / 2 - (SCREEN_WIDTH - 50) / 2, y_offset + (93 * i) - (60 * corrupted_count), SCREEN_WIDTH - 50, 80};
 
             // Update selected save files index
             update_selected_indexes_with_selection(selected_saves_index, &mouses_down_index, &is_moving_scroll);
 
             // Extract save file name from path
-            char *save_name = strrchr(save_file_data->saves_file_path[i], '/') + 1;
+            char *save_name = strrchr(save_file_data->saves_file_path[i], '/') + 1; // this crashes on windows because of /
 
             // Draw save file container
             if (is_corrupted)
@@ -119,6 +124,8 @@ void draw_file_select(struct save_file_data *save_file_data, char *player1_save_
                 }
             }
         }
+        // Draw drag and drop container
+        draw_drag_drop_container((Rectangle){SCREEN_WIDTH / 2 - (SCREEN_WIDTH - 50) / 2, y_offset + (93 * save_file_data->num_saves) - (60 * corrupted_count), SCREEN_WIDTH - 50, 80});
 
         handle_list_scroll(&y_offset, save_file_data->num_saves + 1, corrupted_count, &mouses_down_index, &is_moving_scroll, &banner_position_offset);
     }
