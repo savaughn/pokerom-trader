@@ -51,15 +51,11 @@ int get_save_files(struct save_file_data *save_data)
             // Combine the base path and file name
             char full_path[MAX_FILE_PATH_CHAR];
             sprintf(full_path, "%s/%s", save_dir, find_file_data.cFileName);
-            printf("Found file: %s\n", full_path);
-                save_data->saves_file_path[num_saves] = malloc(strlen(full_path) + 1);
             strcpy(save_data->saves_file_path[num_saves], full_path);
-            printf("Saved file: %s\n", save_data->saves_file_path[num_saves]);
             num_saves++;
         } while (FindNextFile(hFind, &find_file_data) != 0);
         FindClose(hFind);
         save_data->num_saves = num_saves;
-        printf("num_saves from load: %d\n", save_data->num_saves);
     }
 
     return 0;
@@ -140,7 +136,6 @@ void create_default_config(void)
 
     LPCSTR ini = config_path;
     WritePrivateProfileStringA("app", "SAVE_FILE_DIR", saves_dir, ini);
-    WritePrivateProfileStringA("app", "DISABLE_RANDOM_IVS_ON_TRADE", "false", ini);
 }
 struct config_data read_key_from_config(void)
 {
@@ -160,13 +155,8 @@ struct config_data read_key_from_config(void)
     char save_file_str[MAX_FILE_PATH_CHAR];
     GetPrivateProfileString("app", "SAVE_FILE_DIR", 0, save_file_str, MAX_FILE_PATH_CHAR, ini);
 
-    char disable_random_ivs_on_trade[MAX_FILE_PATH_CHAR];
-    GetPrivateProfileString("app", "DISABLE_RANDOM_IVS_ON_TRADE", 0, disable_random_ivs_on_trade, MAX_FILE_PATH_CHAR, ini);
-
-
     return (struct config_data){
-        .save_file_dir = save_file_str,
-        .disable_random_ivs_on_trade = disable_random_ivs_on_trade,
+        .save_file_dir = save_file_str
     };
 }
 void write_to_log(const char *msg, const uint8_t message_type)
