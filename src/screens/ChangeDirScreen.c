@@ -62,6 +62,25 @@ void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_
         has_reset_config = false;
     }
 
+    if (IsFileDropped())
+    {
+        FilePathList dropped_files = LoadDroppedFiles();
+        if (dropped_files.count > 0)
+        {
+            if (!IsPathFile(dropped_files.paths[0]))
+            {
+                strcpy(input_text, dropped_files.paths[0]);
+            }
+            else
+            {
+                strcpy(input_text, GetDirectoryPath(dropped_files.paths[0]));
+            }
+            
+        }
+
+        UnloadDroppedFiles(dropped_files);
+    }
+
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         // Check if the mouse is clicked within the input box
@@ -107,6 +126,7 @@ void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_
 
     DrawTextureEx(*settings_texture, (Vector2){50, 35}, 0, 1, WHITE);
     DrawText("Specify folder name containing saves", 50, SCREEN_HEIGHT / 2 - 50, 25, BLACK);
+    DrawText("or drag and drop a save file/folder to get the folder path", 50, SCREEN_HEIGHT / 2 - 20, 15, BLACK);
 
     // Draw the input box
     DrawRectangleRec(input_box_rec, WHITE);
@@ -208,7 +228,6 @@ void draw_change_dir(struct save_file_data *save_file_data, GameScreen *current_
                 {
                     strcpy((char *)save_file_data->save_dir, input_text);
                     save_file_data->num_saves = 0;
-                    *save_file_data->saves_file_path = NULL;
                     *current_screen = SCREEN_SETTINGS;
                     has_shown_placeholder = false;
                 }

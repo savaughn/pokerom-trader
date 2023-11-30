@@ -5,7 +5,7 @@
  * @param path the path to the save file
  * @param save_generation_type a pointer to a SaveGenerationType to store the save generation type
  * @return an enum pksav_error
-*/
+ */
 enum pksav_error detect_savefile_generation(const char *path, SaveGenerationType *save_generation_type)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
@@ -39,7 +39,7 @@ enum pksav_error detect_savefile_generation(const char *path, SaveGenerationType
  * @brief loads a save file from a path in the buffer
  * @param path the path to the save file
  * @return a PokemonSave struct
-*/
+ */
 void load_savefile_from_path(const char *path, PokemonSave *pkmn_save)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
@@ -96,7 +96,7 @@ void load_savefile_from_path(const char *path, PokemonSave *pkmn_save)
  * @brief saves the save buffer to a path
  * @param pkmn_save a pointer to a PokemonSave struct save buffer
  * @param path the path to the save file
-*/
+ */
 pksavhelper_error save_savefile_to_path(PokemonSave *pkmn_save, char *path)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
@@ -136,8 +136,15 @@ void load_display_files(const struct save_file_data *save_file_data, PokemonSave
         if (pkmn_saves[i].save_generation_type == SAVE_GENERATION_NONE)
         {
             load_savefile_from_path(save_file_data->saves_file_path[i], &pkmn_saves[i]);
-            allocated_saves++;
-            save_file_size += pkmn_saves[i].save_generation_type == SAVE_GENERATION_1 ? sizeof(struct pksav_gen1_save) : sizeof(struct pksav_gen2_save);
+            if (pkmn_saves[i].save_generation_type != SAVE_GENERATION_NONE)
+            {
+                allocated_saves++;
+                save_file_size += pkmn_saves[i].save_generation_type == SAVE_GENERATION_1 ? sizeof(struct pksav_gen1_save) : sizeof(struct pksav_gen2_save);
+            }
+            else
+            {
+                puts("PokeromTrader: Not a pokemon save file");
+            }
         }
     }
     if (allocated_saves > 0)
@@ -154,7 +161,7 @@ void free_pkmn_saves(PokemonSave *pkmn_saves, uint8_t *save_file_count)
         return;
     }
     uint8_t count = 0;
-    printf("PokeromTrader: %u save files had been allocated", *save_file_count);
+    printf("PokeromTrader: %u save files had been allocated\n", *save_file_count);
     for (int i = 0; i < *save_file_count; i++)
     {
         switch (pkmn_saves[i].save_generation_type)
@@ -185,9 +192,9 @@ void free_pkmn_saves(PokemonSave *pkmn_saves, uint8_t *save_file_count)
 
     *save_file_count -= count;
 
-    printf(" / %d save files deallocated\n", count);
+    printf("%d save files deallocated\n", count);
 
-    if (*save_file_count != 0) 
+    if (*save_file_count != 0)
     {
         printf("PokeromTrader: %d save files were not deallocated\n", *save_file_count);
     }
