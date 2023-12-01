@@ -18,7 +18,7 @@ Pokerom Trader is an open-source project that simplifies the process of trading 
 ### Settings 
 
 - Change save files folder with absolute path to folder
-  - Default is ~/Library/PokeromTrader/saves (MacOS)
+  - Default is ~/Library/Application Support/PokeromTrader/saves (MacOS)
   - Default is ~/.pokeromtrader/ (Linux)
   - Default is \<UserProfile\>\\Documents\\PokeromTrader\\saves (Windows)
 
