@@ -199,3 +199,11 @@ void free_pkmn_saves(PokemonSave *pkmn_saves, uint8_t *save_file_count)
         printf("PokeromTrader: %d save files were not deallocated\n", *save_file_count);
     }
 }
+
+void create_backup_save(PokemonSave *pkmn_save, char* save_path)
+{
+    char backup_path[1004] = "\0";
+    strcpy(backup_path, save_path);
+    strcat(backup_path, "_bak");
+    save_savefile_to_path(pkmn_save, backup_path);
+}

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "pksavhelper.h"
 
 static enum pksav_error SAVE_FILE_ERROR = PKSAV_ERROR_NONE;
@@ -10,3 +11,4 @@ void load_display_files(const struct save_file_data *save_file_data, PokemonSave
 void free_pkmn_saves(PokemonSave *pkmn_saves, uint8_t *save_file_count);
 void free_trade_saves(void);
 void free_evolve_saves(void);
+void create_backup_save(PokemonSave *pkmn_save, char* save_path);
