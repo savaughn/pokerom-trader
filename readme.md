@@ -8,12 +8,12 @@
 ## Overview
 
 Pokerom Trader is an open-source project that simplifies the process of trading Pokémon between two save files using the [PKSav](https://github.com/savaughn/pksav) C library. This graphical user interface (GUI) provides an intuitive way for Pokémon enthusiasts to transfer Pokémon between different save files. This is not another save file editor. This replicates the in-game trading experience resulting in legal pokémon.
-There is no backup system implemented yet. Make backup saves before using this on your own personal files.
 
 ### Features
 - Trade - Allows a user to trade Pokémon between save files
 - Evolve - A shortcut for evolving Pokémon that only evolve through trading
   - This replicates a trade, the evolution, and a trade back to OT
+- Save backup - Automatically backs up save files in the same directory before writing to them
 
 ### Settings 
 

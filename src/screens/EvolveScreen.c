@@ -263,6 +263,12 @@ void draw_evolve(PokemonSave *pkmn_save, char *save_path, struct trainer_info *t
         case E_UI_EVOLVE:
             if (CheckCollisionPointRec(GetMousePosition(), evolve_button_rec))
             {
+                // Create backup save before evolving
+                char backup_path[1004] = "\0";
+                strcpy(backup_path, save_path);
+                strcat(backup_path, "_bak");
+                save_savefile_to_path(pkmn_save, backup_path);
+                
                 // Evolve pokemon with the simulated new trainer
                 evolve_party_pokemon_at_index(pkmn_save, selected_index);
                 // Update stats

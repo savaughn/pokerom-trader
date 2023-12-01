@@ -69,6 +69,15 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
                     reset_toast_message();
                 }
 
+                // create backup before trading
+                char backup_path[1004] = "\0";
+                strcpy(backup_path, player1_save_path);
+                strcat(backup_path, "_bak");
+                pksavhelper_error = save_savefile_to_path(save_player1, backup_path);
+                strcpy(backup_path, player2_save_path);
+                strcat(backup_path, "_bak");
+                pksavhelper_error = save_savefile_to_path(save_player2, backup_path);
+
                 if (*is_same_generation)
                 {
                     pksavhelper_error = swap_pkmn_at_index_between_saves(save_player1, save_player2, selected_index_trainer1, selected_index_trainer2);
