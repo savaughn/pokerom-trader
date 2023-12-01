@@ -60,14 +60,8 @@ void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave 
         load_display_files(save_file_data, pkmn_saves, &save_file_count);
 
         // Update and draw save files
-        for (int i = 0; i < save_file_data->num_saves + 1; i++)
+        for (int i = 0; i < save_file_data->num_saves; i++)
         {
-            if (i == save_file_data->num_saves)
-            {
-                // Draw drag and drop container
-                draw_drag_drop_container((Rectangle){SCREEN_WIDTH / 2 - (SCREEN_WIDTH - 50) / 2, y_offset + (93 * i) - (60 * corrupted_count), SCREEN_WIDTH - 50, 80});
-                break;
-            }
             bool is_corrupted = pkmn_saves[i].save_generation_type == SAVE_GENERATION_CORRUPTED;
             const Rectangle save_file_rec = (Rectangle){SCREEN_WIDTH / 2 - (SCREEN_WIDTH - 50) / 2, y_offset + (93 * i) - (60 * corrupted_count), SCREEN_WIDTH - 50, 80};
 
@@ -117,7 +111,10 @@ void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave 
             }
         }
 
-        handle_list_scroll(&y_offset, save_file_data->num_saves, corrupted_count, &mouses_down_index, &is_moving_scroll, &banner_position_offset);
+        // Draw drag and drop container
+        draw_drag_drop_container((Rectangle){SCREEN_WIDTH / 2 - (SCREEN_WIDTH - 50) / 2, y_offset + (93 * save_file_data->num_saves) - (60 * corrupted_count), SCREEN_WIDTH - 50, 80});
+
+        handle_list_scroll(&y_offset, save_file_data->num_saves + 1, corrupted_count, &mouses_down_index, &is_moving_scroll, &banner_position_offset);
     }
     
     // Top Banner
