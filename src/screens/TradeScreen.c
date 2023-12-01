@@ -70,13 +70,8 @@ void draw_trade(PokemonSave *save_player1, PokemonSave *save_player2, char *play
                 }
 
                 // create backup before trading
-                char backup_path[1004] = "\0";
-                strcpy(backup_path, player1_save_path);
-                strcat(backup_path, "_bak");
-                pksavhelper_error = save_savefile_to_path(save_player1, backup_path);
-                strcpy(backup_path, player2_save_path);
-                strcat(backup_path, "_bak");
-                pksavhelper_error = save_savefile_to_path(save_player2, backup_path);
+                create_backup_save(save_player1, player1_save_path);
+                create_backup_save(save_player2, player2_save_path);
 
                 if (*is_same_generation)
                 {
