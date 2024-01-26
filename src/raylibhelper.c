@@ -244,7 +244,7 @@ void draw_raylib_screen_loop(
             }
         }
 
-        for (int i = T_POKEBALL_0; i < T_POKEBALL_3 + 1; i++)
+        for (int i = T_POKEBALL_0; i < T_COUNT; i++)
         {
             if (textures[i].id == 0)
             {

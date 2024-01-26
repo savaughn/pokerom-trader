@@ -516,8 +516,6 @@ void create_default_config(bool overwrite)
     strcpy(default_key, "SAVE_FILE_DIR=");
     strcat(default_key, saves_dir);
     fputs(default_key, fp);
-    fputs("\n", fp);
-    fputs("DISABLE_RANDOM_IVS_ON_TRADE=false", fp);
 
     fclose(fp);
 }
