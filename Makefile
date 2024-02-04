@@ -48,7 +48,7 @@ RAYLIB_LIB_PATH       ?= /usr/local/lib
 RAYLIB_LIBTYPE        ?= STATIC
 
 # Build mode for project: DEBUG or RELEASE
-BUILD_MODE            ?= RELEASE
+BUILD_MODE            ?= DEBUG
 
 # Use Wayland display server protocol on Linux desktop (by default it uses X11 windowing system)
 # NOTE: This variable is only used for PLATFORM_OS: LINUX
@@ -446,3 +446,6 @@ clean:
 # Clean build folder
 clean-build:
 	@rm -rf build
+
+pksav:
+	@cd deps/pksav/build && cmake .. -DPKSAV_STATIC=ON -DPKSAV_ENABLE_TESTS=OFF -DPKSAV_ENABLE_DOCS=OFF && make && cd ../../..
