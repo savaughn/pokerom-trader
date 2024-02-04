@@ -12,16 +12,26 @@ enum pksav_error detect_savefile_generation(const char *path, SaveGenerationType
 
     enum pksav_gen1_save_type gen1_save_type = PKSAV_GEN1_SAVE_TYPE_NONE;
     enum pksav_gen2_save_type gen2_save_type = PKSAV_GEN2_SAVE_TYPE_NONE;
-    err = pksav_gen1_get_file_save_type(path, &gen1_save_type);
+    enum pksav_gen3_save_type gen3_save_type = PKSAV_GEN3_SAVE_TYPE_NONE;
+
+    pksav_gen1_get_file_save_type(path, &gen1_save_type);
 
     if (gen1_save_type == PKSAV_GEN1_SAVE_TYPE_NONE)
     {
         pksav_gen2_get_file_save_type(path, &gen2_save_type);
         if (gen2_save_type == PKSAV_GEN2_SAVE_TYPE_NONE)
         {
-            SAVE_FILE_ERROR = PKSAV_ERROR_INVALID_SAVE;
-            *save_generation_type = SAVE_GENERATION_CORRUPTED;
-            return 0;
+            pksav_gen3_get_file_save_type(path, &gen3_save_type);
+            if (gen3_save_type == PKSAV_GEN3_SAVE_TYPE_NONE)
+            {
+                SAVE_FILE_ERROR = PKSAV_ERROR_INVALID_SAVE;
+                *save_generation_type = SAVE_GENERATION_CORRUPTED;
+                return 0;
+            }
+            else
+            {
+                *save_generation_type = SAVE_GENERATION_3;
+            }
         }
         else
         {
@@ -88,6 +98,23 @@ void load_savefile_from_path(const char *path, PokemonSave *pkmn_save)
         pkmn_save->save.gen2_save = save;
         break;
     }
+    case SAVE_GENERATION_3:
+    {
+        enum pksav_gen3_save_type gen3_save_type = PKSAV_GEN3_SAVE_TYPE_NONE;
+        err = pksav_gen3_get_file_save_type(path, &gen3_save_type);
+        if (err != PKSAV_ERROR_NONE)
+        {
+            error_handler(err, "Error getting save type");
+        }
+        struct pksav_gen3_save save;
+        err = pksav_gen3_load_save_from_file(path, &save);
+        if (err != PKSAV_ERROR_NONE)
+        {
+            error_handler(err, "Error loading save");
+        }
+        pkmn_save->save.gen3_save = save;
+        break;
+    }
     default:
         break;
     }
@@ -100,13 +127,23 @@ void load_savefile_from_path(const char *path, PokemonSave *pkmn_save)
 pksavhelper_error save_savefile_to_path(PokemonSave *pkmn_save, char *path)
 {
     enum pksav_error err = PKSAV_ERROR_NONE;
-    if (pkmn_save->save_generation_type == SAVE_GENERATION_1)
+    switch (pkmn_save->save_generation_type)
     {
-        err = pksav_gen1_save_save(path, &pkmn_save->save.gen1_save);
-    }
-    else
-    {
-        err = pksav_gen2_save_save(path, &pkmn_save->save.gen2_save);
+        case SAVE_GENERATION_1:
+        {
+            err = pksav_gen1_save_save(path, &pkmn_save->save.gen1_save);
+            break;
+        }
+        case SAVE_GENERATION_2:
+        {
+            err = pksav_gen2_save_save(path, &pkmn_save->save.gen2_save);
+            break;
+        }
+        case SAVE_GENERATION_3:
+        {
+            err = pksav_gen3_save_save(path, &pkmn_save->save.gen3_save);
+            break;
+        }
     }
 
     if (err != PKSAV_ERROR_NONE)
@@ -139,7 +176,28 @@ void load_display_files(const struct save_file_data *save_file_data, PokemonSave
             if (pkmn_saves[i].save_generation_type != SAVE_GENERATION_NONE)
             {
                 allocated_saves++;
-                save_file_size += pkmn_saves[i].save_generation_type == SAVE_GENERATION_1 ? sizeof(struct pksav_gen1_save) : sizeof(struct pksav_gen2_save);
+                int struct_size = 0;
+                switch (pkmn_saves[i].save_generation_type)
+                {
+                case SAVE_GENERATION_1:
+                {
+                    struct_size = sizeof(struct pksav_gen1_save);
+                    break;
+                }
+                case SAVE_GENERATION_2:
+                {
+                    struct_size = sizeof(struct pksav_gen2_save);
+                    break;
+                }
+                case SAVE_GENERATION_3:
+                {
+                    struct_size = sizeof(struct pksav_gen3_save);
+                    break;
+                }
+                default:
+                    break;
+                }
+                save_file_size += struct_size;
             }
             else
             {
@@ -200,7 +258,7 @@ void free_pkmn_saves(PokemonSave *pkmn_saves, uint8_t *save_file_count)
     }
 }
 
-void create_backup_save(PokemonSave *pkmn_save, char* save_path)
+void create_backup_save(PokemonSave *pkmn_save, char *save_path)
 {
     char backup_path[1004] = "\0";
     strcpy(backup_path, save_path);

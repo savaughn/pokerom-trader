@@ -9,7 +9,9 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
     uint8_t minutes = 0;
     uint8_t seconds = 0;
 
-    if (pkmn_save->save_generation_type == SAVE_GENERATION_1)
+    switch (pkmn_save->save_generation_type)
+    {
+    case SAVE_GENERATION_1:
     {
         pksav_gen1_import_text(pkmn_save->save.gen1_save.trainer_info.p_name, trainer_name, TRAINER_NAME_TEXT_MAX);
         trainer_id = pksav_bigendian16(*pkmn_save->save.gen1_save.trainer_info.p_id);
@@ -17,8 +19,9 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
         hours = pksav_littleendian16(save_time->hours);
         minutes = save_time->minutes;
         seconds = save_time->seconds;
+        break;
     }
-    else if (pkmn_save->save_generation_type == SAVE_GENERATION_2)
+    case SAVE_GENERATION_2:
     {
         pksav_gen2_import_text(pkmn_save->save.gen2_save.trainer_info.p_name, trainer_name, TRAINER_NAME_TEXT_MAX);
         trainer_id = pksav_bigendian16(*pkmn_save->save.gen2_save.trainer_info.p_id);
@@ -26,9 +29,19 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
         hours = save_time->hours;
         minutes = save_time->minutes;
         seconds = save_time->seconds;
+        break;
     }
-    else
+    case SAVE_GENERATION_3:
     {
+        pksav_gen3_import_text(pkmn_save->save.gen3_save.player_info.p_name, trainer_name, TRAINER_NAME_TEXT_MAX);
+        trainer_id = pksav_littleendian16(pkmn_save->save.gen3_save.player_info.p_id->pid);
+        const struct pksav_gen3_time *save_time = pkmn_save->save.gen3_save.p_time_played;
+        hours = save_time->hours;
+        minutes = save_time->minutes;
+        seconds = save_time->seconds;
+        break;
+    }
+    default:
         return;
     }
 
@@ -61,7 +74,10 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
     };
 
     // draw pokemon party
-    if (pkmn_save->save_generation_type == SAVE_GENERATION_1)
+
+    switch (pkmn_save->save_generation_type)
+    {
+    case SAVE_GENERATION_1:
     {
         for (int i = 0; i < pkmn_save->save.gen1_save.pokemon_storage.p_party->count; i++)
         {
@@ -70,8 +86,9 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
             shadow_text(pokemon_name, name_slots[i].x, name_slots[i].y, 20, WHITE);
             shadow_text(TextFormat(" L%d", pkmn_save->save.gen1_save.pokemon_storage.p_party->party[i].party_data.level), (name_slots[i].x + ((container_rec.width - 135) / 3)) - 60, name_slots[i].y, 20, WHITE);
         }
+        break;
     }
-    else if (pkmn_save->save_generation_type == SAVE_GENERATION_2)
+    case SAVE_GENERATION_2:
     {
         for (int i = 0; i < pkmn_save->save.gen2_save.pokemon_storage.p_party->count; i++)
         {
@@ -80,10 +97,21 @@ void draw_save_file_container(PokemonSave *pkmn_save, char *save_name, Rectangle
             shadow_text(pokemon_name, name_slots[i].x, name_slots[i].y, 20, WHITE);
             shadow_text(TextFormat(" L%d", pkmn_save->save.gen2_save.pokemon_storage.p_party->party[i].pc_data.level), (name_slots[i].x + ((container_rec.width - 135) / 3)) - 60, name_slots[i].y, 20, WHITE);
         }
+        break;
     }
-    else
+    case SAVE_GENERATION_3:
     {
-        return;
+        for (int i = 0; i < pkmn_save->save.gen3_save.pokemon_storage.p_party->count; i++)
+        {
+            char pokemon_name[PKMN_NAME_TEXT_MAX + 1] = "\0";
+            pksav_gen3_import_text(pkmn_save->save.gen3_save.pokemon_storage.p_party->party[i].pc_data.nickname, pokemon_name, PKMN_NAME_TEXT_MAX);
+            shadow_text(pokemon_name, name_slots[i].x, name_slots[i].y, 20, WHITE);
+            shadow_text(TextFormat(" L%d", pkmn_save->save.gen3_save.pokemon_storage.p_party->party[i].party_data.level), (name_slots[i].x + ((container_rec.width - 135) / 3)) - 60, name_slots[i].y, 20, WHITE);
+        }
+        break;
+    }
+    default:
+        break;
     }
 
     // draw save name
