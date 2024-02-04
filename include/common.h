@@ -36,6 +36,7 @@ union PokemonPartyData
 {
     struct pksav_gen1_pokemon_party gen1_pokemon_party;
     struct pksav_gen2_pokemon_party gen2_pokemon_party;
+    struct pksav_gen3_pokemon_party gen3_pokemon_party;
 };
 
 typedef enum
@@ -81,6 +82,7 @@ typedef enum
     SAVE_GENERATION_NONE,
     SAVE_GENERATION_1,
     SAVE_GENERATION_2,
+    SAVE_GENERATION_3,
     SAVE_GENERATION_CORRUPTED,
 } SaveGenerationType;
 
@@ -88,6 +90,7 @@ typedef union
 {
     struct pksav_gen1_save gen1_save;
     struct pksav_gen2_save gen2_save;
+    struct pksav_gen3_save gen3_save;
 } SaveGeneration;
 
 typedef struct
