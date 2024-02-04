@@ -109,7 +109,8 @@ void create_trainer(PokemonSave *pkmn_save, struct trainer_info *trainer)
         strcpy(trainer->trainer_name, trainer_name);
         trainer->trainer_id = trainer_id;
 
-        trainer->trainer_badges[0] = *pkmn_save->save.gen1_save.trainer_info.p_badges;
+        // TODO: Remove
+        // trainer->trainer_badges[0] = *pkmn_save->save.gen1_save.trainer_info.p_badges;
 
         // Update the trainer's pokemon party
         trainer->pokemon_party.gen1_pokemon_party = *pkmn_save->save.gen1_save.pokemon_storage.p_party;
@@ -125,13 +126,15 @@ void create_trainer(PokemonSave *pkmn_save, struct trainer_info *trainer)
         // Update the trainer struct
         strcpy(trainer->trainer_name, trainer_name);
         trainer->trainer_id = pksav_bigendian16(*pkmn_save->save.gen2_save.trainer_info.p_id);
-        trainer->trainer_badges[EBadge_Region_Johto] = *pkmn_save->save.gen2_save.trainer_info.p_johto_badges;
-        trainer->trainer_badges[EBadge_Region_Kanto] = *pkmn_save->save.gen2_save.trainer_info.p_kanto_badges;
-        // Trainer Gender (Crystal and later games only)
-        if (pkmn_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL)
-        {
-            trainer->trainer_gender = *pkmn_save->save.gen2_save.trainer_info.p_gender;
-        }
+
+        // TODO: Remove
+        // trainer->trainer_badges[EBadge_Region_Johto] = *pkmn_save->save.gen2_save.trainer_info.p_johto_badges;
+        // trainer->trainer_badges[EBadge_Region_Kanto] = *pkmn_save->save.gen2_save.trainer_info.p_kanto_badges;
+        // // Trainer Gender (Crystal and later games only)
+        // if (pkmn_save->save.gen2_save.save_type == PKSAV_GEN2_SAVE_TYPE_CRYSTAL)
+        // {
+        //     trainer->trainer_gender = *pkmn_save->save.gen2_save.trainer_info.p_gender;
+        // }
 
         // Update the trainer's pokemon party
         trainer->pokemon_party.gen2_pokemon_party = *pkmn_save->save.gen2_save.pokemon_storage.p_party;
@@ -143,6 +146,20 @@ void create_trainer(PokemonSave *pkmn_save, struct trainer_info *trainer)
             trainer->trainer_mail[i] = pkmn_save->save.gen2_save.pokemon_storage.p_party_mail->party_mail[i];
         }
         break;
+    }
+    case SAVE_GENERATION_3:
+    {
+        // Trainer name
+        char trainer_name[TRAINER_NAME_TEXT_MAX + 1] = "\0";
+        pksav_gen3_import_text(pkmn_save->save.gen3_save.player_info.p_name, trainer_name, TRAINER_NAME_TEXT_MAX);
+
+        // Update the trainer struct
+        strcpy(trainer->trainer_name, trainer_name);
+        trainer->trainer_id = pksav_littleendian16(pkmn_save->save.gen3_save.player_info.p_id->pid);
+
+        // Update the trainer's pokemon party
+        trainer->pokemon_party.gen3_pokemon_party = *pkmn_save->save.gen3_save.pokemon_storage.p_party;
+        trainer->trainer_generation = SAVE_GENERATION_3;
     }
     default:
         break;
