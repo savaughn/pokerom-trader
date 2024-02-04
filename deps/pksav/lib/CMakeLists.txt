@@ -16,19 +16,21 @@ INCLUDE_DIRECTORIES(
 
 ADD_SUBDIRECTORY(gen1)
 ADD_SUBDIRECTORY(gen2)
-ADD_SUBDIRECTORY(gba)
+ADD_SUBDIRECTORY(gen3)
 
 ADD_SUBDIRECTORY(common)
+ADD_SUBDIRECTORY(crypto)
 ADD_SUBDIRECTORY(math)
 ADD_SUBDIRECTORY(util)
 
 SET(pksav_c_sources
     error.c
     ${pksav_common_sources}
+    ${pksav_crypto_sources}
     ${pksav_math_sources}
     ${pksav_gen1_sources}
     ${pksav_gen2_sources}
-    ${pksav_gba_sources}
+    ${pksav_gen3_sources}
     ${pksav_util_sources}
 )
 
