@@ -192,10 +192,10 @@ void draw_trainer_info(struct trainer_info *trainer, int x, int y, struct Traine
             shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.atk)), stat_text_pos_x, container_rec.y + 130, 20, WHITE);
             shadow_text("Def:", text_pos_x, container_rec.y + 160, 20, WHITE);
             shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.def)), stat_text_pos_x, container_rec.y + 160, 20, WHITE);
-            shadow_text("Spd:", text_pos_x, container_rec.y + 190, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spd)), stat_text_pos_x, container_rec.y + 190, 20, WHITE);
-            shadow_text("Spcl:", text_pos_x, container_rec.y + 220, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spcl)), stat_text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text("Spcl:", text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spcl)), stat_text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text("Spd:", text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spd)), stat_text_pos_x, container_rec.y + 220, 20, WHITE);
 
             // Draw DVs inline with stats
             uint8_t pkmn_dv[PKSAV_NUM_GB_IVS];
@@ -203,8 +203,8 @@ void draw_trainer_info(struct trainer_info *trainer, int x, int y, struct Traine
             shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_HP]), dv_text_pos_x, container_rec.y + 100, 20, WHITE);
             shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_ATTACK]), dv_text_pos_x, container_rec.y + 130, 20, WHITE);
             shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_DEFENSE]), dv_text_pos_x, container_rec.y + 160, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPEED]), dv_text_pos_x, container_rec.y + 190, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPECIAL]), dv_text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPECIAL]), dv_text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPEED]), dv_text_pos_x, container_rec.y + 220, 20, WHITE);
 
             break;
         }
@@ -223,12 +223,12 @@ void draw_trainer_info(struct trainer_info *trainer, int x, int y, struct Traine
             shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.atk)), stat_text_pos_x, container_rec.y + 130, 20, WHITE);
             shadow_text("Def:", text_pos_x, container_rec.y + 160, 20, WHITE);
             shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.def)), stat_text_pos_x, container_rec.y + 160, 20, WHITE);
-            shadow_text("Spd:", text_pos_x, container_rec.y + 190, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spd)), stat_text_pos_x, container_rec.y + 190, 20, WHITE);
-            shadow_text("Sp.A:", text_pos_x, container_rec.y + 220, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spatk)), stat_text_pos_x, container_rec.y + 220, 20, WHITE);
-            shadow_text("Sp.D:", text_pos_x, container_rec.y + 250, 20, WHITE);
-            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spdef)), stat_text_pos_x, container_rec.y + 250, 20, WHITE);
+            shadow_text("Sp.A:", text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spatk)), stat_text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text("Sp.D:", text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spdef)), stat_text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text("Spd:", text_pos_x, container_rec.y + 250, 20, WHITE);
+            shadow_text(TextFormat("%d", pksav_bigendian16(party_pkmn.party_data.spd)), stat_text_pos_x, container_rec.y + 250, 20, WHITE);
 
             // Draw DVs
             uint8_t pkmn_dv[PKSAV_NUM_GB_IVS];
@@ -236,9 +236,9 @@ void draw_trainer_info(struct trainer_info *trainer, int x, int y, struct Traine
             shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_HP]), dv_text_pos_x, container_rec.y + 100, 20, WHITE);
             shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_ATTACK]), dv_text_pos_x, container_rec.y + 130, 20, WHITE);
             shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_DEFENSE]), dv_text_pos_x, container_rec.y + 160, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPEED]), dv_text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPECIAL]), dv_text_pos_x, container_rec.y + 190, 20, WHITE);
             shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPECIAL]), dv_text_pos_x, container_rec.y + 220, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPECIAL]), dv_text_pos_x, container_rec.y + 250, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_GB_IV_SPEED]), dv_text_pos_x, container_rec.y + 250, 20, WHITE);
 
             break;
         }
@@ -257,12 +257,12 @@ void draw_trainer_info(struct trainer_info *trainer, int x, int y, struct Traine
             shadow_text(TextFormat("%d", party_pkmn.party_data.atk), stat_text_pos_x, container_rec.y + 130, 20, WHITE);
             shadow_text("Def:", text_pos_x, container_rec.y + 160, 20, WHITE);
             shadow_text(TextFormat("%d", party_pkmn.party_data.def), stat_text_pos_x, container_rec.y + 160, 20, WHITE);
-            shadow_text("Spd:", text_pos_x, container_rec.y + 190, 20, WHITE);
-            shadow_text(TextFormat("%d", party_pkmn.party_data.spd), stat_text_pos_x, container_rec.y + 190, 20, WHITE);
-            shadow_text("Sp.A:", text_pos_x, container_rec.y + 220, 20, WHITE);
-            shadow_text(TextFormat("%d", party_pkmn.party_data.spatk), stat_text_pos_x, container_rec.y + 220, 20, WHITE);
-            shadow_text("Sp.D:", text_pos_x, container_rec.y + 250, 20, WHITE);
-            shadow_text(TextFormat("%d", party_pkmn.party_data.spdef), stat_text_pos_x, container_rec.y + 250, 20, WHITE);
+            shadow_text("Sp.A:", text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text(TextFormat("%d", party_pkmn.party_data.spatk), stat_text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text("Sp.D:", text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text(TextFormat("%d", party_pkmn.party_data.spdef), stat_text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text("Spd:", text_pos_x, container_rec.y + 250, 20, WHITE);
+            shadow_text(TextFormat("%d", party_pkmn.party_data.spd), stat_text_pos_x, container_rec.y + 250, 20, WHITE);
 
             // Draw IVs
             uint8_t pkmn_dv[PKSAV_NUM_IVS];
@@ -270,9 +270,9 @@ void draw_trainer_info(struct trainer_info *trainer, int x, int y, struct Traine
             shadow_text(TextFormat("%d", pkmn_dv[PKSAV_IV_HP]), dv_text_pos_x, container_rec.y + 100, 20, WHITE);
             shadow_text(TextFormat("%d", pkmn_dv[PKSAV_IV_ATTACK]), dv_text_pos_x, container_rec.y + 130, 20, WHITE);
             shadow_text(TextFormat("%d", pkmn_dv[PKSAV_IV_DEFENSE]), dv_text_pos_x, container_rec.y + 160, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_IV_SPEED]), dv_text_pos_x, container_rec.y + 190, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_IV_SPATK]), dv_text_pos_x, container_rec.y + 220, 20, WHITE);
-            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_IV_SPDEF]), dv_text_pos_x, container_rec.y + 250, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_IV_SPATK]), dv_text_pos_x, container_rec.y + 190, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_IV_SPDEF]), dv_text_pos_x, container_rec.y + 220, 20, WHITE);
+            shadow_text(TextFormat("%d", pkmn_dv[PKSAV_IV_SPEED]), dv_text_pos_x, container_rec.y + 250, 20, WHITE);
 
             break;
         }
