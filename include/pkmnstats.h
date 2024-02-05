@@ -167,6 +167,144 @@ typedef unsigned char uint8_t;
 #define SI_WEEPINBELL (uint8_t)188
 #define SI_VICTREEBEL (uint8_t)189
 
+// Gen 3 species index
+#define SI_TREECKO (uint16_t)277
+#define SI_GROVYLE (uint16_t)278
+#define SI_SCEPTILE (uint16_t)279
+#define SI_TORCHIC (uint16_t)280
+#define SI_COMBUSKEN (uint16_t)281
+#define SI_BLAZIKEN (uint16_t)282
+#define SI_MUDKIP (uint16_t)283
+#define SI_MARSHTOMP (uint16_t)284
+#define SI_SWAMPERT (uint16_t)285
+#define SI_POOCHYENA (uint16_t)286
+#define SI_MIGHTYENA (uint16_t)287
+#define SI_ZIGZAGOON (uint16_t)288
+#define SI_LINOONE (uint16_t)289
+#define SI_WURMPLE (uint16_t)290
+#define SI_SILCOON (uint16_t)291
+#define SI_BEAUTIFLY (uint16_t)292
+#define SI_CASCOON (uint16_t)293
+#define SI_DUSTOX (uint16_t)294
+#define SI_LOTAD (uint16_t)295
+#define SI_LOMBRE (uint16_t)296
+#define SI_LUDICOLO (uint16_t)297
+#define SI_SEEDOT (uint16_t)298
+#define SI_NUZLEAF (uint16_t)299
+#define SI_SHIFTRY (uint16_t)300
+#define SI_NINCADA (uint16_t)301
+#define SI_NINJASK (uint16_t)302
+#define SI_SHEDINJA (uint16_t)303
+#define SI_TAILLOW (uint16_t)304
+#define SI_SWELLOW (uint16_t)305
+#define SI_SHROOMISH (uint16_t)306
+#define SI_BRELOOM (uint16_t)307
+#define SI_SPINDA (uint16_t)308
+#define SI_WINGULL (uint16_t)309
+#define SI_PELIPPER (uint16_t)310
+#define SI_SURSKIT (uint16_t)311
+#define SI_MASQUERAIN (uint16_t)312
+#define SI_WAILMER (uint16_t)313
+#define SI_WAILORD (uint16_t)314
+#define SI_SKITTY (uint16_t)315
+#define SI_DELCATTY (uint16_t)316
+#define SI_KECLEON (uint16_t)317
+#define SI_BALTOY (uint16_t)318
+#define SI_CLAYDOL (uint16_t)319
+#define SI_NOSEPASS (uint16_t)320
+#define SI_TORKOAL (uint16_t)321
+#define SI_SABLEYE (uint16_t)322
+#define SI_BARBOACH (uint16_t)323
+#define SI_WHISCASH (uint16_t)324
+#define SI_LUVDISC (uint16_t)325
+#define SI_CORPHISH (uint16_t)326
+#define SI_CRAWDAUNT (uint16_t)327
+#define SI_FEEBAS (uint16_t)328
+#define SI_MILOTIC (uint16_t)329
+#define SI_CARVANHA (uint16_t)330
+#define SI_SHARPEDO (uint16_t)331
+#define SI_TRAPINCH (uint16_t)332
+#define SI_VIBRAVA (uint16_t)333
+#define SI_FLYGON (uint16_t)334
+#define SI_MAKUHITA (uint16_t)335
+#define SI_HARIYAMA (uint16_t)336
+#define SI_ELECTRIKE (uint16_t)337
+#define SI_MANECTRIC (uint16_t)338
+#define SI_NUMEL (uint16_t)339
+#define SI_CAMERUPT (uint16_t)340
+#define SI_SPHEAL (uint16_t)341
+#define SI_SEALEO (uint16_t)342
+#define SI_WALREIN (uint16_t)343
+#define SI_CACNEA (uint16_t)344
+#define SI_CACTURNE (uint16_t)345
+#define SI_SNORUNT (uint16_t)346
+#define SI_GLALIE (uint16_t)347
+#define SI_LUNATONE (uint16_t)348
+#define SI_SOLROCK (uint16_t)349
+#define SI_AZURILL (uint16_t)350
+#define SI_SPOINK (uint16_t)351
+#define SI_GRUMPIG (uint16_t)352
+#define SI_PLUSLE (uint16_t)353
+#define SI_MINUN (uint16_t)354
+#define SI_MAWILE (uint16_t)355
+#define SI_MEDITITE (uint16_t)356
+#define SI_MEDICHAM (uint16_t)357
+#define SI_SWABLU (uint16_t)358
+#define SI_ALTARIA (uint16_t)359
+#define SI_WYNAUT (uint16_t)360
+#define SI_DUSKULL (uint16_t)361
+#define SI_DUSCLOPS (uint16_t)362
+#define SI_ROSELIA (uint16_t)363
+#define SI_SLAKOTH (uint16_t)364
+#define SI_VIGOROTH (uint16_t)365
+#define SI_SLAKING (uint16_t)366
+#define SI_GULPIN (uint16_t)367
+#define SI_SWALOT (uint16_t)368
+#define SI_TROPIUS (uint16_t)369
+#define SI_WHISMUR (uint16_t)370
+#define SI_LOUDRED (uint16_t)371
+#define SI_EXPLOUD (uint16_t)372
+#define SI_CLAMPERL (uint16_t)373
+#define SI_HUNTAIL (uint16_t)374
+#define SI_GOREBYSS (uint16_t)375
+#define SI_ABSOL (uint16_t)376
+#define SI_SHUPPET (uint16_t)377
+#define SI_BANETTE (uint16_t)378
+#define SI_SEVIPER (uint16_t)379
+#define SI_ZANGOOSE (uint16_t)380
+#define SI_RELICANTH (uint16_t)381
+#define SI_ARON (uint16_t)382
+#define SI_LAIRON (uint16_t)383
+#define SI_AGGRON (uint16_t)384
+#define SI_CASTFORM (uint16_t)385
+#define SI_VOLBEAT (uint16_t)386
+#define SI_ILLUMISE (uint16_t)387
+#define SI_LILEEP (uint16_t)388
+#define SI_CRADILY (uint16_t)389
+#define SI_ANORITH (uint16_t)390
+#define SI_ARMALDO (uint16_t)391
+#define SI_RALTS (uint16_t)392
+#define SI_KIRLIA (uint16_t)393
+#define SI_GARDEVOIR (uint16_t)394
+#define SI_BAGON (uint16_t)395
+#define SI_SHELGON (uint16_t)396
+#define SI_SALAMENCE (uint16_t)397
+#define SI_BELDUM (uint16_t)398
+#define SI_METANG (uint16_t)399
+#define SI_METAGROSS (uint16_t)400
+#define SI_REGIROCK (uint16_t)401
+#define SI_REGICE (uint16_t)402
+#define SI_REGISTEEL (uint16_t)403
+#define SI_KYOGRE (uint16_t)404
+#define SI_GROUDON (uint16_t)405
+#define SI_RAYQUAZA (uint16_t)406
+#define SI_LATIAS (uint16_t)407
+#define SI_LATIOS (uint16_t)408
+#define SI_JIRACHI (uint16_t)409
+#define SI_DEOXYS (uint16_t)410
+#define SI_CHIMECHO (uint16_t)411
+// Unown forms
+
 // Gen 2 all pokemon index matches pokedex
 #define BULBASAUR (uint8_t)1
 #define IVYSAUR (uint8_t)2
@@ -419,6 +557,143 @@ typedef unsigned char uint8_t;
 #define LUGIA (uint8_t)249
 #define HO_OH (uint8_t)250
 #define CELEBI (uint8_t)251
+
+// Gen 3 pokemon pokedex
+#define TREECKO (uint16_t)252
+#define GROVYLE (uint16_t)253
+#define SCEPTILE (uint16_t)254
+#define TORCHIC (uint16_t)255
+#define COMBUSKEN (uint16_t)256
+#define BLAZIKEN (uint16_t)257
+#define MUDKIP (uint16_t)258
+#define MARSHTOMP (uint16_t)259
+#define SWAMPERT (uint16_t)260
+#define POOCHYENA (uint16_t)261
+#define MIGHTYENA (uint16_t)262
+#define ZIGZAGOON (uint16_t)263
+#define LINOONE (uint16_t)264
+#define WURMPLE (uint16_t)265
+#define SILCOON (uint16_t)266
+#define BEAUTIFLY (uint16_t)267
+#define CASCOON (uint16_t)268
+#define DUSTOX (uint16_t)269
+#define LOTAD (uint16_t)270
+#define LOMBRE (uint16_t)271
+#define LUDICOLO (uint16_t)272
+#define SEEDOT (uint16_t)273
+#define NUZLEAF (uint16_t)274
+#define SHIFTRY (uint16_t)275   
+#define TAILLOW (uint16_t)276
+#define SWELLOW (uint16_t)277
+#define WINGULL (uint16_t)278
+#define PELIPPER (uint16_t)279
+#define RALTS (uint16_t)280
+#define KIRLIA (uint16_t)281
+#define GARDEVOIR (uint16_t)282
+#define SURSKIT (uint16_t)283
+#define MASQUERAIN (uint16_t)284
+#define SHROOMISH (uint16_t)285
+#define BRELOOM (uint16_t)286
+#define SLAKOTH (uint16_t)287
+#define VIGOROTH (uint16_t)288
+#define SLAKING (uint16_t)289
+#define NINCADA (uint16_t)290
+#define NINJASK (uint16_t)291
+#define SHEDINJA (uint16_t)292
+#define WHISMUR (uint16_t)293
+#define LOUDRED (uint16_t)294
+#define EXPLOUD (uint16_t)295
+#define MAKUHITA (uint16_t)296
+#define HARIYAMA (uint16_t)297
+#define AZURILL (uint16_t)298
+#define NOSEPASS (uint16_t)299
+#define SKITTY (uint16_t)300
+#define DELCATTY (uint16_t)301
+#define SABLEYE (uint16_t)302
+#define MAWILE (uint16_t)303
+#define ARON (uint16_t)304
+#define LAIRON (uint16_t)305
+#define AGGRON (uint16_t)306
+#define MEDITITE (uint16_t)307
+#define MEDICHAM (uint16_t)308
+#define ELECTRIKE (uint16_t)309
+#define MANECTRIC (uint16_t)310
+#define PLUSLE (uint16_t)311
+#define MINUN (uint16_t)312
+#define VOLBEAT (uint16_t)313
+#define ILLUMISE (uint16_t)314
+#define ROSELIA (uint16_t)315
+#define GULPIN (uint16_t)316
+#define SWALOT (uint16_t)317
+#define CARVANHA (uint16_t)318
+#define SHARPEDO (uint16_t)319
+#define WAILMER (uint16_t)320
+#define WAILORD (uint16_t)321
+#define NUMEL (uint16_t)322
+#define CAMERUPT (uint16_t)323
+#define TORKOAL (uint16_t)324
+#define SPOINK (uint16_t)325
+#define GRUMPIG (uint16_t)326
+#define SPINDA (uint16_t)327
+#define TRAPINCH (uint16_t)328
+#define VIBRAVA (uint16_t)329
+#define FLYGON (uint16_t)330
+#define CACNEA (uint16_t)331
+#define CACTURNE (uint16_t)332
+#define SWABLU (uint16_t)333
+#define ALTARIA (uint16_t)334
+#define ZANGOOSE (uint16_t)335
+#define SEVIPER (uint16_t)336
+#define LUNATONE (uint16_t)337
+#define SOLROCK (uint16_t)338
+#define BARBOACH (uint16_t)339
+#define WHISCASH (uint16_t)340
+#define CORPHISH (uint16_t)341
+#define CRAWDAUNT (uint16_t)342
+#define BALTOY (uint16_t)343
+#define CLAYDOL (uint16_t)344
+#define LILEEP (uint16_t)345
+#define CRADILY (uint16_t)346
+#define ANORITH (uint16_t)347
+#define ARMALDO (uint16_t)348
+#define FEEBAS (uint16_t)349
+#define MILOTIC (uint16_t)350
+#define CASTFORM (uint16_t)351
+#define KECLEON (uint16_t)352
+#define SHUPPET (uint16_t)353
+#define BANETTE (uint16_t)354
+#define DUSKULL (uint16_t)355
+#define DUSCLOPS (uint16_t)356
+#define TROPIUS (uint16_t)357
+#define CHIMECHO (uint16_t)358
+#define ABSOL (uint16_t)359
+#define WYNAUT (uint16_t)360
+#define SNORUNT (uint16_t)361
+#define GLALIE (uint16_t)362
+#define SPHEAL (uint16_t)363
+#define SEALEO (uint16_t)364
+#define WALREIN (uint16_t)365
+#define CLAMPERL (uint16_t)366
+#define HUNTAIL (uint16_t)367
+#define GOREBYSS (uint16_t)368
+#define RELICANTH (uint16_t)369
+#define LUVDISC (uint16_t)370
+#define BAGON (uint16_t)371
+#define SHELGON (uint16_t)372
+#define SALAMENCE (uint16_t)373
+#define BELDUM (uint16_t)374
+#define METANG (uint16_t)375
+#define METAGROSS (uint16_t)376
+#define REGIROCK (uint16_t)377
+#define REGICE (uint16_t)378
+#define REGISTEEL (uint16_t)379
+#define LATIAS (uint16_t)380
+#define LATIOS (uint16_t)381
+#define KYOGRE (uint16_t)382
+#define GROUDON (uint16_t)383
+#define RAYQUAZA (uint16_t)384
+#define JIRACHI (uint16_t)385
+#define DEOXYS (uint16_t)386
 
 static const uint8_t species_gen1_to_gen2[SI_VICTREEBEL + 1] = {
     [SI_BULBASAUR] = BULBASAUR,
@@ -725,6 +1000,143 @@ static const uint8_t species_gen2_to_gen1[MEW + 1] = {
     [DRAGONITE] = SI_DRAGONITE,
     [MEWTWO] = SI_MEWTWO,
     [MEW] = SI_MEW};
+
+static const uint16_t species_gen3_to_dex[SI_CHIMECHO + 1] = {
+    [SI_TREECKO] = TREECKO,
+    [SI_GROVYLE] = GROVYLE,
+    [SI_SCEPTILE] = SCEPTILE,
+    [SI_TORCHIC] = TORCHIC,
+    [SI_COMBUSKEN] = COMBUSKEN,
+    [SI_BLAZIKEN] = BLAZIKEN,
+    [SI_MUDKIP] = MUDKIP,
+    [SI_MARSHTOMP] = MARSHTOMP,
+    [SI_SWAMPERT] = SWAMPERT,
+    [SI_POOCHYENA] = POOCHYENA,
+    [SI_MIGHTYENA] = MIGHTYENA,
+    [SI_ZIGZAGOON] = ZIGZAGOON,
+    [SI_LINOONE] = LINOONE,
+    [SI_WURMPLE] = WURMPLE,
+    [SI_SILCOON] = SILCOON,
+    [SI_BEAUTIFLY] = BEAUTIFLY,
+    [SI_CASCOON] = CASCOON,
+    [SI_DUSTOX] = DUSTOX,
+    [SI_LOTAD] = LOTAD,
+    [SI_LOMBRE] = LOMBRE,
+    [SI_LUDICOLO] = LUDICOLO,
+    [SI_SEEDOT] = SEEDOT,
+    [SI_NUZLEAF] = NUZLEAF,
+    [SI_SHIFTRY] = SHIFTRY,
+    [SI_TAILLOW] = TAILLOW,
+    [SI_SWELLOW] = SWELLOW,
+    [SI_WINGULL] = WINGULL,
+    [SI_PELIPPER] = PELIPPER,
+    [SI_RALTS] = RALTS,
+    [SI_KIRLIA] = KIRLIA,
+    [SI_GARDEVOIR] = GARDEVOIR,
+    [SI_SURSKIT] = SURSKIT,
+    [SI_MASQUERAIN] = MASQUERAIN,
+    [SI_SHROOMISH] = SHROOMISH,
+    [SI_BRELOOM] = BRELOOM,
+    [SI_SLAKOTH] = SLAKOTH,
+    [SI_VIGOROTH] = VIGOROTH,
+    [SI_SLAKING] = SLAKING,
+    [SI_NINCADA] = NINCADA,
+    [SI_NINJASK] = NINJASK,
+    [SI_SHEDINJA] = SHEDINJA,
+    [SI_WHISMUR] = WHISMUR,
+    [SI_LOUDRED] = LOUDRED,
+    [SI_EXPLOUD] = EXPLOUD,
+    [SI_MAKUHITA] = MAKUHITA,
+    [SI_HARIYAMA] = HARIYAMA,
+    [SI_AZURILL] = AZURILL,
+    [SI_NOSEPASS] = NOSEPASS,
+    [SI_SKITTY] = SKITTY,
+    [SI_DELCATTY] = DELCATTY,
+    [SI_SABLEYE] = SABLEYE,
+    [SI_MAWILE] = MAWILE,
+    [SI_ARON] = ARON,
+    [SI_LAIRON] = LAIRON,
+    [SI_AGGRON] = AGGRON,
+    [SI_MEDITITE] = MEDITITE,
+    [SI_MEDICHAM] = MEDICHAM,
+    [SI_ELECTRIKE] = ELECTRIKE,
+    [SI_MANECTRIC] = MANECTRIC,
+    [SI_PLUSLE] = PLUSLE,
+    [SI_MINUN] = MINUN,
+    [SI_VOLBEAT] = VOLBEAT,
+    [SI_ILLUMISE] = ILLUMISE,
+    [SI_ROSELIA] = ROSELIA,
+    [SI_GULPIN] = GULPIN,
+    [SI_SWALOT] = SWALOT,
+    [SI_CARVANHA] = CARVANHA,
+    [SI_SHARPEDO] = SHARPEDO,
+    [SI_WAILMER] = WAILMER,
+    [SI_WAILORD] = WAILORD,
+    [SI_NUMEL] = NUMEL,
+    [SI_CAMERUPT] = CAMERUPT,
+    [SI_TORKOAL] = TORKOAL,
+    [SI_SPOINK] = SPOINK,
+    [SI_GRUMPIG] = GRUMPIG,
+    [SI_SPINDA] = SPINDA,
+    [SI_TRAPINCH] = TRAPINCH,
+    [SI_VIBRAVA] = VIBRAVA,
+    [SI_FLYGON] = FLYGON,
+    [SI_CACNEA] = CACNEA,
+    [SI_CACTURNE] = CACTURNE,
+    [SI_SWABLU] = SWABLU,
+    [SI_ALTARIA] = ALTARIA,
+    [SI_ZANGOOSE] = ZANGOOSE,
+    [SI_SEVIPER] = SEVIPER,
+    [SI_LUNATONE] = LUNATONE,
+    [SI_SOLROCK] = SOLROCK,
+    [SI_BARBOACH] = BARBOACH,
+    [SI_WHISCASH] = WHISCASH,
+    [SI_CORPHISH] = CORPHISH,
+    [SI_CRAWDAUNT] = CRAWDAUNT,
+    [SI_BALTOY] = BALTOY,
+    [SI_CLAYDOL] = CLAYDOL,
+    [SI_LILEEP] = LILEEP,
+    [SI_CRADILY] = CRADILY,
+    [SI_ANORITH] = ANORITH,
+    [SI_ARMALDO] = ARMALDO,
+    [SI_FEEBAS] = FEEBAS,
+    [SI_MILOTIC] = MILOTIC,
+    [SI_CASTFORM] = CASTFORM,
+    [SI_KECLEON] = KECLEON,
+    [SI_SHUPPET] = SHUPPET,
+    [SI_BANETTE] = BANETTE,
+    [SI_DUSKULL] = DUSKULL,
+    [SI_DUSCLOPS] = DUSCLOPS,
+    [SI_TROPIUS] = TROPIUS,
+    [SI_CHIMECHO] = CHIMECHO,
+    [SI_ABSOL] = ABSOL,
+    [SI_WYNAUT] = WYNAUT,
+    [SI_SNORUNT] = SNORUNT,
+    [SI_GLALIE] = GLALIE,
+    [SI_SPHEAL] = SPHEAL,
+    [SI_SEALEO] = SEALEO,
+    [SI_WALREIN] = WALREIN,
+    [SI_CLAMPERL] = CLAMPERL,
+    [SI_HUNTAIL] = HUNTAIL,
+    [SI_GOREBYSS] = GOREBYSS,
+    [SI_RELICANTH] = RELICANTH,
+    [SI_LUVDISC] = LUVDISC,
+    [SI_BAGON] = BAGON,
+    [SI_SHELGON] = SHELGON,
+    [SI_SALAMENCE] = SALAMENCE,
+    [SI_BELDUM] = BELDUM,
+    [SI_METANG] = METANG,
+    [SI_METAGROSS] = METAGROSS,
+    [SI_REGIROCK] = REGIROCK,
+    [SI_REGICE] = REGICE,
+    [SI_REGISTEEL] = REGISTEEL,
+    [SI_LATIAS] = LATIAS,
+    [SI_LATIOS] = LATIOS,
+    [SI_KYOGRE] = KYOGRE,
+    [SI_GROUDON] = GROUDON,
+    [SI_RAYQUAZA] = RAYQUAZA,
+    [SI_JIRACHI] = JIRACHI,
+    [SI_DEOXYS] = DEOXYS};
 
 // Items required for evolution
 #define METAL_COAT (uint8_t)143   // 0x8F
