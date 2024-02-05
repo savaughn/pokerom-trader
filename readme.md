@@ -40,6 +40,10 @@ Pokerom Trader is an open-source project that simplifies the process of trading 
 - See [issues tab](https://github.com/savaughn/pokerom-trader/issues) for current bugs 
 - No JP Region support
 - No Gen 3+ support
+  - In progress (02/2024): 
+    - trade gen3 <-> gen3
+    - trade gen1/2 -> gen3
+    - evolve gen3
 - No support for romhacks that change the save file structure (almost all of them)
 
 ## Discord
