@@ -11,7 +11,7 @@ on:
 jobs:
   build_macos_x64:
     # if: false  # This workflow is disabled
-    runs-on: macos-latest
+    runs-on: macos-13
     strategy:
       matrix:
         arch: [x64]
@@ -104,7 +104,7 @@ jobs:
     steps:
     - name: Download Build Artifact
       # Download the build artifact from the 'build' job
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: "pokeromtrader-artifacts-arm64"  # Specify the name of the build artifact
 
@@ -150,19 +150,19 @@ jobs:
         echo "macOS release bundle created"
 
     - name: Upload macOS Release
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: "pokeromtrader-macos-arm64"  # Specify a name for your macOS release
         path: build/macos
 
   bundle_macos_x64:
-    runs-on: macos-latest
+    runs-on: macos-13
     needs: build_macos_x64  # Ensure that the 'build' job is completed before this one starts
 
     steps:
     - name: Download Build Artifact
       # Download the build artifact from the 'build' job
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: "pokeromtrader-artifacts-x64" # Specify the name of the build artifact
 
@@ -208,7 +208,7 @@ jobs:
         echo "macOS release bundle created"
 
     - name: Upload macOS Release
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: "pokeromtrader-macos-x64"
         path: build/macos 

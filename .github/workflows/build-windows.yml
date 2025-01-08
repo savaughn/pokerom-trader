@@ -46,7 +46,7 @@ jobs:
         cp assets/pkrom.rc.data build/assets/pkrom.rc.data
       
     - name: Publish Build Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: pokeromtrader-artifacts-windows
         path: build/

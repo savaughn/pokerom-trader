@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Install Dependencies
       run: |
@@ -46,7 +46,7 @@ jobs:
         mkdir -p build/assets
 
     - name: Publish Build Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: pokeromtrader-artifacts-linux
         path: build/
