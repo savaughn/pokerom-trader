@@ -1,8 +1,7 @@
 #include "raylibhelper.h"
 #include "filehelper.h"
 
-enum main_menu_buttons
-{
+enum {
     BUTTON_NONE = -1,
     BUTTON_TRADE,
     BUTTON_EVOLVE,
@@ -10,22 +9,31 @@ enum main_menu_buttons
     BUTTON_QUIT,
     BUTTON_COUNT
 };
+
 const uint8_t anim_speed = 45;
-// Entire details pane stays in place
-const Rectangle details_rec = (Rectangle){SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.35, 200, 200};
-// starting position of details pane content offscreen (offset from details_rec.x)
-const uint16_t offscreen_x = 415;
-// offset from details_rec.x
-const uint8_t console_x_offset = 70;
+Rectangle details_rec;
+uint16_t offscreen_x;
+uint8_t console_x_offset;
 
 // Details content animation position
-static int16_t anim_from_right[4] = {offscreen_x};
+static int16_t anim_from_right[4];
 // which button is currently being animated
 static int8_t active_anim_index = BUTTON_NONE;
 // which button is currently being hovered over
 static int8_t active_hover_index = BUTTON_NONE;
-// which button has been selected
 static int8_t selected_main_menu_index = BUTTON_NONE;
+
+void initialize_main_menu_screen(void) {
+    // Initialize variables that require runtime evaluation
+    details_rec = (Rectangle){SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.35, 200, 200};
+    offscreen_x = 415;
+    console_x_offset = 70;
+
+    // Initialize anim_from_right array
+    for (int i = 0; i < 4; i++) {
+        anim_from_right[i] = offscreen_x;
+    }
+}
 
 // Update which details pane animation should be displayed
 void set_active_animation(const uint8_t selection)
@@ -149,6 +157,10 @@ void draw_evolution_arrow_animation(void)
 
 void draw_main_menu(struct save_file_data *save_file_data, GameScreen *current_screen, bool *should_close_window, Texture2D *textures)
 {
+    // initialize_main_menu_screen();
+    if (details_rec.x == 0)
+        initialize_main_menu_screen();
+
     BeginDrawing();
     ClearBackground(RED);
     draw_background_grid();

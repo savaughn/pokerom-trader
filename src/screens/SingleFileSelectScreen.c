@@ -2,10 +2,7 @@
 #include "pksavfilehelper.h"
 #include "filehelper.h"
 
-static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT] = {
-    [0 ... MAX_FILE_PATH_COUNT - 1] = {
-        .save_generation_type = SAVE_GENERATION_NONE,
-    }};
+static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT];
 static uint8_t save_file_count = 0;
 
 void free_evolve_saves(void)
@@ -13,8 +10,21 @@ void free_evolve_saves(void)
     free_pkmn_saves(pkmn_saves, &save_file_count);
 }
 
+void initialize_pkmn_saves(void)
+{
+    for (int i = 0; i < MAX_FILE_PATH_COUNT; i++)
+    {
+        pkmn_saves[i].save_generation_type = SAVE_GENERATION_NONE;
+    }
+}
+
 void draw_file_select_single(struct save_file_data *save_file_data, PokemonSave *pkmn_save, char *player_save_path, struct trainer_info *trainer, struct TrainerSelection *trainerSelection, enum single_player_menu_types menu_type, GameScreen *current_screen)
 {
+    // Initialize saves if [0] is empty
+    if (pkmn_saves[0].save_generation_type == SAVE_GENERATION_NONE)
+    {
+        initialize_pkmn_saves();
+    }
     static int selected_saves_index = -1;
     bool has_selected_save = selected_saves_index != -1;
     const Rectangle bottom_bar_rec = (Rectangle){0, SCREEN_HEIGHT - 50, SCREEN_WIDTH, 100};

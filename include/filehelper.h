@@ -4,7 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#if !defined(_WIN32)
 #include <dirent.h>
+#endif
 #include "common.h"
 #include "pksavhelper.h"
 

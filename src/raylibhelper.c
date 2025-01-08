@@ -194,9 +194,11 @@ void draw_raylib_screen_loop(
     static bool is_same_generation = true;
     static bool should_close_window = false;
     bool is_build_prerelease = strcmp(PROJECT_VERSION_TYPE, "prerelease") == 0;
-    Texture2D textures[19] = {
-        [0 ... 18] = {
-            .id = 0}};
+    Texture2D textures[19] = {0};
+    for (int i = 0; i < 19; i++)
+    {
+        textures[i].id = 0;
+    }
     const struct texture_data *texture_data[5] = {
         &evolve_data,
         &logo_data,

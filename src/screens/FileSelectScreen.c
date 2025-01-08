@@ -1,11 +1,20 @@
 #include "raylibhelper.h"
 #include "pksavfilehelper.h"
 
-static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT] = {
-    [0 ... MAX_FILE_PATH_COUNT - 1] = {
-        .save_generation_type = SAVE_GENERATION_NONE,
-    }};
+// static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT] = {
+//     [0 ... MAX_FILE_PATH_COUNT - 1] = {
+//         .save_generation_type = SAVE_GENERATION_NONE,
+//     }};
+static PokemonSave pkmn_saves[MAX_FILE_PATH_COUNT];
+
 static uint8_t save_file_count = 0;
+
+void initialize_pkmn_saves_fs(void)
+{
+    for (int i = 0; i < MAX_FILE_PATH_COUNT; i++) {
+        pkmn_saves[i].save_generation_type = SAVE_GENERATION_NONE;
+    }
+}
 
 void free_trade_saves(void)
 {
@@ -28,6 +37,10 @@ void free_trade_saves(void)
  */
 void draw_file_select(struct save_file_data *save_file_data, char *player1_save_path, char *player2_save_path, struct trainer_info *trainer1, struct trainer_info *trainer2, struct TrainerSelection trainerSelection[2], PokemonSave *pkmn_save_player1, PokemonSave *pkmn_save_player2, GameScreen *current_screen, bool *is_same_generation)
 {
+    // Initialize saves if [0] is empty
+    if (pkmn_saves[0].save_generation_type == SAVE_GENERATION_NONE) {
+        initialize_pkmn_saves_fs();
+    }
     static int selected_saves_index[2] = {-1, -1};
     bool has_selected_two_saves = selected_saves_index[0] != -1 && selected_saves_index[1] != -1;
     const Rectangle bottom_bar_rec = (Rectangle){0, SCREEN_HEIGHT - 50, SCREEN_WIDTH, 100};

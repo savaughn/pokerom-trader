@@ -31,7 +31,7 @@ int get_save_files(struct save_file_data *save_data)
 
     WIN32_FIND_DATA find_file_data;
     HANDLE hFind;
-    LPCSTR saves[MAX_FILE_PATH_CHAR];
+    char saves[MAX_FILE_PATH_CHAR];
     strcpy(saves, save_dir);
     strcat(saves, "\\*.sav");
 
@@ -69,7 +69,7 @@ int write_key_to_config(const char *key, const char *value)
 
     LPCSTR ini = config_path;
 
-    WINBOOL error = WritePrivateProfileStringA("app", key, value, ini);
+    BOOL error = WritePrivateProfileStringA("app", key, value, ini);
     if (error == FILE_OP_FAILURE)
         error_handler(error, "Error writing to config.ini");
     return error;
@@ -226,7 +226,7 @@ int delete_app_data(void)
 
     WIN32_FIND_DATA find_file_data;
     HANDLE hFind;
-    LPCSTR saves[MAX_FILE_PATH_CHAR];
+    char saves[MAX_FILE_PATH_CHAR];
     strcpy(saves, saves_dir);
     strcat(saves, "\\*.sav");
 
@@ -268,7 +268,7 @@ int delete_app_data(void)
     strcpy(logs_dir, config_path);
     strcat(logs_dir, "\\logs");
 
-    LPCSTR logs[MAX_FILE_PATH_CHAR];
+    char logs[MAX_FILE_PATH_CHAR];
     strcpy(logs, logs_dir);
     strcat(logs, "\\*.txt");
 
