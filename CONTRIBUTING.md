@@ -1,5 +1,11 @@
 ## Contributing
 If you wish to build this project from source or contribute to the project, then follow the instructions below.
+
+### System files needed
+   ```bash
+   sudo apt-get install libxi-dev libxinerama-dev libxcursor-dev libx11-dev
+   ```
+
 ### Installation
 
    ```bash
