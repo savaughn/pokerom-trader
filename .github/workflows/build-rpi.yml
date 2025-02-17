@@ -1,0 +1,52 @@
+name: Build and Bundle RaspberryPi
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_linux:
+    # if: false  # This workflow is disabled
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake make build-essential libxcursor-dev libxinerama-dev libxrandr-dev libxi-dev libgl1-mesa-dev
+
+    - name: Build pksav
+      run: |
+        cd deps/pksav/
+        mkdir build
+        cd build
+        cmake .. -DPKSAV_STATIC=ON -DPKSAV_ENABLE_TESTS=OFF -DPKSAV_ENABLE_DOCS=OFF -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --config "Release"
+
+    - name: Build raylib
+      run: |
+        cd deps/raylib/src/
+        make PLATFORM=PLATFORM_DESKTOP GRAPHICS=GRAPHICS_API_OPENGL_21
+        sudo make install
+
+    - name: Build Project
+      run: |
+        make GRAPHICS=GRAPHICS_API_OPENGL_21
+
+    - name: Bundle Assets
+      run: |
+        # Copy assets to the same directory as the executable
+        mkdir -p build/assets
+
+    - name: Publish Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: pokeromtrader-artifacts-rpi
+        path: build/
