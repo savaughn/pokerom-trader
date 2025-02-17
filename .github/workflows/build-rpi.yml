@@ -9,9 +9,9 @@ on:
       - main
 
 jobs:
-  build_linux:
+  build_rpi:
     # if: false  # This workflow is disabled
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-22.04-arm
 
     steps:
     - name: Checkout Code
