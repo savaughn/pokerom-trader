@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Build pksav
       run: |
@@ -48,7 +48,7 @@ jobs:
         cp -r assets build
 
     - name: Publish Build Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: "pokeromtrader-artifacts-x64"
         path: build/  # Specify the directory containing your build artifacts
@@ -62,7 +62,7 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Build pksav
       run: |
@@ -92,7 +92,7 @@ jobs:
         cp -r assets build
 
     - name: Publish Build Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: "pokeromtrader-artifacts-arm64"
         path: build/  # Specify the directory containing your build artifacts
@@ -104,7 +104,7 @@ jobs:
     steps:
     - name: Download Build Artifact
       # Download the build artifact from the 'build' job
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: "pokeromtrader-artifacts-arm64"  # Specify the name of the build artifact
 
@@ -150,7 +150,7 @@ jobs:
         echo "macOS release bundle created"
 
     - name: Upload macOS Release
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: "pokeromtrader-macos-arm64"  # Specify a name for your macOS release
         path: build/macos
@@ -162,7 +162,7 @@ jobs:
     steps:
     - name: Download Build Artifact
       # Download the build artifact from the 'build' job
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: "pokeromtrader-artifacts-x64" # Specify the name of the build artifact
 
@@ -208,7 +208,7 @@ jobs:
         echo "macOS release bundle created"
 
     - name: Upload macOS Release
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: "pokeromtrader-macos-x64"
         path: build/macos 

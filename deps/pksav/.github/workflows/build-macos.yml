@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Build static pksav
       run: |
@@ -42,7 +42,7 @@ jobs:
         cp -r build_static/include/* build/release/include
 
     - name: Publish Build Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: pksav-macos-x86_64
         path: build/release
@@ -56,7 +56,7 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Build static pksav
       run: |
@@ -80,7 +80,7 @@ jobs:
         cp -r build_static/include/* build/release/include
 
     - name: Publish Build Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: pksav-macos-arm64
         path: build/release
